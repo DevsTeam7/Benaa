@@ -11,4 +11,8 @@
     <Folder Include="Repositories\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Benaa.Core\Benaa.Core.csproj" />
+  </ItemGroup>
+
 </Project>
