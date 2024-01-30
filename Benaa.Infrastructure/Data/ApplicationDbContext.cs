@@ -74,7 +74,22 @@ namespace Benaa.Infrastructure.Data
                        .HasOne(x => x.Teacher)
                        .WithMany(x => x.Sceduales)
                        .HasForeignKey(x => x.TeacherId)
+                       .OnDelete(DeleteBehavior.ClientSetNull);  
+            
+
+            modelBuilder.Entity<Rate>()
+                       .HasOne(x => x.Student)
+                       .WithMany(x => x.Rates)
+                       .HasForeignKey(x => x.StudentId)
+                       .OnDelete(DeleteBehavior.ClientSetNull); 
+
+
+            modelBuilder.Entity<UserCourses>()
+                       .HasOne(x => x.Student)
+                       .WithMany(x => x.UserCourses)
+                       .HasForeignKey(x => x.StudentId)
                        .OnDelete(DeleteBehavior.ClientSetNull);
+
         }
     }
 
