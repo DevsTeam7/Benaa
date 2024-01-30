@@ -8,14 +8,18 @@ using System.Threading.Tasks;
 
 namespace Benaa.Core.Entities.General
 {
-    public class Certification
+    public class CourseChapter
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        [Required, DataType(DataType.Url)]
-        public string File { get; set; }
+        [Required]
+        public string Name { get; set; }
+        public DateTime? CreatedAt { get; set; } = DateTime.Now;
 
-        public virtual User? Teacher { get; set; }
+        public  int CourseId { get; set; }
+        public virtual Course? Course { get; set;}
+
+        public ICollection<CourseLesson>? CourseLessons { get; set; }
     }
 }

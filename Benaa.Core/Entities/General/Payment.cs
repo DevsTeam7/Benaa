@@ -14,15 +14,18 @@ namespace Benaa.Core.Entities.General
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public Decimal Amount { get; set; } = new Decimal(0);
-        public string Type { get; set; } = string.Empty;
+        public decimal? Amount { get; set; } = 0;
+        [Required]
+        public string Type { get; set; }
+        [Required]
         public int ItemId { get; set; }
-        public bool Status { get; set; } = false;
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public bool? Status { get; set; } = false;
+        public DateTime? CreatedAt { get; set; } = DateTime.Now;
 
-
-        public int? TeacherId { get; set; }
-        public int? StudentId { get; set; }
+        [Required]
+        public int TeacherId { get; set; }
+        [Required]
+        public int StudentId { get; set; }
         public virtual  User? Teacher { get; set; }
         public virtual User? Student { get; set; } 
     }

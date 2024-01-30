@@ -13,7 +13,7 @@ namespace Benaa.Core.Entities.General
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public Decimal Amount { get; set; } = new Decimal(0);
+        public decimal? Amount { get; set; } = 0;
 
         public virtual User? Student { get; set; }
     }

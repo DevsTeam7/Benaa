@@ -16,32 +16,49 @@ namespace Benaa.Core.Entities.General
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [Required, StringLength(maximumLength: 100, MinimumLength = 2)]
-        public string FirstName { get; set; } = string.Empty;
+        public string FirstName { get; set; } 
         [Required, StringLength(maximumLength: 100, MinimumLength = 2)]
-        public string LastName { get; set; } = string.Empty;
+        public string LastName { get; set; }
         [Required, DataType(DataType.EmailAddress), StringLength(maximumLength: 100, MinimumLength = 5)]
-        public string Email { get; set; } = string.Empty;
+        public string Email { get; set; }
         [Required, DataType(DataType.Password), StringLength(maximumLength: 100, MinimumLength = 5)]
-        public string Password { get; set; } = string.Empty;
-        public string EducationLevel { get; set; } = string.Empty;
-        public string Specialization { get; set; } = string.Empty;
-        public string Experience { get; set; } = string.Empty;
-        public string University { get; set; } = string.Empty;
-        [Required, DataType(DataType.PhoneNumber)]
-        public string Phone { get; set; } = string.Empty;
-        public string City { get; set; } = string.Empty;
-        public string Contry { get; set; } = string.Empty;
-        public DateTime DateOfBirth { get; set; }
+        public string Password { get; set; }
+        public string? EducationLevel { get; set; } = string.Empty;
+        public string? Specialization { get; set; } = string.Empty;
+        public string? Experience { get; set; } = string.Empty;
+        public string? University { get; set; } = string.Empty;
+        [DataType(DataType.PhoneNumber)]
+        public string? Phone { get; set; } = string.Empty;
+        public string? City { get; set; } = string.Empty;
+        public string? Contry { get; set; } = string.Empty;
+        public DateTime? DateOfBirth { get; set; }
         public bool IsAgreedToTerms { get; set; }
-        public bool IsApproved { get; set; }
-        public bool Gender { get; set; }
-        public int WalletId { get; set; }
+        public bool? IsApproved { get; set; } = false;
+        public bool? Gender { get; set; }
 
 
-        public ICollection<Payment> TeacherDues { get; set; } 
-        public ICollection<Payment> StudentPayments { get; set; }
-        
+        //F.K
+        public int? WalletId { get; set; }
+        public int? CertificationId { get; set; }
+        public int? BankInformationId { get; set; }
+
+
+        public ICollection<Payment>? TeacherDues { get; set; } 
+        public ICollection<Payment>? StudentPayments { get; set; }
+        public ICollection<Notifaction>? Notifactions { get; set; }
+        public ICollection<Report>? Reports { get; set; }
+        public ICollection<Chat>? SenderChats { get; set; }
+        public ICollection<Chat>? ReceiverChats { get; set; }
+        public ICollection<Course>? Courses { get; set; }
+        public ICollection<UserCourses>? UserCourses { get; set; }
+        public ICollection<Rate>? Rates { get; set; }
+        public ICollection<Sceduale>? Appointments { get; set; }
+        public ICollection<Sceduale>? Sceduales { get; set; }
+
         public virtual Wallet? Wallet { get; set; }
-        //Role,Certification,Bank id's
+        public virtual Certification? Certification { get; set; }
+        public virtual BankInformation? BankInformation { get; set; }
+
+        //Role??
     }
 }

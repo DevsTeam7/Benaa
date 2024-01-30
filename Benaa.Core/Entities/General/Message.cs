@@ -8,14 +8,19 @@ using System.Threading.Tasks;
 
 namespace Benaa.Core.Entities.General
 {
-    public class Certification
+    public class Messages
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        [Required, DataType(DataType.Url)]
-        public string File { get; set; }
+        [Required]
+        public string Message { get; set; }
+        [Required]
+        public string Type { get; set; }
+        public DateTime? CreatedAt { get; set; } = DateTime.Now;
 
-        public virtual User? Teacher { get; set; }
+        [Required]
+        public int ChatId { get; set; }
+        public virtual Chat? Chat { get; set; }
     }
 }
