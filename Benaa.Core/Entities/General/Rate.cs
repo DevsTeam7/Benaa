@@ -16,7 +16,7 @@ namespace Benaa.Core.Entities.General
         public int Stars { get; set; }
         [Required]
         [ForeignKey(nameof(User))]
-        public int StudentId { get; set; }
+        public string StudentId { get; set; }
         [Required]
         public int CourseId { get; set; }
         public DateTime? CreatedAt { get; set; } = DateTime.Now;

@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,19 +11,14 @@ using System.Threading.Tasks;
 
 namespace Benaa.Core.Entities.General
 {
-    public class User
+    public class User : IdentityUser 
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+
         [Required, StringLength(maximumLength: 100, MinimumLength = 2)]
         public string FirstName { get; set; } 
         [Required, StringLength(maximumLength: 100, MinimumLength = 2)]
         public string LastName { get; set; }
-        [Required, DataType(DataType.EmailAddress), StringLength(maximumLength: 100, MinimumLength = 5)]
-        public string Email { get; set; }
-        [Required, DataType(DataType.Password), StringLength(maximumLength: 100, MinimumLength = 5)]
-        public string Password { get; set; }
+
         public string? EducationLevel { get; set; } = string.Empty;
         public string? Specialization { get; set; } = string.Empty;
         public string? Experience { get; set; } = string.Empty;

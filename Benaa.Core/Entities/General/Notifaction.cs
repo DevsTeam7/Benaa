@@ -20,7 +20,7 @@ namespace Benaa.Core.Entities.General
         public DateTime? CreatedAt { get; set; } = DateTime.Now;
         public bool? Read { get; set; } = false;
         [Required]
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public virtual User? User { get; set; }
     }
 }

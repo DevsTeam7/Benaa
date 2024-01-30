@@ -35,7 +35,7 @@ namespace Benaa.Core.Entities.General
         public DateTime? CreatedAt { get; set; } = DateTime.Now;
         [Required]
         [ForeignKey(nameof(User))]
-        public int TeacherId { get; set; }
+        public string TeacherId { get; set; }
 
         public ICollection<UserCourses>? UserCourses { get; set; }
         public ICollection<CourseChapter>? CourseChapters { get; set; }

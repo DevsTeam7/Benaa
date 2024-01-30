@@ -23,9 +23,9 @@ namespace Benaa.Core.Entities.General
         public DateTime? CreatedAt { get; set; } = DateTime.Now;
 
         [Required]
-        public int TeacherId { get; set; }
+        public string TeacherId { get; set; }
         [Required]
-        public int StudentId { get; set; }
+        public string StudentId { get; set; }
         public virtual  User? Teacher { get; set; }
         public virtual User? Student { get; set; } 
     }

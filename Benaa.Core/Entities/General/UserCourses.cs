@@ -18,7 +18,7 @@ namespace Benaa.Core.Entities.General
         public int CourseId { get; set; }
         [Required]
         [ForeignKey(nameof(User))]
-        public int StudentId { get; set; }
+        public string StudentId { get; set; }
         [Required]
         public bool IsPurchased { get; set; }
 

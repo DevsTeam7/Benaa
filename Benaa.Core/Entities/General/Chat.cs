@@ -14,9 +14,9 @@ namespace Benaa.Core.Entities.General
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [Required]
-        public int SenderId { get; set; }
+        public string SenderId { get; set; }
         [Required]
-        public int ReceiverId { get; set; }
+        public string ReceiverId { get; set; }
 
         public ICollection<Messages>? Messages { get; set; }
 

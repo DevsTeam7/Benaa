@@ -18,9 +18,8 @@ namespace Benaa.Core.Entities.General
         public DateTime TimeEnd { get; set; } 
 
         [Required]
-        public int TeacherId { get; set; }
-        [Required]
-        public int StudentId { get; set; }
+        public string TeacherId { get; set; }
+        public string? StudentId { get; set; }
         public virtual User? Teacher { get; set; }
         public virtual User? Student { get; set; }
     }
