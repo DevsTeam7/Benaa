@@ -10,8 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<ApplicationDbContext>(optins =>
-   optins.UseSqlServer(
-   builder.Configuration.GetConnectionString("Server=Y0IZ\\MSSQLSERVER1;Database=EFGetStarted;Trusted_Connection=True;Encrypt=False;")
+   optins.UseNpgsql(
+   builder.Configuration.GetConnectionString("Host=localhost;Port=5432;Database=BenaaDB;Username=postgres;Password=1419")
 ));
 builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
 
