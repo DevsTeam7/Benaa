@@ -18,6 +18,7 @@ namespace Benaa.Core.Entities.General
         public string FirstName { get; set; } 
         [Required, StringLength(maximumLength: 100, MinimumLength = 2)]
         public string LastName { get; set; }
+        public string ImageUrl { get; set; }
         public string? EducationLevel { get; set; } = string.Empty;
         public string? Specialization { get; set; } = string.Empty;
         public string? Experience { get; set; } = string.Empty;
