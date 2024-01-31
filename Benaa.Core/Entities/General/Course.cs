@@ -37,9 +37,8 @@ namespace Benaa.Core.Entities.General
         [ForeignKey(nameof(User))]
         public string TeacherId { get; set; }
 
-        public ICollection<UserCourses>? UserCourses { get; set; }
-        public ICollection<CourseChapter>? CourseChapters { get; set; }
-        public ICollection<Rate>? Rates { get; set; }
+        public ICollection<CourseChapter>? CourseChapters { get; }
+        public ICollection<Rate>? Rates { get; }
 
         public virtual User? User { get; set; }
 

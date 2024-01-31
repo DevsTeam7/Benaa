@@ -13,7 +13,7 @@ namespace Benaa.Core.Entities.General
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        [Required, DataType(DataType.Url)]
+        [Required]
         public string File { get; set; }
 
         public virtual User? Teacher { get; set; }

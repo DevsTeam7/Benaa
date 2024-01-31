@@ -113,7 +113,6 @@ namespace Benaa.Infrastructure.Migrations
                     Specialization = table.Column<string>(type: "text", nullable: true),
                     Experience = table.Column<string>(type: "text", nullable: true),
                     University = table.Column<string>(type: "text", nullable: true),
-                    Phone = table.Column<string>(type: "text", nullable: true),
                     City = table.Column<string>(type: "text", nullable: true),
                     Contry = table.Column<string>(type: "text", nullable: true),
                     DateOfBirth = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -259,12 +258,14 @@ namespace Benaa.Infrastructure.Migrations
                         name: "FK_Chats_AspNetUsers_ReceiverId",
                         column: x => x.ReceiverId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Chats_AspNetUsers_SenderId",
                         column: x => x.SenderId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -343,12 +344,14 @@ namespace Benaa.Infrastructure.Migrations
                         name: "FK_Payments_AspNetUsers_StudentId",
                         column: x => x.StudentId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Payments_AspNetUsers_TeacherId",
                         column: x => x.TeacherId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -381,8 +384,8 @@ namespace Benaa.Infrastructure.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    TimeStart = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    TimeEnd = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    TimeStart = table.Column<TimeSpan>(type: "interval", nullable: false),
+                    TimeEnd = table.Column<TimeSpan>(type: "interval", nullable: false),
                     TeacherId = table.Column<string>(type: "text", nullable: false),
                     StudentId = table.Column<string>(type: "text", nullable: true)
                 },
@@ -398,7 +401,8 @@ namespace Benaa.Infrastructure.Migrations
                         name: "FK_Sceduales_AspNetUsers_TeacherId",
                         column: x => x.TeacherId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -450,7 +454,7 @@ namespace Benaa.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Stars = table.Column<int>(type: "integer", nullable: false),
+                    Stars = table.Column<float>(type: "real", nullable: false),
                     StudentId = table.Column<string>(type: "text", nullable: false),
                     CourseId = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
@@ -462,7 +466,8 @@ namespace Benaa.Infrastructure.Migrations
                         name: "FK_Rates_AspNetUsers_StudentId",
                         column: x => x.StudentId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Rates_Courses_CourseId",
                         column: x => x.CourseId,
@@ -488,7 +493,8 @@ namespace Benaa.Infrastructure.Migrations
                         name: "FK_UserCourses_AspNetUsers_StudentId",
                         column: x => x.StudentId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_UserCourses_Courses_CourseId",
                         column: x => x.CourseId,

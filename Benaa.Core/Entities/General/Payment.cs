@@ -23,8 +23,10 @@ namespace Benaa.Core.Entities.General
         public DateTime? CreatedAt { get; set; } = DateTime.Now;
 
         [Required]
+        [ForeignKey(nameof(Teacher))]
         public string TeacherId { get; set; }
         [Required]
+        [ForeignKey(nameof(Student))]
         public string StudentId { get; set; }
         public virtual  User? Teacher { get; set; }
         public virtual User? Student { get; set; } 

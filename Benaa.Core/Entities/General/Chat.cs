@@ -13,12 +13,12 @@ namespace Benaa.Core.Entities.General
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        [Required]
+        [ForeignKey(nameof(Sender))]
         public string SenderId { get; set; }
-        [Required]
+        [ForeignKey(nameof(Receiver))]
         public string ReceiverId { get; set; }
 
-        public ICollection<Messages>? Messages { get; set; }
+        public ICollection<Messages>? Messages { get; }
 
         public virtual User? Sender { get; set; }
         public virtual User? Receiver { get; set; }

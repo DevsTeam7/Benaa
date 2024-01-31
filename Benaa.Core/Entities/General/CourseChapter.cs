@@ -20,6 +20,6 @@ namespace Benaa.Core.Entities.General
         public  int CourseId { get; set; }
         public virtual Course? Course { get; set;}
 
-        public ICollection<CourseLesson>? CourseLessons { get; set; }
+        public ICollection<CourseLesson>? CourseLessons { get; }
     }
 }

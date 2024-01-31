@@ -339,8 +339,8 @@ namespace Benaa.Infrastructure.Migrations
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("Stars")
-                        .HasColumnType("integer");
+                    b.Property<float>("Stars")
+                        .HasColumnType("real");
 
                     b.Property<string>("StudentId")
                         .IsRequired()
@@ -407,11 +407,11 @@ namespace Benaa.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("TimeEnd")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<TimeSpan>("TimeEnd")
+                        .HasColumnType("interval");
 
-                    b.Property<DateTime>("TimeStart")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<TimeSpan>("TimeStart")
+                        .HasColumnType("interval");
 
                     b.HasKey("Id");
 
@@ -496,9 +496,6 @@ namespace Benaa.Infrastructure.Migrations
                         .HasColumnType("character varying(256)");
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Phone")
                         .HasColumnType("text");
 
                     b.Property<string>("PhoneNumber")
@@ -725,13 +722,15 @@ namespace Benaa.Infrastructure.Migrations
             modelBuilder.Entity("Benaa.Core.Entities.General.Chat", b =>
                 {
                     b.HasOne("Benaa.Core.Entities.General.User", "Receiver")
-                        .WithMany("ReceiverChats")
+                        .WithMany()
                         .HasForeignKey("ReceiverId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Benaa.Core.Entities.General.User", "Sender")
-                        .WithMany("SenderChats")
+                        .WithMany()
                         .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Receiver");
@@ -797,13 +796,15 @@ namespace Benaa.Infrastructure.Migrations
             modelBuilder.Entity("Benaa.Core.Entities.General.Payment", b =>
                 {
                     b.HasOne("Benaa.Core.Entities.General.User", "Student")
-                        .WithMany("StudentPayments")
+                        .WithMany()
                         .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Benaa.Core.Entities.General.User", "Teacher")
-                        .WithMany("TeacherDues")
+                        .WithMany()
                         .HasForeignKey("TeacherId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Student");
@@ -820,8 +821,9 @@ namespace Benaa.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("Benaa.Core.Entities.General.User", "Student")
-                        .WithMany("Rates")
+                        .WithMany()
                         .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Course");
@@ -843,12 +845,13 @@ namespace Benaa.Infrastructure.Migrations
             modelBuilder.Entity("Benaa.Core.Entities.General.Sceduale", b =>
                 {
                     b.HasOne("Benaa.Core.Entities.General.User", "Student")
-                        .WithMany("Appointments")
+                        .WithMany()
                         .HasForeignKey("StudentId");
 
                     b.HasOne("Benaa.Core.Entities.General.User", "Teacher")
-                        .WithMany("Sceduales")
+                        .WithMany()
                         .HasForeignKey("TeacherId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Student");
@@ -880,7 +883,7 @@ namespace Benaa.Infrastructure.Migrations
             modelBuilder.Entity("Benaa.Core.Entities.General.UserCourses", b =>
                 {
                     b.HasOne("Benaa.Core.Entities.General.Course", "Course")
-                        .WithMany("UserCourses")
+                        .WithMany()
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -888,6 +891,7 @@ namespace Benaa.Infrastructure.Migrations
                     b.HasOne("Benaa.Core.Entities.General.User", "Student")
                         .WithMany("UserCourses")
                         .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Course");
@@ -966,8 +970,6 @@ namespace Benaa.Infrastructure.Migrations
                     b.Navigation("CourseChapters");
 
                     b.Navigation("Rates");
-
-                    b.Navigation("UserCourses");
                 });
 
             modelBuilder.Entity("Benaa.Core.Entities.General.CourseChapter", b =>
@@ -977,25 +979,11 @@ namespace Benaa.Infrastructure.Migrations
 
             modelBuilder.Entity("Benaa.Core.Entities.General.User", b =>
                 {
-                    b.Navigation("Appointments");
-
                     b.Navigation("Courses");
 
                     b.Navigation("Notifactions");
 
-                    b.Navigation("Rates");
-
-                    b.Navigation("ReceiverChats");
-
                     b.Navigation("Reports");
-
-                    b.Navigation("Sceduales");
-
-                    b.Navigation("SenderChats");
-
-                    b.Navigation("StudentPayments");
-
-                    b.Navigation("TeacherDues");
 
                     b.Navigation("UserCourses");
                 });
