@@ -1,3 +1,6 @@
+using Benaa.Core.Entities.General;
+using Benaa.Core.Interfaces.IServices;
+using Benaa.Core.Services;
 using Benaa.Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -7,9 +10,18 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddDbContext<ApplicationDbContext>(optins =>
    optins.UseNpgsql(
-   builder.Configuration.GetConnectionString("Host=localhost;Port=5432;Database=BenaaDB;Username=postgres;Password=1419")
+   builder.Configuration.GetSection("ConnectionStrings:Defult").Value
 ));
-builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.AddIdentity<User, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddScoped<UserManager<User>>();
+
+
+
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 
 builder.Services.AddEndpointsApiExplorer();
@@ -26,6 +38,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

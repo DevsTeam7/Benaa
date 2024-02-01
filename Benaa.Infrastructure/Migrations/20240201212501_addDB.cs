@@ -107,8 +107,9 @@ namespace Benaa.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
-                    FirstName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    LastName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    FirstName = table.Column<string>(type: "text", nullable: true),
+                    LastName = table.Column<string>(type: "text", nullable: true),
+                    ImageUrl = table.Column<string>(type: "text", nullable: true),
                     EducationLevel = table.Column<string>(type: "text", nullable: true),
                     Specialization = table.Column<string>(type: "text", nullable: true),
                     Experience = table.Column<string>(type: "text", nullable: true),
@@ -116,7 +117,7 @@ namespace Benaa.Infrastructure.Migrations
                     City = table.Column<string>(type: "text", nullable: true),
                     Contry = table.Column<string>(type: "text", nullable: true),
                     DateOfBirth = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    IsAgreedToTerms = table.Column<bool>(type: "boolean", nullable: false),
+                    IsAgreedToTerms = table.Column<bool>(type: "boolean", nullable: true),
                     IsApproved = table.Column<bool>(type: "boolean", nullable: true),
                     Gender = table.Column<bool>(type: "boolean", nullable: true),
                     WalletId = table.Column<int>(type: "integer", nullable: true),

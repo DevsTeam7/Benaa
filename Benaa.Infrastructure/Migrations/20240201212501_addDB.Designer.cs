@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Benaa.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240131212830_addDB")]
+    [Migration("20240201212501_addDB")]
     partial class addDB
     {
         /// <inheritdoc />
@@ -466,23 +466,22 @@ namespace Benaa.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("text");
 
                     b.Property<bool?>("Gender")
                         .HasColumnType("boolean");
 
-                    b.Property<bool>("IsAgreedToTerms")
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("text");
+
+                    b.Property<bool?>("IsAgreedToTerms")
                         .HasColumnType("boolean");
 
                     b.Property<bool?>("IsApproved")
                         .HasColumnType("boolean");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("text");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
