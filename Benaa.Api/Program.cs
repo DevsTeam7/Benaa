@@ -6,6 +6,7 @@ using Benaa.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,11 +15,22 @@ builder.Services.AddDbContext<ApplicationDbContext>(optins =>
    optins.UseNpgsql(
    builder.Configuration.GetSection("ConnectionStrings:Defult").Value
 ));
-builder.Services.AddAuthentication(optins => 
+builder.Services.AddAuthentication(optins =>
 {
     optins.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     optins.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-});
+}).AddJwtBearer(optins =>
+    optins.TokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidateActor = true,
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        RequireExpirationTime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration.GetSection("Jwt:Issuer").Value,
+        ValidAudience = builder.Configuration.GetSection("Jwt:Audience").Value
+    }
+); ;
 
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
