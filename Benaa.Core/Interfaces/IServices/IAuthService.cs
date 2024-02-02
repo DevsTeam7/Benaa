@@ -12,6 +12,6 @@ namespace Benaa.Core.Interfaces.IServices
     public interface IAuthService
     {
         Task<IEnumerable<IdentityError>> RegisterUser(RegisterRequestDto user);
-        //Task Login(RegisterRequestDto user);
+        Task<bool> Login(RegisterRequestDto user);
     }
 }

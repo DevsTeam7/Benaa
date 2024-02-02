@@ -13,13 +13,18 @@ namespace Benaa.Core.Services
             _userManager = userManager;
         }
 
-        //public async Task Login(RegisterRequestDto user)
-        //{
-            
-        //}
+        public async Task<bool> Login(RegisterRequestDto user)
+        {
+            var _user = await _userManager.FindByEmailAsync(user.Email);
+            if (_user is null) {
+                return false;
+            }
+            return await _userManager.CheckPasswordAsync(_user, user.Passwrod);
+        }
 
         public async Task<IEnumerable<IdentityError>> RegisterUser(RegisterRequestDto _user)
         {
+            
             User user = new User();
    
             user.Email = _user.Email;

@@ -17,14 +17,17 @@ namespace Benaa.Api.Controllers
             _authService = authService;
         }
         [HttpPost]
-        public async Task<IEnumerable<IdentityError>> RegisterUser(RegisterRequestDto user)
+        public async Task<IActionResult> RegisterUser(RegisterRequestDto user)
         {
-            return await _authService.RegisterUser(user);
+            return Ok(await _authService.RegisterUser(user));
         }
         [HttpGet]
-        public async Task Login(User user)
+        public async Task<IActionResult> Login(RegisterRequestDto user)
         {
-
+            //var result = await _authService.Login(user);
+            if (await _authService.Login(user)) { return Ok("Done"); }
+            return BadRequest();
         }
+
     }
 }

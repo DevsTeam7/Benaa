@@ -1,3 +1,4 @@
+using Benaa.Api.Extensions;
 using Benaa.Core.Entities.General;
 using Benaa.Core.Interfaces.IServices;
 using Benaa.Core.Services;
@@ -17,11 +18,12 @@ builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.AddScoped<UserManager<User>>();
+
+//Register Services
+builder.Services.RegisterService();
 
 
 
-builder.Services.AddScoped<IAuthService, AuthService>();
 
 
 builder.Services.AddEndpointsApiExplorer();
