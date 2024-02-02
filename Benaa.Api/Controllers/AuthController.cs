@@ -16,16 +16,21 @@ namespace Benaa.Api.Controllers
         public AuthController(IAuthService authService) {
             _authService = authService;
         }
-        [HttpPost]
+        [HttpPost("Register")]
         public async Task<IActionResult> RegisterUser(RegisterRequestDto user)
         {
             return Ok(await _authService.RegisterUser(user));
         }
-        [HttpPost]
+
+        [HttpPost("Login")]
         public async Task<IActionResult> Login(RegisterRequestDto user)
         {
             //var result = await _authService.Login(user);
-            if (await _authService.Login(user)) { return Ok("Done"); }
+            if (await _authService.Login(user)) { 
+                
+                var topkenString =  _authService.GenerateTokenString(user);
+                return Ok(topkenString);
+            }
             return BadRequest();
         }
 
