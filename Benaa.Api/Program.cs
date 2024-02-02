@@ -3,6 +3,7 @@ using Benaa.Core.Entities.General;
 using Benaa.Core.Interfaces.IServices;
 using Benaa.Core.Services;
 using Benaa.Infrastructure.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,18 +14,18 @@ builder.Services.AddDbContext<ApplicationDbContext>(optins =>
    optins.UseNpgsql(
    builder.Configuration.GetSection("ConnectionStrings:Defult").Value
 ));
+builder.Services.AddAuthentication(optins => 
+{
+    optins.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    optins.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+});
 
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-
 //Register Services
 builder.Services.RegisterService();
-
-
-
-
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

@@ -21,7 +21,7 @@ namespace Benaa.Api.Controllers
         {
             return Ok(await _authService.RegisterUser(user));
         }
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> Login(RegisterRequestDto user)
         {
             //var result = await _authService.Login(user);

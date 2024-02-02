@@ -23,9 +23,7 @@ namespace Benaa.Api.Extensions
 
             #region Repositories
             //services.AddTransient<ICustomerRepository, CustomerRepository>();
-            //services.AddTransient<IProductRepository, ProductRepository>();
-            //services.AddTransient<IOrderRepository, OrderRepository>();
-            //services.AddTransient<IOrderDetailsRepository, OrderDetailsRepository>();
+
 
             #endregion
 
