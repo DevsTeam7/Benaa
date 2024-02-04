@@ -20,6 +20,7 @@ builder.Services.AddAuthentication(optins =>
 {
     optins.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     optins.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    optins.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(optins =>
     optins.TokenValidationParameters = new TokenValidationParameters()
     {
@@ -33,7 +34,7 @@ builder.Services.AddAuthentication(optins =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes
         (builder.Configuration.GetSection("Jwt:Key").Value!))
     }
-); ;
+); 
 
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()

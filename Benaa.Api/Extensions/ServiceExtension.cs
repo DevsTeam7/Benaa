@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Benaa.Core.Entities.General;
 using Benaa.Core.Interfaces.IMapper;
+using Benaa.Core.Interfaces.IRepositories;
 using Benaa.Core.Interfaces.IServices;
 using Benaa.Core.Mapper;
 using Benaa.Core.Services;
+using Benaa.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Identity;
 
 namespace Benaa.Api.Extensions
@@ -17,12 +19,13 @@ namespace Benaa.Api.Extensions
             //services.AddScoped<IProductService, ProductService>();
             //services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IWalletService, WalletService>();
             services.AddScoped<UserManager<User>>();
 
             #endregion
 
             #region Repositories
-            //services.AddTransient<ICustomerRepository, CustomerRepository>();
+            services.AddTransient<IWalletRepository, WalletRepository>();
 
 
             #endregion

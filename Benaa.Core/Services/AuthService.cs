@@ -50,7 +50,7 @@ namespace Benaa.Core.Services
                 new Claim(ClaimTypes.Role, "Admin")
                 };
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("Jwt:Key").Value!));
-            SigningCredentials signinCred = new SigningCredentials(securityKey,SecurityAlgorithms.HmacSha512Signature);
+            SigningCredentials signinCred = new SigningCredentials(securityKey,SecurityAlgorithms.HmacSha256);
             JwtSecurityToken securityToken = new JwtSecurityToken(
                 claims: claims,
                 expires: DateTime.Now.AddMinutes(60),
