@@ -17,7 +17,6 @@ namespace Benaa.Infrastructure.Data
         {
         }
 
-        public DbSet<User> Users { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<MoneyCode> MoneyCodes { get; set; }
@@ -36,11 +35,10 @@ namespace Benaa.Infrastructure.Data
 
 
 
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-          
 
         }
     }

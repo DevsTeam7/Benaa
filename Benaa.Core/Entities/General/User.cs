@@ -14,11 +14,9 @@ namespace Benaa.Core.Entities.General
     public class User : IdentityUser 
     {
 
-        [Required, StringLength(maximumLength: 100, MinimumLength = 2)]
-        public string FirstName { get; set; } 
-        [Required, StringLength(maximumLength: 100, MinimumLength = 2)]
-        public string LastName { get; set; }
-        public string ImageUrl { get; set; }
+        public string? FirstName { get; set; } 
+        public string? LastName { get; set; }
+        public string? ImageUrl { get; set; }
         public string? EducationLevel { get; set; } = string.Empty;
         public string? Specialization { get; set; } = string.Empty;
         public string? Experience { get; set; } = string.Empty;
@@ -26,7 +24,7 @@ namespace Benaa.Core.Entities.General
         public string? City { get; set; } = string.Empty;
         public string? Contry { get; set; } = string.Empty;
         public DateTime? DateOfBirth { get; set; }
-        public bool IsAgreedToTerms { get; set; }
+        public bool? IsAgreedToTerms { get; set; }
         public bool? IsApproved { get; set; } = false;
         public bool? Gender { get; set; }
 
