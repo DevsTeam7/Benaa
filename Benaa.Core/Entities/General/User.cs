@@ -40,7 +40,7 @@ namespace Benaa.Core.Entities.General
         public ICollection<Course>? Courses { get; }
         public ICollection<UserCourses>? UserCourses { get; }
 
-        public virtual Wallet? Wallet { get; set; }
+        public virtual Course? Wallet { get; set; }
         public virtual Certification? Certification { get; set; }
         public virtual BankInformation? BankInformation { get; set; }
     }

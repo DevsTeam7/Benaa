@@ -16,14 +16,14 @@ namespace Benaa.Api.Controllers
             //_logger = logger;
             _context = context;
         }
-        [HttpGet]
-        public string Get()
-        {
-            GuidTest a = new GuidTest();
-            a.File = "123";
-            _context.GuidTests.Add(a);
-            _context.SaveChanges();
-            return "yo";
-        }
+        //[HttpGet]
+        //public string Get()
+        //{
+        //    GuidTest a = new GuidTest();
+        //    a.File = "123";
+        //    _context.GuidTests.Add(a);
+        //    _context.SaveChanges();
+        //    return "yo";
+        //}
     }
 }

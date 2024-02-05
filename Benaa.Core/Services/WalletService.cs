@@ -20,7 +20,7 @@ namespace Benaa.Core.Services
         public string IsPayed(decimal amount)
         {
             User user = new User();
-            Wallet wallet = new Wallet();
+            Course wallet = new Course();
             _walletRepository.GetById(user.Id);
             wallet.Amount = 1000000;
 

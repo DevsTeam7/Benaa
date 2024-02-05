@@ -18,7 +18,7 @@ namespace Benaa.Infrastructure.Data
         }
 
         public DbSet<Payment> Payments { get; set; }
-        public DbSet<Wallet> Wallets { get; set; }
+        public DbSet<Course> Wallets { get; set; }
         public DbSet<MoneyCode> MoneyCodes { get; set; }
         public DbSet<BankInformation> BankInformations { get; set; }
         public DbSet<Certification> Certifications { get; set; }
