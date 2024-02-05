@@ -26,7 +26,13 @@ namespace Benaa.Api.Extensions
 
             #region Repositories
             services.AddTransient<IWalletRepository, WalletRepository>();
-
+            services.AddTransient<ICourseRepository,CourseRepository>();
+            services.AddTransient<IMoneyCodeRepository, MoneyCodeRepository>();
+            services.AddTransient<INotificationRepository, NotificationRepository>();
+            services.AddTransient<IPaymentRepositoty, PaymentRepository>();
+            services.AddTransient<IReportRepository, ReportRepository>();
+            services.AddTransient<ISchedualRepository, SchedualRepository>();
+           
 
             #endregion
 
