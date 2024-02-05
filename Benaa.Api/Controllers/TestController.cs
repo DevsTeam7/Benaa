@@ -8,22 +8,15 @@ namespace Benaa.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+
     public class TestController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-       // private readonly ILogger _logger;
-        public TestController(ApplicationDbContext context) {
-            //_logger = logger;
-            _context = context;
-        }
-        [HttpGet]
-        public string Get()
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("Index")]
+        public string Index()
         {
-            GuidTest a = new GuidTest();
-            a.File = "123";
-            _context.GuidTests.Add(a);
-            _context.SaveChanges();
-            return "yo";
+            return "done";
         }
     }
 }

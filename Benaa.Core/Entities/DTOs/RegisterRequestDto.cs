@@ -12,10 +12,6 @@ namespace Benaa.Core.Entities.DTOs
         public string Email { get; set; }
         public string Passwrod { get; set; }
         public string UserName { get; set; }
-        //public bool? EmailConfirmed { get; set; } = false;
-        //public bool? PhoneNumberConfirmed { get; set; } = false;
-        //public bool? TwoFactorEnabled { get; set; } = false;
-        //public bool? LockoutEnabled { get; set; } = false;
-        //public int? AccessFailedCount { get; set; } = 0;
+        public string Role { get; set; }
     }
 }

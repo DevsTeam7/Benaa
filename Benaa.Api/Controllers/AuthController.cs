@@ -23,15 +23,14 @@ namespace Benaa.Api.Controllers
         }
 
         [HttpPost("Login")]
-        public async Task<IActionResult> Login(RegisterRequestDto user)
+        public async Task<string> Login(RegisterRequestDto user)
         {
-            //var result = await _authService.Login(user);
-            if (await _authService.Login(user)) { 
-                
-                var topkenString =  _authService.GenerateTokenString(user);
-                return Ok(topkenString);
+            if(ModelState.IsValid)
+            {
+                if (await _authService.Login(user)) { return _authService.GenerateTokenString(user); }
+       
             }
-            return BadRequest();
+            return null;
         }
     }
 }
