@@ -11,8 +11,8 @@ namespace Benaa.Core.Interfaces.IServices
 {
     public interface IAuthService
     {
-       // string GenerateTokenString(User user, IList<string> roles);
-       // Task<IEnumerable<IdentityError>> RegisterUser(RegisterRequestDto user);
-       //Task<bool> Login(RegisterRequestDto user);
+        string GenerateTokenString(User user, IList<string> roles);
+        Task<User> Registration(RegisterRequestDto user);
+        Task<string> Login(LoginRequestDto ApplicationUser);
     }
 }

@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using AutoMapper;
+using Benaa.Core.Mapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,8 +21,23 @@ builder.Services.AddDbContext<ApplicationDbContext>(optins =>
    builder.Configuration.GetSection("ConnectionStrings:Defult").Value
 ));
 
+builder.Services.AddAutoMapper(typeof(BaseMapper));
 
-builder.Services.AddIdentity<User, IdentityRole>()
+
+builder.Services.AddIdentity<User, IdentityRole>(options =>
+{
+    // Email settings
+    options.User.RequireUniqueEmail = true;
+   // options.SignIn.RequireConfirmedEmail = true;
+
+    // Password settings
+    options.Password.RequireDigit = true;
+    options.Password.RequiredLength = 8;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireLowercase = true;
+
+})
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
@@ -59,12 +76,12 @@ builder.Services.AddAuthentication(options =>
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(key),
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateActor = true,
-        ValidAudience = builder.Configuration.("Jwt:Issuer").Value,
-
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidAudience = builder.Configuration.GetSection("Jwt:Audience").Value,
+        ValidIssuer = builder.Configuration.GetSection("Jwt:Issuer").Value,
     };
 });
 

@@ -7,84 +7,83 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using Microsoft.Extensions.Configuration;
 using System.Text;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Data;
-using Microsoft.AspNetCore.Http.HttpResults;
-
+using AutoMapper;
 namespace Benaa.Core.Services
 {
     public class AuthService : IAuthService
     {
-        public readonly UserManager<User> _userManager;
-        public readonly RoleManager<IdentityRole> _roleManager;
-        public readonly IConfiguration _config;
-    
+        private readonly UserManager<User> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IConfiguration _config;
+        private readonly IMapper _mapper ;
 
-        public AuthService(UserManager<User> userManager, IConfiguration config, RoleManager<IdentityRole> roleManager)
+
+        public AuthService(UserManager<User> userManager, IConfiguration config,
+            RoleManager<IdentityRole> roleManager,IMapper mapper)
         {
+            _roleManager = roleManager;
             _userManager = userManager;
+            _mapper = mapper;
             _config = config;
         }
-
-        //public async Task<IEnumerable<IdentityResult>> RegisterUser(RegisterRequestDto _user)
-        //{
-
-        //    User user = new User();
-
-        //    user.Email = _user.Email;
-        //    user.UserName = _user.UserName;
-        //    var result = await _userManager.CreateAsync(user, _user.Passwrod);
-        //    return result;
-        //}
-
-        public async Task<string> Registeration(RegisterRequestDto newUser)
+        
+        private async Task<bool> IsUserExist(RegisterRequestDto newUser)
         {
-            var userExists = await _userManager.FindByNameAsync(newUser.UserName);
-            if (userExists != null)
-                return ("User already exists");
-
-            User user = new()
-            {
-                Email = newUser.Email,
-                SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = newUser.UserName,
-            };
-            var createUserResult = await _userManager.CreateAsync(user, newUser.Passwrod);
-            if (!createUserResult.Succeeded)
-                return ("User creation failed! Please check user details and try again.");
-
-            if (!await _roleManager.RoleExistsAsync(newUser.Role))
-                await _roleManager.CreateAsync(new IdentityRole(newUser.Role));
-
-            if (await _roleManager.RoleExistsAsync(newUser.Role))
-                await _userManager.AddToRoleAsync(user, newUser.Role);
-
-            return ("User created successfully!");
+            var userExists = await _userManager.FindByEmailAsync(newUser.Email);
+            if (userExists != null) return true;
+             return false;
         }
 
-        public async Task<IActionResult> Login(RegisterRequestDto ApplictionUser)
+        private async Task<User> CreateUser(RegisterRequestDto newUser)
         {
-            var user = await _userManager.FindByEmailAsync(ApplictionUser.UserName);
-            if (user != null && await _userManager.CheckPasswordAsync(user, ApplictionUser.Passwrod))
+            User user = _mapper.Map<User>(newUser);
+            user.UserName = newUser.Email;
+
+            var createUserResult = await _userManager.CreateAsync(user, newUser.Password);
+            if (!createUserResult.Succeeded)
+                return null;
+            return user;
+        }
+
+        private async Task<bool> IsRoleExist(RegisterRequestDto newUser)
+        {
+            if (await _roleManager.RoleExistsAsync(newUser.Role)) return true;
+            return false;
+
+        }
+
+        public async Task<User?> Registration(RegisterRequestDto newUser)
+        {
+            if (await IsUserExist(newUser))
+                return null;
+
+            User user = await CreateUser(newUser);
+            if (user != null) {
+                if (await IsRoleExist(newUser))
+                    await _userManager.AddToRoleAsync(user, newUser.Role);
+                return (user);
+            }
+            return null;
+        }
+
+        public async Task<string> Login(LoginRequestDto applictionUser)
+        {
+            var user = await _userManager.FindByEmailAsync(applictionUser.Email);
+            if (user != null && await _userManager.CheckPasswordAsync(user, applictionUser.Passwrod))
             {
                 var userRoles = await _userManager.GetRolesAsync(user);
                 var token = GenerateTokenString(user, userRoles);
-
-              //  return Ok(token);
+                 return (token);
             }
-            //return token;
+            return string.Empty;
         }
-      
-
-
 
         public string GenerateTokenString(User user, IList<string> userRoles)
         {
             IList<Claim> claims = new List<Claim> {
                 new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
-                };
+            };
 
             foreach (var userRole in userRoles)
             {
@@ -92,7 +91,8 @@ namespace Benaa.Core.Services
             }
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("Jwt:Key").Value));
-            SigningCredentials signinCred = new SigningCredentials(securityKey,SecurityAlgorithms.HmacSha256);
+            SigningCredentials signinCred = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
             JwtSecurityToken securityToken = new JwtSecurityToken(
                 claims: claims,
                 expires: DateTime.Now.AddMinutes(60),
@@ -100,10 +100,12 @@ namespace Benaa.Core.Services
                 audience: _config.GetSection("Jwt:Issuer").Value,
                 signingCredentials: signinCred
                 );
+
             string tokenString = new JwtSecurityTokenHandler().WriteToken(securityToken);
+
             return tokenString;
         }
 
-
+ 
     }
 }

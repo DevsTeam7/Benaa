@@ -1,30 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoMapper;
-using Benaa.Core.Interfaces.IMapper;
+using Benaa.Core.Entities.DTOs;
+using Benaa.Core.Entities.General;
+
 
 namespace Benaa.Core.Mapper
 {
-    public class BaseMapper<TSource, TDestination> : IBaseMapper<TSource, TDestination>
+    public class BaseMapper : Profile
     {
-        private readonly IMapper _mapper;
-
-        public BaseMapper(IMapper mapper)
+        public BaseMapper()
         {
-            _mapper = mapper;
-        }
-
-        public TDestination MapModel(TSource source)
-        {
-            return _mapper.Map<TDestination>(source);
-        }
-
-        public IEnumerable<TDestination> MapList(IEnumerable<TSource> source)
-        {
-            return _mapper.Map<IEnumerable<TDestination>>(source);
+            CreateMap<User, RegisterRequestDto>().ReverseMap();
         }
     }
 }

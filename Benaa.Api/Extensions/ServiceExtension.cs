@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Benaa.Core.Entities.General;
-using Benaa.Core.Interfaces.IMapper;
 using Benaa.Core.Interfaces.IRepositories;
 using Benaa.Core.Interfaces.IServices;
 using Benaa.Core.Mapper;
@@ -15,9 +14,6 @@ namespace Benaa.Api.Extensions
         public static IServiceCollection RegisterService(this IServiceCollection services)
         {
             #region Services
-            //services.AddScoped<ICustomerService, CustomerService>();
-            //services.AddScoped<IProductService, ProductService>();
-            //services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IWalletService, WalletService>();
             services.AddScoped<UserManager<User>>();
@@ -32,36 +28,8 @@ namespace Benaa.Api.Extensions
             services.AddTransient<IPaymentRepositoty, PaymentRepository>();
             services.AddTransient<IReportRepository, ReportRepository>();
             services.AddTransient<ISchedualRepository, SchedualRepository>();
-           
-
             #endregion
 
-            #region Mapper
-            //var configuration = new MapperConfiguration(cfg =>
-            //{
-            //    cfg.CreateMap<Customer, CustomerViewModel>();
-            //    cfg.CreateMap<CustomerViewModel, Customer>();
-
-            //    cfg.CreateMap<Product, ProductViewModel>();
-            //    cfg.CreateMap<ProductViewModel, Product>();
-
-            //    cfg.CreateMap<Order, OrderViewModel>();
-            //    cfg.CreateMap<OrderViewModel, Order>();
-            //});
-
-            //IMapper mapper = configuration.CreateMapper();
-
-            //// Register the IMapperService implementation with your dependency injection container
-            //services.AddSingleton<IBaseMapper<Customer, CustomerViewModel>>(new BaseMapper<Customer, CustomerViewModel>(mapper));
-            //services.AddSingleton<IBaseMapper<CustomerViewModel, Customer>>(new BaseMapper<CustomerViewModel, Customer>(mapper));
-
-            //services.AddSingleton<IBaseMapper<Product, ProductViewModel>>(new BaseMapper<Product, ProductViewModel>(mapper));
-            //services.AddSingleton<IBaseMapper<ProductViewModel, Product>>(new BaseMapper<ProductViewModel, Product>(mapper));
-
-            //services.AddSingleton<IBaseMapper<Order, OrderViewModel>>(new BaseMapper<Order, OrderViewModel>(mapper));
-            //services.AddSingleton<IBaseMapper<OrderViewModel, Order>>(new BaseMapper<OrderViewModel, Order>(mapper));
-
-            #endregion
 
             return services;
         }

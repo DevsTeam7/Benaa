@@ -40,6 +40,14 @@ namespace Benaa.Infrastructure.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<IdentityRole>()
+                .HasData( 
+                new IdentityRole { Name = "Student" },
+                new IdentityRole { Name = "Teacher" },
+                new IdentityRole { Name = "Admin" },
+                new IdentityRole { Name = "Owner"}
+                );
+
         }
     }
 

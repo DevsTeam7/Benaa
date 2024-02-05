@@ -4,6 +4,7 @@ using Benaa.Core.Entities.General;
 using Benaa.Core.Interfaces.IServices;
 using Benaa.Core.Entities.DTOs;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Benaa.Api.Controllers
 {
@@ -13,24 +14,52 @@ namespace Benaa.Api.Controllers
     {
         private readonly IAuthService _authService;
 
-        public AuthController(IAuthService authService) {
+        public AuthController(IAuthService authService)
+        {
             _authService = authService;
         }
         [HttpPost("Register")]
-        public async Task<IActionResult> RegisterUser(RegisterRequestDto user)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Register(RegisterRequestDto newUser)
         {
-            return Ok(await _authService.RegisterUser(user));
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    User user = await _authService.Registration(newUser);
+                    if (user == null) { return BadRequest("Faild to create the user! try again"); }
+                    return Created("", user);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
+            }
+            return BadRequest("Please input all required data");
         }
 
         [HttpPost("Login")]
-        public async Task<string> Login(RegisterRequestDto user)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Login(LoginRequestDto applictionUser)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                if (await _authService.Login(user)) { return _authService.GenerateTokenString(user); }
-       
+                try
+                {
+                    var userExist = await _authService.Login(applictionUser);
+                    if (!string.IsNullOrEmpty(userExist)) return Ok(userExist);
+                    return Unauthorized("The user does not exist");
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
             }
-            return null;
+            return BadRequest("Please input all required data");
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Benaa.Api.Controllers
     public class TestController : ControllerBase
     {
 
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         [HttpGet("Index")]
         public string Index()
         {
