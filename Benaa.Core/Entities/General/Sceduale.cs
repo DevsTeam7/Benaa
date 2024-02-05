@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Benaa.Core.Entities.General
 {
@@ -17,7 +12,7 @@ namespace Benaa.Core.Entities.General
         [DataType(DataType.Time)]
         public TimeSpan TimeStart { get; set; }
         [DataType(DataType.Time)]
-        public TimeSpan TimeEnd { get; set; } 
+        public TimeSpan TimeEnd { get; set; }
 
         [Required]
         [ForeignKey(nameof(Teacher))]

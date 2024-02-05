@@ -1,6 +1,4 @@
 ﻿using Benaa.Core.Interfaces.IServices;
-using Benaa.Core.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Benaa.Api.Controllers
@@ -11,13 +9,14 @@ namespace Benaa.Api.Controllers
     {
         private readonly IWalletService _walletService;
 
-        public WalletController(IWalletService walletService) {
+        public WalletController(IWalletService walletService)
+        {
             _walletService = walletService;
         }
         [HttpGet]
         public string Payment(decimal Amount)
         {
-          return  _walletService.IsPayed(Amount);
+            return _walletService.IsPayed(Amount);
         }
     }
 }

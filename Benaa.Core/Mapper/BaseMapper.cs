@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Benaa.Core.Entities.DTOs;
 using Benaa.Core.Entities.General;
 

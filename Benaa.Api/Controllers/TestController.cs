@@ -1,7 +1,4 @@
-﻿using Benaa.Core.Entities.General;
-using Benaa.Infrastructure.Data;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Benaa.Api.Controllers

@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Benaa.Core.Entities.DTOs;
 using Benaa.Core.Entities.General;
 using Benaa.Core.Interfaces.IServices;
-using Benaa.Core.Entities.DTOs;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Benaa.Api.Controllers
 {

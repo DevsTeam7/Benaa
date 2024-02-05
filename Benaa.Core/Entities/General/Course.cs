@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Benaa.Core.Entities.General
 {
@@ -21,7 +17,7 @@ namespace Benaa.Core.Entities.General
         public decimal Price { get; set; }
         [Required]
         public string VideoUrl { get; set; }
-        [Required]  
+        [Required]
         public string Type { get; set; }
         [Required]
         public string ImageUrl { get; set; }

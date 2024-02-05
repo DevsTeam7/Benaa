@@ -1,17 +1,12 @@
 using Benaa.Api.Extensions;
 using Benaa.Core.Entities.General;
-using Benaa.Core.Interfaces.IServices;
-using Benaa.Core.Services;
+using Benaa.Core.Mapper;
 using Benaa.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using AutoMapper;
-using Benaa.Core.Mapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,11 +21,8 @@ builder.Services.AddAutoMapper(typeof(BaseMapper));
 
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
-    // Email settings
     options.User.RequireUniqueEmail = true;
-   // options.SignIn.RequireConfirmedEmail = true;
 
-    // Password settings
     options.Password.RequireDigit = true;
     options.Password.RequiredLength = 8;
     options.Password.RequireNonAlphanumeric = false;

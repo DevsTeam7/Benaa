@@ -1,11 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Design;
+﻿using Benaa.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Benaa.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore.Design;
 
 namespace Benaa.Infrastructure.Services
 {

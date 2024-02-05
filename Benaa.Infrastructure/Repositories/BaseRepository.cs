@@ -1,13 +1,6 @@
 ﻿using Benaa.Core.Interfaces.IRepositories;
 using Benaa.Infrastructure.Data;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Benaa.Infrastructure.Repositories
 {

@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Benaa.Core.Entities.General;
-
+﻿using Benaa.Core.Entities.General;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace Benaa.Infrastructure.Data
 {
@@ -41,11 +35,11 @@ namespace Benaa.Infrastructure.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<IdentityRole>()
-                .HasData( 
+                .HasData(
                 new IdentityRole { Name = "Student" },
                 new IdentityRole { Name = "Teacher" },
                 new IdentityRole { Name = "Admin" },
-                new IdentityRole { Name = "Owner"}
+                new IdentityRole { Name = "Owner" }
                 );
 
         }

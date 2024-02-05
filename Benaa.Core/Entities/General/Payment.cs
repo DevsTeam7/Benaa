@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Reflection.Metadata;
 
 namespace Benaa.Core.Entities.General
 {
@@ -28,7 +22,7 @@ namespace Benaa.Core.Entities.General
         [Required]
         [ForeignKey(nameof(Student))]
         public string StudentId { get; set; }
-        public virtual  User? Teacher { get; set; }
-        public virtual User? Student { get; set; } 
+        public virtual User? Teacher { get; set; }
+        public virtual User? Student { get; set; }
     }
 }

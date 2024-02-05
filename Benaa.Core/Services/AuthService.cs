@@ -1,13 +1,13 @@
-﻿using Benaa.Core.Entities.General;
-using Microsoft.AspNetCore.Identity;
-using Benaa.Core.Interfaces.IServices;
+﻿using AutoMapper;
 using Benaa.Core.Entities.DTOs;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
+using Benaa.Core.Entities.General;
+using Benaa.Core.Interfaces.IServices;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
-using AutoMapper;
 namespace Benaa.Core.Services
 {
     public class AuthService : IAuthService
@@ -15,23 +15,23 @@ namespace Benaa.Core.Services
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _config;
-        private readonly IMapper _mapper ;
+        private readonly IMapper _mapper;
 
 
         public AuthService(UserManager<User> userManager, IConfiguration config,
-            RoleManager<IdentityRole> roleManager,IMapper mapper)
+            RoleManager<IdentityRole> roleManager, IMapper mapper)
         {
             _roleManager = roleManager;
             _userManager = userManager;
             _mapper = mapper;
             _config = config;
         }
-        
+
         private async Task<bool> IsUserExist(RegisterRequestDto newUser)
         {
             var userExists = await _userManager.FindByEmailAsync(newUser.Email);
             if (userExists != null) return true;
-             return false;
+            return false;
         }
 
         private async Task<User> CreateUser(RegisterRequestDto newUser)
@@ -58,7 +58,8 @@ namespace Benaa.Core.Services
                 return null;
 
             User user = await CreateUser(newUser);
-            if (user != null) {
+            if (user != null)
+            {
                 if (await IsRoleExist(newUser))
                     await _userManager.AddToRoleAsync(user, newUser.Role);
                 return (user);
@@ -73,7 +74,7 @@ namespace Benaa.Core.Services
             {
                 var userRoles = await _userManager.GetRolesAsync(user);
                 var token = GenerateTokenString(user, userRoles);
-                 return (token);
+                return (token);
             }
             return string.Empty;
         }
@@ -105,7 +106,5 @@ namespace Benaa.Core.Services
 
             return tokenString;
         }
-
- 
     }
 }
