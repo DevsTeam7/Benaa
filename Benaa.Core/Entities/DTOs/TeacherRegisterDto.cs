@@ -1,11 +1,13 @@
-﻿
-using Microsoft.AspNetCore.Identity;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Benaa.Core.Entities.General
+namespace Benaa.Core.Entities.DTOs
 {
-    public class User : IdentityUser
+    public class TeacherRegisterDto
     {
-
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? ImageUrl { get; set; }
@@ -26,14 +28,5 @@ namespace Benaa.Core.Entities.General
         public Guid? CertificationId { get; set; }
         public Guid? BankInformationId { get; set; }
 
-
-        public ICollection<Notifaction>? Notifactions { get; }
-        public ICollection<Report>? Reports { get; }
-        public ICollection<Course>? Courses { get; }
-        public ICollection<UserCourses>? UserCourses { get; }
-
-        public virtual Wallet? Wallet { get; set; }
-        public virtual Certification? Certification { get; set; }
-        public virtual BankInformation? BankInformation { get; set; }
     }
 }

@@ -20,15 +20,14 @@ namespace Benaa.Infrastructure.Migrations
                 .HasAnnotation("ProductVersion", "7.0.15")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
+            NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "uuid-ossp");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("Benaa.Core.Entities.General.BankInformation", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<long>("Account_Number")
                         .HasColumnType("bigint");
@@ -49,28 +48,26 @@ namespace Benaa.Infrastructure.Migrations
 
             modelBuilder.Entity("Benaa.Core.Entities.General.Certification", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("I")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("File")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
+                    b.HasKey("I");
 
                     b.ToTable("Certifications");
                 });
 
             modelBuilder.Entity("Benaa.Core.Entities.General.Chat", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("Guid")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Guid"));
 
                     b.Property<string>("ReceiverId")
                         .IsRequired()
@@ -80,7 +77,7 @@ namespace Benaa.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
+                    b.HasKey("Guid");
 
                     b.HasIndex("ReceiverId");
 
@@ -91,11 +88,9 @@ namespace Benaa.Infrastructure.Migrations
 
             modelBuilder.Entity("Benaa.Core.Entities.General.Course", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("ContactUrl")
                         .HasColumnType("text");
@@ -155,14 +150,12 @@ namespace Benaa.Infrastructure.Migrations
 
             modelBuilder.Entity("Benaa.Core.Entities.General.CourseChapter", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CourseId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("CourseId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -180,14 +173,12 @@ namespace Benaa.Infrastructure.Migrations
 
             modelBuilder.Entity("Benaa.Core.Entities.General.CourseLesson", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CourseChapterId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("CourseChapterId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -205,14 +196,15 @@ namespace Benaa.Infrastructure.Migrations
 
             modelBuilder.Entity("Benaa.Core.Entities.General.Messages", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int?>("ChatGuid")
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ChatId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("ChatId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -227,18 +219,16 @@ namespace Benaa.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ChatId");
+                    b.HasIndex("ChatGuid");
 
                     b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("Benaa.Core.Entities.General.MoneyCode", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<long>("Code")
                         .HasColumnType("bigint");
@@ -253,11 +243,9 @@ namespace Benaa.Infrastructure.Migrations
 
             modelBuilder.Entity("Benaa.Core.Entities.General.Notifaction", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -286,11 +274,9 @@ namespace Benaa.Infrastructure.Migrations
 
             modelBuilder.Entity("Benaa.Core.Entities.General.Payment", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<decimal?>("Amount")
                         .HasColumnType("numeric");
@@ -298,8 +284,8 @@ namespace Benaa.Infrastructure.Migrations
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("ItemId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("ItemId")
+                        .HasColumnType("uuid");
 
                     b.Property<bool?>("Status")
                         .HasColumnType("boolean");
@@ -327,14 +313,12 @@ namespace Benaa.Infrastructure.Migrations
 
             modelBuilder.Entity("Benaa.Core.Entities.General.Rate", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CourseId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("CourseId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -357,11 +341,9 @@ namespace Benaa.Infrastructure.Migrations
 
             modelBuilder.Entity("Benaa.Core.Entities.General.Report", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -371,8 +353,8 @@ namespace Benaa.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("TargetId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("TargetId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -391,11 +373,9 @@ namespace Benaa.Infrastructure.Migrations
 
             modelBuilder.Entity("Benaa.Core.Entities.General.Sceduale", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
@@ -430,11 +410,11 @@ namespace Benaa.Infrastructure.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("BankInformationId")
-                        .HasColumnType("integer");
+                    b.Property<Guid?>("BankInformationId")
+                        .HasColumnType("uuid");
 
-                    b.Property<int?>("CertificationId")
-                        .HasColumnType("integer");
+                    b.Property<Guid?>("CertificationId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("City")
                         .HasColumnType("text");
@@ -519,8 +499,8 @@ namespace Benaa.Infrastructure.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
-                    b.Property<int?>("WalletId")
-                        .HasColumnType("integer");
+                    b.Property<Guid?>("WalletId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -545,14 +525,12 @@ namespace Benaa.Infrastructure.Migrations
 
             modelBuilder.Entity("Benaa.Core.Entities.General.UserCourses", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CourseId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("CourseId")
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("IsPurchased")
                         .HasColumnType("boolean");
@@ -572,11 +550,9 @@ namespace Benaa.Infrastructure.Migrations
 
             modelBuilder.Entity("Benaa.Core.Entities.General.Wallet", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<decimal?>("Amount")
                         .HasColumnType("numeric");
@@ -614,22 +590,22 @@ namespace Benaa.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "5bc79cfe-7d09-4522-bc43-27d219f22b16",
+                            Id = "34feed14-05ab-4eb3-8176-d1d22c65bc13",
                             Name = "Student"
                         },
                         new
                         {
-                            Id = "dab7e7ec-84f0-41c1-8286-57a627434ca1",
+                            Id = "4ca878a2-248a-41ed-83c5-da6bca77ccb7",
                             Name = "Teacher"
                         },
                         new
                         {
-                            Id = "f02115ef-1779-4913-8bc3-3f4edc1dd688",
+                            Id = "ef6a6123-ba09-4dbd-a3c7-794cd7af6e65",
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = "c32a4445-9522-4fb0-9532-7c5e3cc69ead",
+                            Id = "b91c5916-d7af-4617-9477-a2aa9f0df273",
                             Name = "Owner"
                         });
                 });
@@ -796,9 +772,7 @@ namespace Benaa.Infrastructure.Migrations
                 {
                     b.HasOne("Benaa.Core.Entities.General.Chat", "Chat")
                         .WithMany("Messages")
-                        .HasForeignKey("ChatId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ChatGuid");
 
                     b.Navigation("Chat");
                 });

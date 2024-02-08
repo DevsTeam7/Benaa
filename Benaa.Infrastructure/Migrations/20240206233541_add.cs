@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -8,11 +9,14 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Benaa.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AddDB : Migration
+    public partial class add : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("Npgsql:PostgresExtension:uuid-ossp", ",,");
+
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -31,8 +35,7 @@ namespace Benaa.Infrastructure.Migrations
                 name: "BankInformations",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     FullName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     BankName = table.Column<string>(type: "text", nullable: false),
                     Account_Number = table.Column<long>(type: "bigint", nullable: false)
@@ -46,21 +49,19 @@ namespace Benaa.Infrastructure.Migrations
                 name: "Certifications",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    I = table.Column<Guid>(type: "uuid", nullable: false),
                     File = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Certifications", x => x.Id);
+                    table.PrimaryKey("PK_Certifications", x => x.I);
                 });
 
             migrationBuilder.CreateTable(
                 name: "MoneyCodes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Code = table.Column<long>(type: "bigint", nullable: false),
                     Status = table.Column<bool>(type: "boolean", nullable: true)
                 },
@@ -73,8 +74,7 @@ namespace Benaa.Infrastructure.Migrations
                 name: "Wallets",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Amount = table.Column<decimal>(type: "numeric", nullable: true)
                 },
                 constraints: table =>
@@ -121,9 +121,9 @@ namespace Benaa.Infrastructure.Migrations
                     IsAgreedToTerms = table.Column<bool>(type: "boolean", nullable: true),
                     IsApproved = table.Column<bool>(type: "boolean", nullable: true),
                     Gender = table.Column<bool>(type: "boolean", nullable: true),
-                    WalletId = table.Column<int>(type: "integer", nullable: true),
-                    CertificationId = table.Column<int>(type: "integer", nullable: true),
-                    BankInformationId = table.Column<int>(type: "integer", nullable: true),
+                    WalletId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CertificationId = table.Column<Guid>(type: "uuid", nullable: true),
+                    BankInformationId = table.Column<Guid>(type: "uuid", nullable: true),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -151,7 +151,7 @@ namespace Benaa.Infrastructure.Migrations
                         name: "FK_AspNetUsers_Certifications_CertificationId",
                         column: x => x.CertificationId,
                         principalTable: "Certifications",
-                        principalColumn: "Id");
+                        principalColumn: "I");
                     table.ForeignKey(
                         name: "FK_AspNetUsers_Wallets_WalletId",
                         column: x => x.WalletId,
@@ -248,14 +248,14 @@ namespace Benaa.Infrastructure.Migrations
                 name: "Chats",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
+                    Guid = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     SenderId = table.Column<string>(type: "text", nullable: false),
                     ReceiverId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Chats", x => x.Id);
+                    table.PrimaryKey("PK_Chats", x => x.Guid);
                     table.ForeignKey(
                         name: "FK_Chats_AspNetUsers_ReceiverId",
                         column: x => x.ReceiverId,
@@ -274,8 +274,7 @@ namespace Benaa.Infrastructure.Migrations
                 name: "Courses",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     Price = table.Column<decimal>(type: "numeric", nullable: false),
@@ -306,8 +305,7 @@ namespace Benaa.Infrastructure.Migrations
                 name: "Notifactions",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Type = table.Column<string>(type: "text", nullable: false),
                     Content = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -329,11 +327,10 @@ namespace Benaa.Infrastructure.Migrations
                 name: "Payments",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Amount = table.Column<decimal>(type: "numeric", nullable: true),
                     Type = table.Column<string>(type: "text", nullable: false),
-                    ItemId = table.Column<int>(type: "integer", nullable: false),
+                    ItemId = table.Column<Guid>(type: "uuid", nullable: false),
                     Status = table.Column<bool>(type: "boolean", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     TeacherId = table.Column<string>(type: "text", nullable: false),
@@ -360,12 +357,11 @@ namespace Benaa.Infrastructure.Migrations
                 name: "Reports",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     Problem = table.Column<string>(type: "text", nullable: false),
                     Type = table.Column<string>(type: "text", nullable: false),
-                    TargetId = table.Column<int>(type: "integer", nullable: false),
+                    TargetId = table.Column<Guid>(type: "uuid", nullable: false),
                     UserId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
@@ -383,8 +379,7 @@ namespace Benaa.Infrastructure.Migrations
                 name: "Sceduales",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     TimeStart = table.Column<TimeSpan>(type: "interval", nullable: false),
                     TimeEnd = table.Column<TimeSpan>(type: "interval", nullable: false),
@@ -411,33 +406,31 @@ namespace Benaa.Infrastructure.Migrations
                 name: "Messages",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Message = table.Column<string>(type: "text", nullable: false),
                     Type = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    ChatId = table.Column<int>(type: "integer", nullable: false)
+                    ChatId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ChatGuid = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Messages", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Messages_Chats_ChatId",
-                        column: x => x.ChatId,
+                        name: "FK_Messages_Chats_ChatGuid",
+                        column: x => x.ChatGuid,
                         principalTable: "Chats",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Guid");
                 });
 
             migrationBuilder.CreateTable(
                 name: "CourseChapters",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    CourseId = table.Column<int>(type: "integer", nullable: false)
+                    CourseId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -454,11 +447,10 @@ namespace Benaa.Infrastructure.Migrations
                 name: "Rates",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Stars = table.Column<float>(type: "real", nullable: false),
                     StudentId = table.Column<string>(type: "text", nullable: false),
-                    CourseId = table.Column<int>(type: "integer", nullable: false),
+                    CourseId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
@@ -482,9 +474,8 @@ namespace Benaa.Infrastructure.Migrations
                 name: "UserCourses",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    CourseId = table.Column<int>(type: "integer", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CourseId = table.Column<Guid>(type: "uuid", nullable: false),
                     StudentId = table.Column<string>(type: "text", nullable: false),
                     IsPurchased = table.Column<bool>(type: "boolean", nullable: false)
                 },
@@ -509,11 +500,10 @@ namespace Benaa.Infrastructure.Migrations
                 name: "CourseLessons",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    CourseChapterId = table.Column<int>(type: "integer", nullable: false)
+                    CourseChapterId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -531,10 +521,10 @@ namespace Benaa.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "5bc79cfe-7d09-4522-bc43-27d219f22b16", null, "Student", null },
-                    { "c32a4445-9522-4fb0-9532-7c5e3cc69ead", null, "Owner", null },
-                    { "dab7e7ec-84f0-41c1-8286-57a627434ca1", null, "Teacher", null },
-                    { "f02115ef-1779-4913-8bc3-3f4edc1dd688", null, "Admin", null }
+                    { "34feed14-05ab-4eb3-8176-d1d22c65bc13", null, "Student", null },
+                    { "4ca878a2-248a-41ed-83c5-da6bca77ccb7", null, "Teacher", null },
+                    { "b91c5916-d7af-4617-9477-a2aa9f0df273", null, "Owner", null },
+                    { "ef6a6123-ba09-4dbd-a3c7-794cd7af6e65", null, "Admin", null }
                 });
 
             migrationBuilder.CreateIndex(
@@ -618,9 +608,9 @@ namespace Benaa.Infrastructure.Migrations
                 column: "TeacherId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Messages_ChatId",
+                name: "IX_Messages_ChatGuid",
                 table: "Messages",
-                column: "ChatId");
+                column: "ChatGuid");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Notifactions_UserId",

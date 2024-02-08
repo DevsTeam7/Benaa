@@ -7,12 +7,12 @@ namespace Benaa.Core.Entities.General
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         [Required]
         public string Name { get; set; }
         public DateTime? CreatedAt { get; set; } = DateTime.Now;
 
-        public int CourseChapterId { get; set; }
+        public Guid CourseChapterId { get; set; }
         public virtual CourseChapter? CourseChapter { get; set; }
     }
 }
