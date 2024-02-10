@@ -29,9 +29,5 @@ namespace Benaa.Api.Controllers
             _context.SaveChanges();
         }
 
-        [HttpPut("MyMethod1")]
-        public void Pu1t1() { }
-        [HttpPut("MyMethod2")]
-        public void Put2() { }
     }
 }
