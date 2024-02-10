@@ -7,7 +7,7 @@ namespace Benaa.Core.Entities.General
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid I { get; set; }
+        public Guid Id { get; set; }
         [Required]
         public string File { get; set; }
 

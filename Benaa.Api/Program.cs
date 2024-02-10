@@ -86,6 +86,7 @@ builder.Services.AddSwaggerGen();
 
 
 var app = builder.Build();
+app.MapGet("Yaz", () => "HI");
 
 if (app.Environment.IsDevelopment())
 {

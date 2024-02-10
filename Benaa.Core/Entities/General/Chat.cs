@@ -8,7 +8,7 @@ namespace Benaa.Core.Entities.General
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Guid { get; set; }
+        public Guid Id { get; set; }
         [ForeignKey(nameof(Sender))]
         public string SenderId { get; set; }
         [ForeignKey(nameof(Receiver))]
