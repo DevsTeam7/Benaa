@@ -28,12 +28,17 @@ namespace Benaa.Core.Services
             Random rnd = new Random();
             List<string> list = await _moneyCodeRepository.GetAllCode();
             List<string> newlist = new List<string>();
+            string rand = "";
+
 
             int counter = 0;
             while (counter < number)
             {
-
-                string rand = rnd.Next(0, 9).ToString() + rnd.Next(0, 9).ToString() + rnd.Next(0, 9).ToString() + rnd.Next(0, 9).ToString() + rnd.Next(0, 9).ToString() + rnd.Next(0, 9).ToString() + rnd.Next(0, 9).ToString() + rnd.Next(0, 9).ToString() + rnd.Next(0, 9).ToString();
+ 
+                for(int i=0;i<9;i++)    
+                {
+                     rand = rand+ rnd.Next(0, 9).ToString();
+                }
                 if (!list.Contains(rand) && !newlist.Contains(rand))
                 {
                     MoneyCode mc = new MoneyCode();
