@@ -5,7 +5,7 @@ namespace Benaa.Core.Entities.General
 {
     public class MoneyCode
     {
-       //[Key]
+       [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         [Required]
