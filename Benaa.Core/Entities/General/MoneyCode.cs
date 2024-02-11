@@ -9,7 +9,9 @@ namespace Benaa.Core.Entities.General
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [Required]
-        public long Code { get; set; }
+        public string Code { get; set; }
         public bool? Status { get; set; } = false;
+        
+        public int Amount { get; set; }
     }
 }

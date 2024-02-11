@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -8,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Benaa.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AddDB : Migration
+    public partial class addBD : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -61,8 +62,9 @@ namespace Benaa.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Code = table.Column<long>(type: "bigint", nullable: false),
-                    Status = table.Column<bool>(type: "boolean", nullable: true)
+                    Code = table.Column<string>(type: "text", nullable: false),
+                    Status = table.Column<bool>(type: "boolean", nullable: true),
+                    Amount = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -531,10 +533,10 @@ namespace Benaa.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "5bc79cfe-7d09-4522-bc43-27d219f22b16", null, "Student", null },
-                    { "c32a4445-9522-4fb0-9532-7c5e3cc69ead", null, "Owner", null },
-                    { "dab7e7ec-84f0-41c1-8286-57a627434ca1", null, "Teacher", null },
-                    { "f02115ef-1779-4913-8bc3-3f4edc1dd688", null, "Admin", null }
+                    { "23ad16b8-19db-4f5f-b8f2-f1053ea93f00", null, "Teacher", null },
+                    { "567d66e4-a8c8-4fc0-a3d7-21fb744a3f97", null, "Student", null },
+                    { "60d32e94-b6fa-4724-bdbf-1c29daab12e6", null, "Admin", null },
+                    { "d5ba9110-aad6-4986-90fa-bb536da79f37", null, "Owner", null }
                 });
 
             migrationBuilder.CreateIndex(
