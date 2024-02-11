@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 namespace Benaa.Infrastructure.Data
 {
@@ -33,7 +34,6 @@ namespace Benaa.Infrastructure.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
             modelBuilder.Entity<IdentityRole>()
                 .HasData(
                 new IdentityRole { Name = "Student" },
@@ -41,10 +41,8 @@ namespace Benaa.Infrastructure.Data
                 new IdentityRole { Name = "Admin" },
                 new IdentityRole { Name = "Owner" }
                 );
-
         }
     }
-
 }
 
 

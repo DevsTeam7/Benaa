@@ -7,7 +7,7 @@ namespace Benaa.Core.Entities.General
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         [Required]
         public string Message { get; set; }
         [Required]
@@ -15,7 +15,7 @@ namespace Benaa.Core.Entities.General
         public DateTime? CreatedAt { get; set; } = DateTime.Now;
 
         [Required]
-        public int ChatId { get; set; }
+        public Guid ChatId { get; set; }
         public virtual Chat? Chat { get; set; }
     }
 }

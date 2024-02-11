@@ -7,7 +7,7 @@ namespace Benaa.Core.Entities.General
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public DateTime Date { get; set; } = DateTime.Today;
         [DataType(DataType.Time)]
         public TimeSpan TimeStart { get; set; }

@@ -5,9 +5,9 @@ namespace Benaa.Core.Entities.General
 {
     public class MoneyCode
     {
-        [Key]
+       [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         [Required]
         public long Code { get; set; }
         public bool? Status { get; set; } = false;

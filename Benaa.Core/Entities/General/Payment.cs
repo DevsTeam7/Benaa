@@ -7,12 +7,12 @@ namespace Benaa.Core.Entities.General
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public decimal? Amount { get; set; } = 0;
         [Required]
         public string Type { get; set; }
         [Required]
-        public int ItemId { get; set; }
+        public Guid ItemId { get; set; }
         public bool? Status { get; set; } = false;
         public DateTime? CreatedAt { get; set; } = DateTime.Now;
 

@@ -7,7 +7,7 @@ namespace Benaa.Core.Entities.General
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         [Required]
         public string Description { get; set; }
         [Required]
@@ -15,7 +15,7 @@ namespace Benaa.Core.Entities.General
         [Required]
         public string Type { get; set; }
         [Required]
-        public int TargetId { get; set; }
+        public Guid TargetId { get; set; }
         [Required]
         public string UserId { get; set; }
         public virtual User? User { get; set; }
