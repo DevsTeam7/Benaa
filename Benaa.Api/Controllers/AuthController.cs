@@ -1,6 +1,8 @@
 ﻿using Benaa.Core.Entities.DTOs;
 using Benaa.Core.Entities.General;
 using Benaa.Core.Interfaces.IServices;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Benaa.Api.Controllers
@@ -10,10 +12,13 @@ namespace Benaa.Api.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly UserManager<User> _userManager;
 
-        public AuthController(IAuthService authService)
+        public AuthController(IAuthService authService, UserManager<User> userManager)
         {
             _authService = authService;
+            _userManager = userManager;
+         
         }
         [HttpPost("Register")]
        
@@ -22,6 +27,7 @@ namespace Benaa.Api.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Register(RegisterRequestDto newUser)
         {
+
             if (ModelState.IsValid)
             {
                 try
@@ -50,7 +56,8 @@ namespace Benaa.Api.Controllers
                 {
                     var userExist = await _authService.Login(applictionUser);
                     if (!string.IsNullOrEmpty(userExist)) return Ok(userExist);
-                    return Unauthorized("The user does not exist");
+                    //TODO: Check if the user exist and the password is incorrect
+                    return Unauthorized("The email or password is incorrect");
                 }
                 catch (Exception ex)
                 {
@@ -58,6 +65,17 @@ namespace Benaa.Api.Controllers
                 }
             }
             return BadRequest("Please input all required data");
+        }
+
+        [HttpGet("GetCurrentUser")]
+        public string GetCurrentUser()
+        {
+            if (User.Identity!.IsAuthenticated)
+            {
+                var userId = _userManager.GetUserId(HttpContext.User);
+                return userId!;
+            }
+            return "the user is not authenticated";
         }
     }
 }
