@@ -14,6 +14,7 @@ namespace Benaa.Api.Extensions
             #region Services
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IWalletService, WalletService>();
+            services.AddScoped<IScedualeService, ScedualeService>();
             services.AddScoped<UserManager<User>>();
 
             #endregion
