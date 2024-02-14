@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Benaa.Infrastructure.Hubs
 {
@@ -13,12 +9,13 @@ namespace Benaa.Infrastructure.Hubs
         public override async Task OnConnectedAsync()
         {
             Debug.WriteLine($"[Benaa's WebSocket System] Connected -> ${Context.ConnectionId}, The user is: {Context.User.Identity.IsAuthenticated}");
-            await Groups.AddToGroupAsync(Context.ConnectionId, "Yazed");
+           await Groups.AddToGroupAsync(Context.ConnectionId, "yaz");
         }
         public async Task SendMessage(string message)
         {
             Debug.WriteLine(message);
-            await Clients.OthersInGroup("Yazed").SendAsync("ReciveMessage", message);
+           // await Clients.OthersInGroup
+            await Clients.OthersInGroup("yaz").SendAsync("ReciveMessage", message);
 
         }
 

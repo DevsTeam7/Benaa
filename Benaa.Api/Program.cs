@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using Benaa.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(optins =>
    builder.Configuration.GetSection("ConnectionStrings:Defult").Value
 ));
 
+builder.Services.AddInfrastructure();
 //adding SignalR
 builder.Services.AddSignalR().AddJsonProtocol();
 //adding the mapper
@@ -106,6 +108,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.MapHub<ChatHub>("/chathub");
+app.AddHubs();
 
 app.Run();
