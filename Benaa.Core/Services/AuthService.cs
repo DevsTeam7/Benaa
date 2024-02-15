@@ -96,7 +96,7 @@ namespace Benaa.Core.Services
 
             JwtSecurityToken securityToken = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(60),
+                expires: DateTime.Now.AddDays(3),
                 issuer: _config.GetSection("Jwt:Audience").Value,
                 audience: _config.GetSection("Jwt:Issuer").Value,
                 signingCredentials: signinCred

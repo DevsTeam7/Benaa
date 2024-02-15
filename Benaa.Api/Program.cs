@@ -69,7 +69,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.RegisterService();
 
 builder.Services.AddEndpointsApiExplorer();
-//adding authentcation bearer token to swagger
+//adding text filed to enter the bearer token to swagger for authentcating the user identity
 builder.Services.AddSwaggerGen(c => {
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {

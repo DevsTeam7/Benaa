@@ -15,7 +15,7 @@ namespace Benaa.Infrastructure.Extensions
             {
                 options.UseMicrosoftDependencyInjectionJobFactory();
 
-
+                //Q:How to add job for every chat and make it start in a specfiec time and day
                 var jobkey = JobKey.Create(nameof(ScheduleBackgroundJob));
                 options
                 .AddJob<ScheduleBackgroundJob>(jobkey)
@@ -41,14 +41,5 @@ namespace Benaa.Infrastructure.Extensions
             app.MapHub<ChatHub>("/chathub");
         }
 
-        public static DateTimeOffset? GetTimeOffset()
-        {
-            List<DateTimeOffset> hours = new List<DateTimeOffset> { };
-            for (int i = 0; i < hours.Count; i++)
-            {
-                return hours[i].;
-            }
-            return null;
-        }
     }
 }

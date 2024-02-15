@@ -1,4 +1,5 @@
-﻿using Benaa.Infrastructure.Data;
+﻿using Benaa.Core.Entities.General;
+using Benaa.Infrastructure.Data;
 using Microsoft.Extensions.Logging;
 using Quartz;
 
@@ -17,7 +18,14 @@ namespace Benaa.Infrastructure.Services
         }
         public Task Execute(IJobExecutionContext context)
         {
-            //_dbContext.Sceduales.;
+          //List<Sceduale> sceduales = _dbContext.Sceduales.ToList();
+          //  for (int i = 0; i < sceduales.Count(); i++)
+          //  {
+          //      if (sceduales[i].TimeStart == DateTime.Now)
+          //      {
+
+          //      }
+          //  }
             _logger.LogInformation("{UtcNow}", DateTime.UtcNow);
             return Task.CompletedTask;
         }
