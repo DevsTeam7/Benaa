@@ -12,6 +12,8 @@ namespace Benaa.Core.Mapper
             CreateMap<User, RegisterRequestDto>().ReverseMap();
             CreateMap<Sceduale, SchedualDetailsDto>().ReverseMap();
             CreateMap<SchedualDto, Sceduale>();
+            CreateMap<SchedualDetailsDto, Sceduale>();
+
         }
     }
 }

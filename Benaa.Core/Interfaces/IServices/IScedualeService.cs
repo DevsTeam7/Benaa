@@ -12,10 +12,11 @@ namespace Benaa.Core.Interfaces.IServices
     public interface IScedualeService
     { 
         Task<IEnumerable<Sceduale>> GetSchedual();
-        Task<Sceduale> AddSchedual(SchedualDto sceduale);
+        //Task<Sceduale> AddSchedual(SchedualDto sceduale);
+        void AddSchedualList(List<Sceduale> sc);
         Task Appointment(SchedualDetailsDto sc);
-        Task<ActionResult<Sceduale>> GetById(int id);
-         Task UpdateSceduale(SchedualDetailsDto sc);
-         Sceduale Delete(Sceduale movie);
+        Task<ActionResult<Sceduale>> GetById(Guid id);
+        Task UpdateSceduale(SchedualDetailsDto sc);
+         Task Delete(Guid id);
     }
 }

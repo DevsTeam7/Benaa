@@ -34,51 +34,58 @@ namespace Benaa.Core.Services
             return await _schedualRepository.GetAll();
         }
 
-        public async Task<Sceduale> AddSchedual(SchedualDto sc)
+        public void AddSchedualList(List<Sceduale> sc)
         {
-            var sceduale = _mapper.Map<Sceduale>(sc);
-
-            await _schedualRepository.Create(sceduale);           
-
-            return sceduale;
+             _schedualRepository.CreateRange(sc);           
         }
+
+        //public async Task<Sceduale> AddSchedual(SchedualDto sc)
+        //{
+        //    var sceduale = _mapper.Map<Sceduale>(sc);
+
+        //    await _schedualRepository.Create(sceduale);
+
+        //    return sceduale;
+        //}
+
 
         public async Task Appointment(SchedualDetailsDto sc)
         {
-            var user = await _schedualRepository.GetById(sc.Id);
+            //var user = await _schedualRepository.GetById(sc.Id);
 
-            if (user.Date == sc.Date && user.TimeStart == sc.TimeStart && user.TimeEnd == sc.TimeEnd && user.StudentId == null)
-            
-                user.TeacherId = sc.TeacherId;
-                user.StudentId = sc.StudentId;
-                user.Date = sc.Date;
-                user.TimeStart = sc.TimeStart;
-                user.TimeEnd = sc.TimeEnd;
+            Sceduale model = _mapper.Map<Sceduale>(sc);
+             //if (model.StudentId == null)
+
+            //user.TeacherId = sc.TeacherId;
+            //user.StudentId = sc.StudentId;
+            //user.Date = sc.Date;
+            //user.TimeStart = sc.TimeStart;
+            //user.TimeEnd = sc.TimeEnd;
             //Sceduale model = _mapper.Map<Sceduale>(sc);
-               await _schedualRepository.Update(user);
+            await _schedualRepository.Update(model);
             
         }
 
 
-        public async Task<ActionResult<Sceduale>> GetById(int id)
+        public async Task<ActionResult<Sceduale>> GetById(Guid id)
         {
             return await _schedualRepository.GetById(id);
         }
-        public Sceduale Delete(Sceduale sceduale)
+        public async Task Delete(Guid id)
         {
-            _schedualRepository.Delete(sceduale);
+            var model = await _schedualRepository.GetById(id);
+            _schedualRepository.Delete(model);
   
-            return sceduale;
         }
 
         public async Task UpdateSceduale(SchedualDetailsDto sc)
         {
             //var sce = await _schedualRepository.GetById(sc.Id);
-            
+
             Sceduale model = _mapper.Map<Sceduale>(sc);
 
             //sce.TeacherId = sc.TeacherId;
-            //sce.StudentId= sc.StudentId;
+            //sce.StudentId = sc.StudentId;
             //sce.Date = sc.Date;
             //sce.TimeStart = sc.TimeStart;
             //sce.TimeEnd = sc.TimeEnd;
@@ -86,6 +93,5 @@ namespace Benaa.Core.Services
             await _schedualRepository.Update(model);
         }
 
- 
     }
 }

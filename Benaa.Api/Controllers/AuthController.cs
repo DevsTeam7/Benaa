@@ -1,7 +1,9 @@
 ﻿using Benaa.Core.Entities.DTOs;
 using Benaa.Core.Entities.General;
 using Benaa.Core.Interfaces.IServices;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic;
 
 namespace Benaa.Api.Controllers
 {
@@ -10,10 +12,11 @@ namespace Benaa.Api.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
-
-        public AuthController(IAuthService authService)
+        private readonly UserManager<User> _userManager;
+        public AuthController(IAuthService authService, UserManager<User> userManager)
         {
             _authService = authService;
+            _userManager = userManager;
         }
         [HttpPost("Register")]
        
@@ -22,6 +25,7 @@ namespace Benaa.Api.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Register(RegisterRequestDto newUser)
         {
+            //var user = _userManager.GetUserId(HttpContext.User);
             if (ModelState.IsValid)
             {
                 try
@@ -29,7 +33,7 @@ namespace Benaa.Api.Controllers
                     User user = await _authService.Registration(newUser);
                     if (user == null) { return BadRequest("Faild to create the user! try again"); }
                     return Created("", user);
-                }
+                 }
                 catch (Exception ex)
                 {
                     return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);

@@ -10,8 +10,10 @@ namespace Benaa.Infrastructure.Repositories
 
         public SchedualRepository(ApplicationDbContext dbContext) : base(dbContext)
         {
-          }
+            _dbContext = dbContext;
+        }
 
       
+
     }
 }

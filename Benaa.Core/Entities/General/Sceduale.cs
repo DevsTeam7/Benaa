@@ -13,6 +13,8 @@ namespace Benaa.Core.Entities.General
         public TimeSpan TimeStart { get; set; }
         [DataType(DataType.Time)]
         public TimeSpan TimeEnd { get; set; }
+        public decimal? Price { get; set; } = 0;
+
 
         [Required]
         [ForeignKey(nameof(Teacher))]

@@ -9,13 +9,14 @@ namespace Benaa.Core.Entities.DTOs
 {
     public class SchedualDetailsDto
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public DateTime Date { get; set; } = DateTime.Today;
         [DataType(DataType.Time)]
         public TimeSpan TimeStart { get; set; }
         [DataType(DataType.Time)]
         public TimeSpan TimeEnd { get; set; }
-        [Required]
+        public decimal? Price { get; set; } = 0;
+
         public string TeacherId { get; set; }
         public string? StudentId { get; set; }
     }

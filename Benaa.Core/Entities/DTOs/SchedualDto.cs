@@ -15,6 +15,8 @@ namespace Benaa.Core.Entities.DTOs
         public TimeSpan TimeStart { get; set; }
         [DataType(DataType.Time)]
         public TimeSpan TimeEnd { get; set; }
+        public decimal? Price { get; set; } = 0;
+
         [Required]
         public string TeacherId { get; set; }
         public string? StudentId { get; set; }
