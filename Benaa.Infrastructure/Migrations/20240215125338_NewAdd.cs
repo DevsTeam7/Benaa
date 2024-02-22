@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Benaa.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class addDB : Migration
+    public partial class NewAdd : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -73,7 +73,7 @@ namespace Benaa.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Amount = table.Column<decimal>(type: "numeric", nullable: true)
+                    Amount = table.Column<decimal>(type: "numeric", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -406,7 +406,7 @@ namespace Benaa.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Message = table.Column<string>(type: "text", nullable: false),
                     Type = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    SendAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     ChatId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
@@ -518,10 +518,10 @@ namespace Benaa.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "1278ff28-ff54-4e63-82d4-c17fe5731662", null, "Teacher", null },
-                    { "233677b8-f6de-48bc-9720-7888df5adae7", null, "Owner", null },
-                    { "4a57ad1b-6d18-41e4-b355-662c5e42b4c3", null, "Admin", null },
-                    { "9ac59f8e-cd12-4007-a476-1f8fadb2597b", null, "Student", null }
+                    { "01cc35e4-c45c-4686-b7ad-2284d183e116", null, "Admin", null },
+                    { "156bcb03-a12c-4c28-a131-65b191c1663f", null, "Teacher", null },
+                    { "a5450dac-2eae-44d2-83be-56ab29eb39bd", null, "Owner", null },
+                    { "f664c562-cf0a-4f83-8fc9-26a3e970c5fc", null, "Student", null }
                 });
 
             migrationBuilder.CreateIndex(

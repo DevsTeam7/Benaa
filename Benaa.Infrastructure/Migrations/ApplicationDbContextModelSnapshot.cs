@@ -200,12 +200,12 @@ namespace Benaa.Infrastructure.Migrations
                     b.Property<Guid>("ChatId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<DateTimeOffset?>("SendAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -552,7 +552,7 @@ namespace Benaa.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<decimal?>("Amount")
+                    b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
                     b.HasKey("Id");
@@ -588,22 +588,22 @@ namespace Benaa.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "9ac59f8e-cd12-4007-a476-1f8fadb2597b",
+                            Id = "f664c562-cf0a-4f83-8fc9-26a3e970c5fc",
                             Name = "Student"
                         },
                         new
                         {
-                            Id = "1278ff28-ff54-4e63-82d4-c17fe5731662",
+                            Id = "156bcb03-a12c-4c28-a131-65b191c1663f",
                             Name = "Teacher"
                         },
                         new
                         {
-                            Id = "4a57ad1b-6d18-41e4-b355-662c5e42b4c3",
+                            Id = "01cc35e4-c45c-4686-b7ad-2284d183e116",
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = "233677b8-f6de-48bc-9720-7888df5adae7",
+                            Id = "a5450dac-2eae-44d2-83be-56ab29eb39bd",
                             Name = "Owner"
                         });
                 });
