@@ -6,5 +6,6 @@ namespace Benaa.Api.Controllers
     [ApiController]
     public class ReportController : ControllerBase
     {
+
     }
 }
