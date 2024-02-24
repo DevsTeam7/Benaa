@@ -38,7 +38,7 @@ namespace Benaa.Core.Services
         {
             User user = _mapper.Map<User>(newUser);
             user.UserName = newUser.Email;
-
+           
             var createUserResult = await _userManager.CreateAsync(user, newUser.Password);
             if (!createUserResult.Succeeded)
                 return null;

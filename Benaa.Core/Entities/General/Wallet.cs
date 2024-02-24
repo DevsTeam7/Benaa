@@ -7,8 +7,8 @@ namespace Benaa.Core.Entities.General
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Id { get; set; }
-        public decimal? Amount { get; set; } = 0;
+        public int Id { get; set; }
+        public decimal Amount { get; set; } = 0;
 
         public virtual User? Student { get; set; }
     }

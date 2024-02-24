@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Benaa.Infrastructure.Data;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Benaa.Core.Interfaces.IRepositories;
+using Microsoft.AspNetCore.Identity;
 
 namespace Benaa.Api.Controllers
 {
@@ -17,6 +18,9 @@ namespace Benaa.Api.Controllers
         private readonly IScedualeService _sc;
         private readonly ApplicationDbContext _context;
 
+        private static IWalletService walletService;
+        private static UserManager<User> userManager;
+        WalletController wallet = new WalletController(walletService, userManager);
 
 
         public SchedualeController(IScedualeService sc, ApplicationDbContext context)
@@ -133,8 +137,24 @@ namespace Benaa.Api.Controllers
                     var Isnull = await _context.Sceduales.AnyAsync(x => (x.StudentId == null) && (x.Date == sc.Date) && (x.TimeStart == sc.TimeStart));
                     if (Isnull)
                     {
-                        await _sc.Appointment(sc);   
-                        return Ok();
+
+                        //studentID
+                        //price
+                        //itemID
+                        //type
+
+                        //bool R = wallet.CheckWallet(studentID, price);
+                        //if (R == true)
+                        //{
+                        //    await _sc.Appointment(sc);
+                        //    await wallet.Payment(itemID, type, price);
+                        //    return Ok();
+                        //}
+                        //return BadRequest("no money in wallet");
+
+
+
+
                     }
                     return BadRequest("Is Booked");
                 }

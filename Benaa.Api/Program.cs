@@ -2,10 +2,12 @@ using Benaa.Api.Extensions;
 using Benaa.Core.Entities.General;
 using Benaa.Core.Mapper;
 using Benaa.Infrastructure.Data;
+using Benaa.Infrastructure.Hubs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,9 +18,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(optins =>
    builder.Configuration.GetSection("ConnectionStrings:Defult").Value
 ));
 
+//adding SignalR
+builder.Services.AddSignalR().AddJsonProtocol();
+//adding the mapper
 builder.Services.AddAutoMapper(typeof(BaseMapper));
-
-
+//adding th identuty
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
     options.User.RequireUniqueEmail = true;
@@ -33,28 +37,9 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-//builder.Services.AddAuthentication(optins =>
-//{
-//    optins.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-//    optins.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-//}).AddJwtBearer(optins =>
-//{
-//    optins.RequireHttpsMetadata = false;
-//    optins.SaveToken = true;
-//    optins.TokenValidationParameters = new TokenValidationParameters()
-//    {
-//        ValidateIssuer = false,
-//        ValidateAudience = false,
-//        ValidateIssuerSigningKey = true,
-
-//        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes
-//       (builder.Configuration["Jwt:Key"]))
-//    };
-//});
-
 // Configure JWT authentication
 var jwtSettings = builder.Configuration.GetSection("Jwt");
-var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]);
+var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]!);
 
 builder.Services.AddAuthentication(options =>
 {
@@ -82,7 +67,29 @@ builder.Services.AddAuthentication(options =>
 builder.Services.RegisterService();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+//adding authentcation bearer token to swagger
+builder.Services.AddSwaggerGen(c => {
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+        {
+            new OpenApiSecurityScheme {
+                Reference = new OpenApiReference {
+                    Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
 
 
 var app = builder.Build();
@@ -99,5 +106,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<ChatHub>("/chathub");
 
 app.Run();

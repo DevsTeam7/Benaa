@@ -3,6 +3,7 @@ using System;
 using Benaa.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Benaa.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240215125338_NewAdd")]
+    partial class NewAdd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -200,9 +203,6 @@ namespace Benaa.Infrastructure.Migrations
                     b.Property<Guid>("ChatId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("text");
@@ -380,9 +380,6 @@ namespace Benaa.Infrastructure.Migrations
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<decimal?>("Price")
-                        .HasColumnType("numeric");
 
                     b.Property<string>("StudentId")
                         .HasColumnType("text");
