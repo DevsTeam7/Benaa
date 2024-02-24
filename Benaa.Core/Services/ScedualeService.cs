@@ -14,6 +14,11 @@ using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Microsoft.VisualBasic;
 using AutoMapper;
+using Benaa.Core.Entities.General;
+using Benaa.Core.Interfaces.IRepositories;
+using Benaa.Core.Interfaces.IServices;
+using Microsoft.AspNetCore.Mvc;
+using Benaa.Core.Entities.DTOs;
 
 namespace Benaa.Core.Services
 {
@@ -36,7 +41,7 @@ namespace Benaa.Core.Services
 
         public void AddSchedualList(List<Sceduale> sc)
         {
-             _schedualRepository.CreateRange(sc);           
+            _schedualRepository.CreateRange(sc);
         }
 
         //public async Task<Sceduale> AddSchedual(SchedualDto sc)
@@ -54,7 +59,7 @@ namespace Benaa.Core.Services
             //var user = await _schedualRepository.GetById(sc.Id);
 
             Sceduale model = _mapper.Map<Sceduale>(sc);
-             //if (model.StudentId == null)
+            //if (model.StudentId == null)
 
             //user.TeacherId = sc.TeacherId;
             //user.StudentId = sc.StudentId;
@@ -63,7 +68,7 @@ namespace Benaa.Core.Services
             //user.TimeEnd = sc.TimeEnd;
             //Sceduale model = _mapper.Map<Sceduale>(sc);
             await _schedualRepository.Update(model);
-            
+
         }
 
 
@@ -75,7 +80,7 @@ namespace Benaa.Core.Services
         {
             var model = await _schedualRepository.GetById(id);
             _schedualRepository.Delete(model);
-  
+
         }
 
         public async Task UpdateSceduale(SchedualDetailsDto sc)

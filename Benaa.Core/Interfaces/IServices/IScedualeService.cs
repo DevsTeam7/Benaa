@@ -9,14 +9,16 @@ using System.Threading.Tasks;
 
 namespace Benaa.Core.Interfaces.IServices
 {
+
     public interface IScedualeService
-    { 
+    {
         Task<IEnumerable<Sceduale>> GetSchedual();
         //Task<Sceduale> AddSchedual(SchedualDto sceduale);
         void AddSchedualList(List<Sceduale> sc);
         Task Appointment(SchedualDetailsDto sc);
         Task<ActionResult<Sceduale>> GetById(Guid id);
         Task UpdateSceduale(SchedualDetailsDto sc);
-         Task Delete(Guid id);
+        Task Delete(Guid id);
     }
+
 }

@@ -32,8 +32,6 @@ namespace Benaa.Api.Controllers
             return "the user is not authenticated";
         }
 
-        
-
 
         [HttpPost("AddWallet")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -47,23 +45,23 @@ namespace Benaa.Api.Controllers
                 ui = GetCurrentUser();
                 return Ok(await _walletService.ChargeWallet(ui, code));
             }
-              
+
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-            
+
         }
 
 
         [HttpPost("CheckWallet")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CheckWallet(string u,int price)
+        public async Task<IActionResult> CheckWallet(string u, decimal price)
         {
             try
-            {             
-                return Ok(await _walletService.Check( u,  price));
+            {
+                return Ok(await _walletService.Check(u, price));
             }
             catch (Exception ex)
             {

@@ -5,6 +5,7 @@ namespace Benaa.Core.Entities.General
 {
     public class Sceduale
     {
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
@@ -23,5 +24,6 @@ namespace Benaa.Core.Entities.General
         public string? StudentId { get; set; }
         public virtual User Teacher { get; set; }
         public virtual User? Student { get; set; }
+
     }
 }

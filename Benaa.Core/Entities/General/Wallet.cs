@@ -7,9 +7,10 @@ namespace Benaa.Core.Entities.General
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-        public decimal Amount { get; set; } = 0;
-
+        public Guid Id { get; set; }
+        public decimal? Amount { get; set; } = 0;
+        [ForeignKey(nameof(Student))]
+        public string? StudentId { get; set; }
         public virtual User? Student { get; set; }
     }
 }
