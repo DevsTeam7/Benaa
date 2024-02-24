@@ -5,7 +5,6 @@ namespace Benaa.Core.Entities.General
 {
     public class Sceduale
     {
-        private Wallet wallet;
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -24,14 +23,5 @@ namespace Benaa.Core.Entities.General
         public virtual User? Teacher { get; set; }
         public virtual User? Student { get; set; }
 
-        public void SetWallet(Wallet wallet)
-        {
-            this.wallet = wallet;
-        }
-        //public bool SendRequest()
-        //{
-        //    decimal price = 100;
-        //    return wallet.CheckWallet(price, id);
-        //}
     }
 }

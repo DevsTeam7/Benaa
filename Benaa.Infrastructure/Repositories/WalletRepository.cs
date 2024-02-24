@@ -25,12 +25,11 @@ namespace Benaa.Infrastructure.Repositories
 
         public async Task<decimal> AddAmountCode(string ui, int amount)
         {
-            var user= await _dbContext.Users.FirstOrDefaultAsync(s => s.Id == ui);
+            var user = await _dbContext.Users.FirstOrDefaultAsync(s => s.Id == ui);
 
 
             if (user.Wallet == null)
             {
-
                 user.Wallet = new Wallet();
                 await Create(user.Wallet);
             }
@@ -39,19 +38,18 @@ namespace Benaa.Infrastructure.Repositories
             var wallet = await _dbContext.Wallets.FirstOrDefaultAsync(s => s.Id.ToString() == wi);
             wallet.Amount += amount;
             await _dbContext.SaveChangesAsync();
-            decimal am = wallet.Amount;
+            decimal am = (decimal)wallet.Amount;
             return am;
-        
         }
 
-        public async Task <decimal> check(string u)
+        public async Task<decimal> check(string u)
         {
             var user = await _dbContext.Users.FirstOrDefaultAsync(s => s.Id == u);
             if (user.WalletId == null) { return 0; }
-            string w=user.WalletId.ToString(); 
-            var wallet= await _dbContext.Wallets.FirstOrDefaultAsync(s => s.Id.ToString() == w);
-            decimal amount = wallet.Amount;
-            return amount;  
+            string w = user.WalletId.ToString();
+            var wallet = await _dbContext.Wallets.FirstOrDefaultAsync(s => s.Id.ToString() == w);
+            decimal amount = (decimal)wallet.Amount;
+            return amount;
         }
 
     }

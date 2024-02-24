@@ -2,8 +2,10 @@
 using Benaa.Core.Entities.General;
 using Benaa.Core.Interfaces.IServices;
 using Benaa.Infrastructure.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration.UserSecrets;
 
 namespace Benaa.Api.Controllers
 {
@@ -11,17 +13,36 @@ namespace Benaa.Api.Controllers
     [ApiController]
     public class SchedualeController : ControllerBase
     {
+        WalletController walletController;
         private readonly IScedualeService _sc;
         private readonly ApplicationDbContext _context;
- 
+        private readonly UserManager<User> _userManager;
+        private static string ui;
 
-        public SchedualeController(IScedualeService sc, ApplicationDbContext context)
+        public SchedualeController(IScedualeService sc, ApplicationDbContext context, UserManager<User> userManager)
         {
             _sc = sc;
             _context = context;
-         }
+            _userManager = userManager;
+        }
+
+        [HttpGet("GetCurrentUser")]
+        public string GetCurrentUser()
+        {
+            if (User.Identity!.IsAuthenticated)
+            {
+                var userId = _userManager.GetUserId(HttpContext.User);
+                //ui = userId!;
+                return userId!;
+            }
+            return "the user is not authenticated";
+        }
+
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Get()
         {
 
@@ -40,6 +61,9 @@ namespace Benaa.Api.Controllers
             return BadRequest();
         }
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById(Guid id)
         {
             if (ModelState.IsValid)
@@ -58,14 +82,19 @@ namespace Benaa.Api.Controllers
         }
 
         [HttpGet("day")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById(int day)
         {
+            
             if (ModelState.IsValid)
             {
                 try
                 {
                     var scheduale = await _context.Sceduales.ToListAsync();
-                    var date = scheduale.Where(x => x.Date.Day == day).Select(x => new { x.TimeStart, x.TimeEnd });
+                    ui = GetCurrentUser();
+                    var date = scheduale.Where(x => (x.Date.Day == day) && (x.TeacherId == ui)).Select(x => new { x.TimeStart, x.TimeEnd });
 
                     return Ok(date);
                 }
@@ -78,6 +107,9 @@ namespace Benaa.Api.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult AddSchedual(List<Sceduale> sc)
         {
             if (ModelState.IsValid)
@@ -119,28 +151,31 @@ namespace Benaa.Api.Controllers
             return BadRequest("Please input all required data");
         }
 
+
      
         [HttpPut("BookAppointment")]
         public async Task<IActionResult> BookAppointment(SchedualDetailsDto sc)
-        {
-             Sceduale sceduale = new Sceduale();
-             Wallet wallet = new Wallet ();
-            sceduale.SetWallet(wallet);
-            //bool hasPrice = sceduale.SendRequest();
-            if (ModelState.IsValid)
+        {           
+            ui = GetCurrentUser();
+            var s_id = ui;
+            string type = "student";
+             if (ModelState.IsValid)
             {
                 try
                 {
-                    //if (hasPrice)
-                    //{
                         var Isnull = await _context.Sceduales.AnyAsync(x => (x.StudentId == null) && (x.Date == sc.Date) && (x.TimeStart == sc.TimeStart));
                         if (Isnull)
                         {
-                            await _sc.Appointment(sc);
-                            return Ok("Booking successfully");
+                            var R = await walletController.CheckWallet(s_id,sc.Price);
+                            //if (R == true)
+                            //{
+                            //    await _sc.Appointment(sc);
+                                
+                            //    return Ok("Booking successfully");
+                            //}
+                        return BadRequest("You Don't Have Enough Mony");
+
                         }
-                    //}
-                    //else { return BadRequest("You Don't Have Enough Mony "); }
 
                     return BadRequest("Sory Is Booked");
                 }

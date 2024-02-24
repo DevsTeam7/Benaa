@@ -518,9 +518,6 @@ namespace Benaa.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
-                    b.HasIndex("WalletId")
-                        .IsUnique();
-
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
@@ -555,10 +552,16 @@ namespace Benaa.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<decimal>("Amount")
+                    b.Property<decimal?>("Amount")
                         .HasColumnType("numeric");
 
+                    b.Property<string>("StudentId")
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("StudentId")
+                        .IsUnique();
 
                     b.ToTable("Wallets");
                 });
@@ -591,22 +594,22 @@ namespace Benaa.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "f664c562-cf0a-4f83-8fc9-26a3e970c5fc",
+                            Id = "129cf677-990b-47cf-9600-1c509b5ea07f",
                             Name = "Student"
                         },
                         new
                         {
-                            Id = "156bcb03-a12c-4c28-a131-65b191c1663f",
+                            Id = "a92fda7e-c230-4834-b7f8-c110bbcfa06e",
                             Name = "Teacher"
                         },
                         new
                         {
-                            Id = "01cc35e4-c45c-4686-b7ad-2284d183e116",
+                            Id = "247d9a0c-0e3d-4e2d-bba2-b6b1d8d82715",
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = "a5450dac-2eae-44d2-83be-56ab29eb39bd",
+                            Id = "e20a9316-ab7b-45be-aa98-fdbe5ef0d12e",
                             Name = "Owner"
                         });
                 });
@@ -867,15 +870,9 @@ namespace Benaa.Infrastructure.Migrations
                         .WithOne("Teacher")
                         .HasForeignKey("Benaa.Core.Entities.General.User", "CertificationId");
 
-                    b.HasOne("Benaa.Core.Entities.General.Wallet", "Wallet")
-                        .WithOne("Student")
-                        .HasForeignKey("Benaa.Core.Entities.General.User", "WalletId");
-
                     b.Navigation("BankInformation");
 
                     b.Navigation("Certification");
-
-                    b.Navigation("Wallet");
                 });
 
             modelBuilder.Entity("Benaa.Core.Entities.General.UserCourses", b =>
@@ -893,6 +890,15 @@ namespace Benaa.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Course");
+
+                    b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("Benaa.Core.Entities.General.Wallet", b =>
+                {
+                    b.HasOne("Benaa.Core.Entities.General.User", "Student")
+                        .WithOne("Wallet")
+                        .HasForeignKey("Benaa.Core.Entities.General.Wallet", "StudentId");
 
                     b.Navigation("Student");
                 });
@@ -984,11 +990,8 @@ namespace Benaa.Infrastructure.Migrations
                     b.Navigation("Reports");
 
                     b.Navigation("UserCourses");
-                });
 
-            modelBuilder.Entity("Benaa.Core.Entities.General.Wallet", b =>
-                {
-                    b.Navigation("Student");
+                    b.Navigation("Wallet");
                 });
 #pragma warning restore 612, 618
         }

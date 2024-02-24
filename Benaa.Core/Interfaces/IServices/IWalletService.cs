@@ -6,7 +6,7 @@
 
         Task<decimal> ChargeWallet(string ui, string code);
 
-        Task<bool> Check(string u, int price);
+        Task<bool> Check(string u, decimal price);
 
 
 
