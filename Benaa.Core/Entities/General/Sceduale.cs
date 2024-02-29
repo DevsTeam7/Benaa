@@ -9,10 +9,8 @@ namespace Benaa.Core.Entities.General
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         public DateTime Date { get; set; } = DateTime.Today;
-        [DataType(DataType.Time)]
-        public TimeSpan TimeStart { get; set; }
-        [DataType(DataType.Time)]
-        public TimeSpan TimeEnd { get; set; }
+        public int TimeStart { get; set; }
+        public int TimeEnd { get; set; }
 
         [Required]
         [ForeignKey(nameof(Teacher))]

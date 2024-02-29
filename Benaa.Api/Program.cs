@@ -2,7 +2,6 @@ using Benaa.Api.Extensions;
 using Benaa.Core.Entities.General;
 using Benaa.Core.Mapper;
 using Benaa.Infrastructure.Data;
-using Benaa.Infrastructure.Hubs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

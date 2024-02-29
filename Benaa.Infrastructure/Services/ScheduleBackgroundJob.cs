@@ -1,5 +1,6 @@
 ﻿using Benaa.Core.Entities.General;
 using Benaa.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Quartz;
 
@@ -16,18 +17,19 @@ namespace Benaa.Infrastructure.Services
             _logger = logger;
             _dbContext = dbContext;
         }
-        public Task Execute(IJobExecutionContext context)
+        public async Task Execute(IJobExecutionContext context)
         {
-          //List<Sceduale> sceduales = _dbContext.Sceduales.ToList();
-          //  for (int i = 0; i < sceduales.Count(); i++)
-          //  {
-          //      if (sceduales[i].TimeStart == DateTime.Now)
-          //      {
+            int currentTime = DateTime.Now.Hour;
+            int nextHour = currentTime == 23 ? 0 : currentTime + 1;
+            DateTime currentDay = DateTime.Today;
 
-          //      }
-          //  }
+             List<Sceduale> sceduales = await _dbContext.Sceduales
+                .Where(sceduale =>
+                sceduale.TimeStart == currentTime 
+                && sceduale.TimeEnd == nextHour 
+                && sceduale.Date == currentDay).ToListAsync();
+
             _logger.LogInformation("{UtcNow}", DateTime.UtcNow);
-            return Task.CompletedTask;
         }
     }
 }

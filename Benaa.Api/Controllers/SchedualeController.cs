@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Benaa.Core.Entities.General;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Benaa.Api.Controllers
 {
