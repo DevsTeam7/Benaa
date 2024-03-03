@@ -14,7 +14,7 @@ namespace Benaa.Core.Interfaces.IServices
     {
         Task<IEnumerable<Sceduale>> GetSchedual();
         //Task<Sceduale> AddSchedual(SchedualDto sceduale);
-        void AddSchedualList(List<Sceduale> sc);
+        Task AddSchedualList(List<SchedualDto> sc);
         Task Appointment(SchedualDetailsDto sc);
         Task<ActionResult<Sceduale>> GetById(Guid id);
         Task UpdateSceduale(SchedualDetailsDto sc);

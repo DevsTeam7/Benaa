@@ -11,11 +11,11 @@ namespace Benaa.Core.Entities.DTOs
     public class SchedualDto
     {
         public DateTime Date { get; set; } = DateTime.Today;
-        [DataType(DataType.Time)]
-        public TimeSpan TimeStart { get; set; }
-        [DataType(DataType.Time)]
-        public TimeSpan TimeEnd { get; set; }
-        public decimal? Price { get; set; } = 0;
+        
+        public DateTime TimeStart { get; set; }
+     
+        public DateTime TimeEnd { get; set; }
+        public decimal Price { get; set; } = 0;
 
         [Required]
         public string TeacherId { get; set; }

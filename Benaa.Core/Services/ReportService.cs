@@ -16,6 +16,7 @@ namespace Benaa.Core.Services
         private readonly IReportRepository _reoprtRepository;
         private readonly IMapper _mapper;
 
+
         public ReportService(IReportRepository reoprtRepository, IMapper mapper)
         {
             _reoprtRepository = reoprtRepository;

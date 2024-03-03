@@ -8,6 +8,8 @@ using Benaa.Infrastructure.Data;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Benaa.Core.Interfaces.IRepositories;
 using Microsoft.AspNetCore.Identity;
+using System.Net.Http;
+using Benaa.Infrastructure.Repositories;
 
 namespace Benaa.Api.Controllers
 {
@@ -16,20 +18,38 @@ namespace Benaa.Api.Controllers
     public class SchedualeController : ControllerBase
     {
         private readonly IScedualeService _sc;
+        private readonly IWalletService _wallet;
         private readonly ApplicationDbContext _context;
+        private static string ui;
+        private readonly UserManager<User> _userManager;
 
-        private static IWalletService walletService;
-        private static UserManager<User> userManager;
-        WalletController wallet = new WalletController(walletService, userManager);
-
-
-        public SchedualeController(IScedualeService sc, ApplicationDbContext context)
+        public SchedualeController(IScedualeService sc, ApplicationDbContext context, UserManager<User> userManager, IWalletService wallet)
         {
             _sc = sc;
             _context = context;
-         }
+            _userManager = userManager;
+            _wallet = wallet;
+        }
+
+        [HttpGet("GetCurrentUser")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public string GetCurrentUser()
+        {
+            if (User.Identity!.IsAuthenticated)
+            {
+                var userId = _userManager.GetUserId(HttpContext.User);
+                //ui = userId!;
+                return userId!;
+            }
+            return "the user is not authenticated";
+        }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Get()
         {
 
@@ -48,6 +68,9 @@ namespace Benaa.Api.Controllers
             return BadRequest();
         }
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById(Guid id)
         {
             if (ModelState.IsValid)
@@ -66,14 +89,18 @@ namespace Benaa.Api.Controllers
         }
 
         [HttpGet("day")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById(int day)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
+                    ui = GetCurrentUser();
                     var scheduale = await _context.Sceduales.ToListAsync();
-                    var date = scheduale.Where(x => x.Date.Day == day).Select(x => new { x.TimeStart, x.TimeEnd });
+                    var date = scheduale.Where(x => (x.Date.Day == day)&&(x.TeacherId == ui)).Select(x => new { x.TimeStart, x.TimeEnd });
 
                     return Ok(date);
                 }
@@ -86,13 +113,16 @@ namespace Benaa.Api.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddSchedual(List<Sceduale> sc)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<Sceduale>> Add_Schedual(List<SchedualDto> sc)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _sc.AddSchedualList(sc);
+                   await _sc.AddSchedualList(sc);
                     return Ok("Save successfully");
                 }
                 catch (Exception ex)
@@ -102,14 +132,12 @@ namespace Benaa.Api.Controllers
             }
             return BadRequest("Please input all required data");
         }
-        //public async Task<ActionResult<Sceduale>> Add_Schedual(SchedualDto sc)
-        //{
-        //            var model = await _sc.AddSchedual(sc);
-        //            return Ok(model);
-        //        }
-        //}
+        
 
         [HttpPut("Edit")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Edit(SchedualDetailsDto sc)
         {
             if (ModelState.IsValid)
@@ -128,33 +156,41 @@ namespace Benaa.Api.Controllers
         }
 
         [HttpPut("BookAppointment")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> BookAppointment(SchedualDetailsDto sc)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var Isnull = await _context.Sceduales.AnyAsync(x => (x.StudentId == null) && (x.Date == sc.Date) && (x.TimeStart == sc.TimeStart));
+                    
+                    var Isnull = await _context.Sceduales.AnyAsync(x => (x.StudentId == null ) && (x.Date == sc.Date) && (x.TimeStart == sc.TimeStart));
                     if (Isnull)
                     {
+                        ui = GetCurrentUser();
+                        //string s_id = sc.StudentId;
+                        
+                        string type = "schedual";
+                        bool R = await _wallet.Check(sc.StudentId, sc.Price);
+                        if (R)
+                        {                           
+                            var user =await _context.Sceduales.FindAsync(sc.Id);
+                            user.TeacherId = sc.TeacherId;
+                            user.StudentId =sc.StudentId;
+                            user.Price = sc.Price;
+                            user.Date = sc.Date;
+                            user.TimeStart = sc.TimeStart;
+                            user.TimeEnd = sc.TimeEnd;
 
-                        //studentID
-                        //price
-                        //itemID
-                        //type
+                            _context.Sceduales.Update(user);
+                            await _context.SaveChangesAsync();
 
-                        //bool R = wallet.CheckWallet(studentID, price);
-                        //if (R == true)
-                        //{
-                        //    await _sc.Appointment(sc);
-                        //    await wallet.Payment(itemID, type, price);
-                        //    return Ok();
-                        //}
-                        //return BadRequest("no money in wallet");
-
-
-
-
+                            await _wallet.SetPayment(sc.Id, type, sc.Price);
+                            return Ok();
+                        }
+                        return BadRequest("no money in wallet");
                     }
                     return BadRequest("Is Booked");
                 }
@@ -168,6 +204,9 @@ namespace Benaa.Api.Controllers
 
         
         [HttpDelete(template:"{Id}")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Delete(Guid id)
         {
             if (ModelState.IsValid)
@@ -186,7 +225,10 @@ namespace Benaa.Api.Controllers
 
         }
         [HttpPost("Readd")]
-        public async Task<IActionResult> ReaddSchedual(string TeacherId)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ReaddSchedual()
         {
             DateTime currentDate = DateTime.Now; 
             DateTime startDate = currentDate.AddDays(-7);
@@ -195,12 +237,15 @@ namespace Benaa.Api.Controllers
             {
                 try
                 {
+                    ui = GetCurrentUser();
+
                     for (int i = 1; i <= 7; i++)
                     {
-                        var sc = _context.Sceduales.Where(x => (x.Date == startDate.AddDays(+i)) && (x.TeacherId == TeacherId)).ToList();
+                        var sc = _context.Sceduales.Where(x => (x.Date == startDate.AddDays(+i)) && (x.TeacherId == ui)).ToList();
 
                         foreach (var record in sc)
                         {
+
                             var scheduale = new Sceduale
                             {
                                 Date = currentDate.AddDays(+i),
@@ -208,7 +253,7 @@ namespace Benaa.Api.Controllers
                                 TimeEnd = record.TimeEnd,
                                 Price = record.Price,
                                 TeacherId = record.TeacherId,
-                                StudentId = null
+                                StudentId = record.StudentId,
                             };
                             await _context.Sceduales.AddAsync(scheduale);
                             _context.SaveChanges();

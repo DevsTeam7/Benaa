@@ -62,6 +62,7 @@ namespace Benaa.Core.Services
 
         public async Task<object>SetPayment(Guid itemID, string type, decimal price)
         {
+ 
             if (type == "schedual")
             {
                 string Techerid = await _walletRepository.getTecherid(itemID);
@@ -69,7 +70,7 @@ namespace Benaa.Core.Services
                 Payment payment= new Payment();
                 payment.Type = type;
                 payment.Amount= price;
-                payment.ItemId= itemID;
+                payment.ItemId= itemID;            
                 payment.TeacherId= Techerid;
                 payment.StudentId = Studentid;
                 await _paymentRepository.Create(payment);

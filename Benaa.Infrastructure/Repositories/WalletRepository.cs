@@ -23,7 +23,7 @@ namespace Benaa.Infrastructure.Repositories
 
         }
 
-        public async Task<decimal> AddAmountCode(string ui, int amount)
+        public async Task<decimal> AddAmountCode(string ui, decimal amount)
         {
             var user = await _dbContext.Users.FirstOrDefaultAsync(s => s.Id == ui);
 
@@ -31,6 +31,7 @@ namespace Benaa.Infrastructure.Repositories
             if (user.Wallet == null)
             {
                 user.Wallet = new Wallet();
+                 
                 await Create(user.Wallet);
             }
             string wi = user.WalletId.ToString();
@@ -45,13 +46,12 @@ namespace Benaa.Infrastructure.Repositories
         public async Task<decimal> check(string u)
         {
             var user = await _dbContext.Users.FirstOrDefaultAsync(s => s.Id == u);
-            if (user.WalletId == null) { return 0; }
-            string w = user.WalletId.ToString();
-            var wallet = await _dbContext.Wallets.FirstOrDefaultAsync(s => s.Id.ToString() == w);
-            decimal amount = (decimal)wallet.Amount;
+            //if (user.WalletId == null) { return 0; }
+            //Guid w = user.WalletId;
+            var wallet = await _dbContext.Wallets.FirstOrDefaultAsync(s => s.Id == user.WalletId);
+            decimal amount = wallet.Amount;
             return amount;
         }
-
 
         public async Task<string> getTecherid(Guid itemID)
         {

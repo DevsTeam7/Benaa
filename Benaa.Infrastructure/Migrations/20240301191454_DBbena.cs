@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Benaa.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class BenaDb : Migration
+    public partial class DBbena : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -66,6 +66,18 @@ namespace Benaa.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_MoneyCodes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Wallets",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Amount = table.Column<decimal>(type: "numeric", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Wallets", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -137,6 +149,11 @@ namespace Benaa.Infrastructure.Migrations
                         name: "FK_AspNetUsers_Certifications_CertificationId",
                         column: x => x.CertificationId,
                         principalTable: "Certifications",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_Wallets_WalletId",
+                        column: x => x.WalletId,
+                        principalTable: "Wallets",
                         principalColumn: "Id");
                 });
 
@@ -361,8 +378,8 @@ namespace Benaa.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    TimeStart = table.Column<TimeSpan>(type: "interval", nullable: false),
-                    TimeEnd = table.Column<TimeSpan>(type: "interval", nullable: false),
+                    TimeStart = table.Column<int>(type: "integer", nullable: false),
+                    TimeEnd = table.Column<int>(type: "integer", nullable: false),
                     Price = table.Column<decimal>(type: "numeric", nullable: false),
                     TeacherId = table.Column<string>(type: "text", nullable: false),
                     StudentId = table.Column<string>(type: "text", nullable: true)
@@ -381,24 +398,6 @@ namespace Benaa.Infrastructure.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Wallets",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Amount = table.Column<decimal>(type: "numeric", nullable: true),
-                    StudentId = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Wallets", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Wallets_AspNetUsers_StudentId",
-                        column: x => x.StudentId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -520,10 +519,10 @@ namespace Benaa.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "129cf677-990b-47cf-9600-1c509b5ea07f", null, "Student", null },
-                    { "247d9a0c-0e3d-4e2d-bba2-b6b1d8d82715", null, "Admin", null },
-                    { "a92fda7e-c230-4834-b7f8-c110bbcfa06e", null, "Teacher", null },
-                    { "e20a9316-ab7b-45be-aa98-fdbe5ef0d12e", null, "Owner", null }
+                    { "44b180db-0b3c-4bc0-a9e7-3359a2c5f75c", null, "Admin", null },
+                    { "461c50c6-16d5-4047-98fd-767d421e7043", null, "Teacher", null },
+                    { "52a1aff6-bb5f-4152-8fa0-70e6f516eaaa", null, "Owner", null },
+                    { "e5ecff8a-fdce-45a3-94fd-c86cee2f7aa3", null, "Student", null }
                 });
 
             migrationBuilder.CreateIndex(
@@ -567,6 +566,12 @@ namespace Benaa.Infrastructure.Migrations
                 name: "IX_AspNetUsers_CertificationId",
                 table: "AspNetUsers",
                 column: "CertificationId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_WalletId",
+                table: "AspNetUsers",
+                column: "WalletId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -654,12 +659,6 @@ namespace Benaa.Infrastructure.Migrations
                 name: "IX_UserCourses_StudentId",
                 table: "UserCourses",
                 column: "StudentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Wallets_StudentId",
-                table: "Wallets",
-                column: "StudentId",
-                unique: true);
         }
 
         /// <inheritdoc />
@@ -708,9 +707,6 @@ namespace Benaa.Infrastructure.Migrations
                 name: "UserCourses");
 
             migrationBuilder.DropTable(
-                name: "Wallets");
-
-            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
@@ -730,6 +726,9 @@ namespace Benaa.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Certifications");
+
+            migrationBuilder.DropTable(
+                name: "Wallets");
         }
     }
 }

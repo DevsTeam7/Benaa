@@ -20,6 +20,7 @@ using Benaa.Core.Interfaces.IServices;
 using Microsoft.AspNetCore.Mvc;
 using Benaa.Core.Entities.DTOs;
 
+
 namespace Benaa.Core.Services
 {
     public class ScedualeService : IScedualeService
@@ -39,21 +40,28 @@ namespace Benaa.Core.Services
             return await _schedualRepository.GetAll();
         }
 
-        public void AddSchedualList(List<Sceduale> sc)
-        {
-            _schedualRepository.CreateRange(sc);
+        public async Task AddSchedualList(List<SchedualDto> sc)
+        {          
+            foreach (var i in sc)
+            {
+                DateTime ts = i.TimeStart;
+                int Ts = ts.Hour;
+                DateTime te = i.TimeEnd;
+                int Te = te.Hour;
+                var scheduale = new Sceduale
+                {
+                    Date = i.Date,
+                    TimeStart = Ts,
+                    TimeEnd = Te,
+                    Price = i.Price,
+                    TeacherId = i.TeacherId,
+                    StudentId = i.StudentId
+                };
+                await _schedualRepository.Create(scheduale);               
+            }
+            
         }
-
-        //public async Task<Sceduale> AddSchedual(SchedualDto sc)
-        //{
-        //    var sceduale = _mapper.Map<Sceduale>(sc);
-
-        //    await _schedualRepository.Create(sceduale);
-
-        //    return sceduale;
-        //}
-
-
+ 
         public async Task Appointment(SchedualDetailsDto sc)
         {
             //var user = await _schedualRepository.GetById(sc.Id);
@@ -85,17 +93,20 @@ namespace Benaa.Core.Services
 
         public async Task UpdateSceduale(SchedualDetailsDto sc)
         {
-            //var sce = await _schedualRepository.GetById(sc.Id);
+            var sce = await _schedualRepository.GetById(sc.Id);
+            //DateTime ts = sc.TimeStart;
+            //int Ts = ts.Hour;
+            //DateTime te = sc.TimeEnd;
+            //int Te = te.Hour;
+            //Sceduale model = _mapper.Map<Sceduale>(sc);
 
-            Sceduale model = _mapper.Map<Sceduale>(sc);
+            sce.TeacherId = sc.TeacherId;
+            sce.StudentId = sc.StudentId;
+            sce.Date = sc.Date;
+            sce.TimeStart =  sc.TimeStart;
+            sce.TimeEnd = sc.TimeEnd;
 
-            //sce.TeacherId = sc.TeacherId;
-            //sce.StudentId = sc.StudentId;
-            //sce.Date = sc.Date;
-            //sce.TimeStart = sc.TimeStart;
-            //sce.TimeEnd = sc.TimeEnd;
-
-            await _schedualRepository.Update(model);
+            await _schedualRepository.Update(sce);
         }
 
     }

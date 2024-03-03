@@ -13,14 +13,12 @@ namespace Benaa.Core.Entities.DTOs
     {
         public Guid Id { get; set; }
         public DateTime Date { get; set; } = DateTime.Today;
-        [DataType(DataType.Time)]
-        public TimeSpan TimeStart { get; set; }
-        [DataType(DataType.Time)]
-        public TimeSpan TimeEnd { get; set; }
-        public decimal? Price { get; set; } = 0;
+        public int TimeStart { get; set; }
+         public int TimeEnd { get; set; }
+        public decimal Price { get; set; } = 0;
 
         [Required]
          public string TeacherId { get; set; }
-         public string? StudentId { get; set; }
+        public string ?StudentId { get; set; } 
     }
 }

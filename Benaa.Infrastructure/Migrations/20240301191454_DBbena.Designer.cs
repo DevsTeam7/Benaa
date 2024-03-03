@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Benaa.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240223104256_BenaDb")]
-    partial class BenaDb
+    [Migration("20240301191454_DBbena")]
+    partial class DBbena
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -391,11 +391,11 @@ namespace Benaa.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<TimeSpan>("TimeEnd")
-                        .HasColumnType("interval");
+                    b.Property<int>("TimeEnd")
+                        .HasColumnType("integer");
 
-                    b.Property<TimeSpan>("TimeStart")
-                        .HasColumnType("interval");
+                    b.Property<int>("TimeStart")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -521,6 +521,9 @@ namespace Benaa.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
+                    b.HasIndex("WalletId")
+                        .IsUnique();
+
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
@@ -555,16 +558,10 @@ namespace Benaa.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<decimal?>("Amount")
+                    b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
-                    b.Property<string>("StudentId")
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("StudentId")
-                        .IsUnique();
 
                     b.ToTable("Wallets");
                 });
@@ -597,22 +594,22 @@ namespace Benaa.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "129cf677-990b-47cf-9600-1c509b5ea07f",
+                            Id = "e5ecff8a-fdce-45a3-94fd-c86cee2f7aa3",
                             Name = "Student"
                         },
                         new
                         {
-                            Id = "a92fda7e-c230-4834-b7f8-c110bbcfa06e",
+                            Id = "461c50c6-16d5-4047-98fd-767d421e7043",
                             Name = "Teacher"
                         },
                         new
                         {
-                            Id = "247d9a0c-0e3d-4e2d-bba2-b6b1d8d82715",
+                            Id = "44b180db-0b3c-4bc0-a9e7-3359a2c5f75c",
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = "e20a9316-ab7b-45be-aa98-fdbe5ef0d12e",
+                            Id = "52a1aff6-bb5f-4152-8fa0-70e6f516eaaa",
                             Name = "Owner"
                         });
                 });
@@ -873,9 +870,15 @@ namespace Benaa.Infrastructure.Migrations
                         .WithOne("Teacher")
                         .HasForeignKey("Benaa.Core.Entities.General.User", "CertificationId");
 
+                    b.HasOne("Benaa.Core.Entities.General.Wallet", "Wallet")
+                        .WithOne("Student")
+                        .HasForeignKey("Benaa.Core.Entities.General.User", "WalletId");
+
                     b.Navigation("BankInformation");
 
                     b.Navigation("Certification");
+
+                    b.Navigation("Wallet");
                 });
 
             modelBuilder.Entity("Benaa.Core.Entities.General.UserCourses", b =>
@@ -893,15 +896,6 @@ namespace Benaa.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Course");
-
-                    b.Navigation("Student");
-                });
-
-            modelBuilder.Entity("Benaa.Core.Entities.General.Wallet", b =>
-                {
-                    b.HasOne("Benaa.Core.Entities.General.User", "Student")
-                        .WithOne("Wallet")
-                        .HasForeignKey("Benaa.Core.Entities.General.Wallet", "StudentId");
 
                     b.Navigation("Student");
                 });
@@ -993,8 +987,11 @@ namespace Benaa.Infrastructure.Migrations
                     b.Navigation("Reports");
 
                     b.Navigation("UserCourses");
+                });
 
-                    b.Navigation("Wallet");
+            modelBuilder.Entity("Benaa.Core.Entities.General.Wallet", b =>
+                {
+                    b.Navigation("Student");
                 });
 #pragma warning restore 612, 618
         }
