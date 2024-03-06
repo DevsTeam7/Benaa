@@ -82,7 +82,7 @@ namespace Benaa.Api.Controllers
 
         public async Task<bool> CheckWallet(string u, decimal price)
         {
-            var user = await _dbContext.Users.FirstOrDefaultAsync(s => s.Id == u);
+             var user = await _dbContext.Users.FirstOrDefaultAsync(s => s.Id == u);
             var wallet = await _dbContext.Wallets.FirstOrDefaultAsync(s => s.Id == user.WalletId);
             decimal amount = wallet.Amount;
  
@@ -96,12 +96,12 @@ namespace Benaa.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Payment(Guid itemID,string type,decimal price)
-        {
+        { ui= GetCurrentUser();
             try
             {
                 if (itemID == Guid.Empty|| type==null|| price==0) { return BadRequest("Please input all required data to payent"); }
                
-                return Ok(await _walletService.SetPayment( itemID,  type,  price));
+                return Ok(await _walletService.SetPayment( itemID,  type,  price, ui));
             }
 
             catch (Exception ex)

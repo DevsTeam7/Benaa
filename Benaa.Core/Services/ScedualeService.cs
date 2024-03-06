@@ -14,12 +14,6 @@ using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Microsoft.VisualBasic;
 using AutoMapper;
-using Benaa.Core.Entities.General;
-using Benaa.Core.Interfaces.IRepositories;
-using Benaa.Core.Interfaces.IServices;
-using Microsoft.AspNetCore.Mvc;
-using Benaa.Core.Entities.DTOs;
-
 
 namespace Benaa.Core.Services
 {
@@ -94,12 +88,7 @@ namespace Benaa.Core.Services
         public async Task UpdateSceduale(SchedualDetailsDto sc)
         {
             var sce = await _schedualRepository.GetById(sc.Id);
-            //DateTime ts = sc.TimeStart;
-            //int Ts = ts.Hour;
-            //DateTime te = sc.TimeEnd;
-            //int Te = te.Hour;
-            //Sceduale model = _mapper.Map<Sceduale>(sc);
-
+            
             sce.TeacherId = sc.TeacherId;
             sce.StudentId = sc.StudentId;
             sce.Date = sc.Date;

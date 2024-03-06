@@ -8,7 +8,7 @@
 
         Task<bool> Check(string u, decimal price);
 
-        Task<object> SetPayment(Guid itemID, string type, decimal price);
+        Task<object> SetPayment(Guid itemID, string type, decimal price, string ui);
 
 
 

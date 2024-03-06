@@ -154,7 +154,7 @@ namespace Benaa.Api.Controllers
             }
             return BadRequest("Please input all required data");
         }
-
+       
         [HttpPut("BookAppointment")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -170,15 +170,19 @@ namespace Benaa.Api.Controllers
                     if (Isnull)
                     {
                         ui = GetCurrentUser();
-                        //string s_id = sc.StudentId;
-                        
+                  
                         string type = "schedual";
-                        bool R = await _wallet.Check(sc.StudentId, sc.Price);
-                        if (R)
-                        {                           
-                            var user =await _context.Sceduales.FindAsync(sc.Id);
+                       
+                        var amount = await _context.Users.Where(u => u.Id == ui)
+                            .Select(u => _context.Wallets.FirstOrDefault(w => w.Id == u.WalletId))
+                            .Where(Wallet=>Wallet!=null).Select(Wallet=>Wallet.Amount).FirstOrDefaultAsync();
+
+                        if (amount >= sc.Price)
+                        {
+
+                            var user = await _context.Sceduales.FindAsync(sc.Id);
                             user.TeacherId = sc.TeacherId;
-                            user.StudentId =sc.StudentId;
+                            user.StudentId = ui;
                             user.Price = sc.Price;
                             user.Date = sc.Date;
                             user.TimeStart = sc.TimeStart;
@@ -186,12 +190,11 @@ namespace Benaa.Api.Controllers
 
                             _context.Sceduales.Update(user);
                             await _context.SaveChangesAsync();
-
-                            await _wallet.SetPayment(sc.Id, type, sc.Price);
-                            return Ok();
+                            var p = await _wallet.SetPayment(sc.Id, type, sc.Price, ui);
+                            return Ok(p);
                         }
-                        return BadRequest("no money in wallet");
-                    }
+                    return BadRequest("no money in wallet");
+                }
                     return BadRequest("Is Booked");
                 }
                 catch (Exception ex)

@@ -329,7 +329,7 @@ namespace Benaa.Infrastructure.Migrations
                     Type = table.Column<string>(type: "text", nullable: false),
                     ItemId = table.Column<Guid>(type: "uuid", nullable: false),
                     Status = table.Column<bool>(type: "boolean", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     TeacherId = table.Column<string>(type: "text", nullable: false),
                     StudentId = table.Column<string>(type: "text", nullable: false)
                 },
@@ -519,10 +519,10 @@ namespace Benaa.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "44b180db-0b3c-4bc0-a9e7-3359a2c5f75c", null, "Admin", null },
-                    { "461c50c6-16d5-4047-98fd-767d421e7043", null, "Teacher", null },
-                    { "52a1aff6-bb5f-4152-8fa0-70e6f516eaaa", null, "Owner", null },
-                    { "e5ecff8a-fdce-45a3-94fd-c86cee2f7aa3", null, "Student", null }
+                    { "073f6c85-258d-438c-9573-6d93c30d50c2", null, "Student", null },
+                    { "08bde265-8689-4baa-aab7-82835fea3af6", null, "Admin", null },
+                    { "7962962f-f71a-4b59-b95d-bc357ebd7676", null, "Teacher", null },
+                    { "d9d8cdb2-f747-48c0-8656-a1d22a37dc61", null, "Owner", null }
                 });
 
             migrationBuilder.CreateIndex(

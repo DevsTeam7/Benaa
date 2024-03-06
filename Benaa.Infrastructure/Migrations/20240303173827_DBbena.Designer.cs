@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Benaa.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240301191454_DBbena")]
+    [Migration("20240303173827_DBbena")]
     partial class DBbena
     {
         /// <inheritdoc />
@@ -282,7 +282,7 @@ namespace Benaa.Infrastructure.Migrations
                     b.Property<decimal?>("Amount")
                         .HasColumnType("numeric");
 
-                    b.Property<DateTime?>("CreatedAt")
+                    b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("ItemId")
@@ -594,22 +594,22 @@ namespace Benaa.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "e5ecff8a-fdce-45a3-94fd-c86cee2f7aa3",
+                            Id = "073f6c85-258d-438c-9573-6d93c30d50c2",
                             Name = "Student"
                         },
                         new
                         {
-                            Id = "461c50c6-16d5-4047-98fd-767d421e7043",
+                            Id = "7962962f-f71a-4b59-b95d-bc357ebd7676",
                             Name = "Teacher"
                         },
                         new
                         {
-                            Id = "44b180db-0b3c-4bc0-a9e7-3359a2c5f75c",
+                            Id = "08bde265-8689-4baa-aab7-82835fea3af6",
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = "52a1aff6-bb5f-4152-8fa0-70e6f516eaaa",
+                            Id = "d9d8cdb2-f747-48c0-8656-a1d22a37dc61",
                             Name = "Owner"
                         });
                 });
