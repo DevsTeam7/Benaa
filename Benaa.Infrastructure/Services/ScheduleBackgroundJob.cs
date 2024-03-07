@@ -29,6 +29,14 @@ namespace Benaa.Infrastructure.Services
                 && sceduale.TimeEnd == nextHour 
                 && sceduale.Date == currentDay).ToListAsync();
 
+            foreach (var sceduale in sceduales)
+            {
+                sceduale.Status =  ScedualeStatus.Opened;
+                //TODO: inject the Notfectionhubcontext and send the notfcation to the user and send the group neme to the user
+                
+            }
+            
+
             _logger.LogInformation("{UtcNow}", DateTime.UtcNow);
         }
     }

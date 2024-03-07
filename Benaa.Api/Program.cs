@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using Benaa.Infrastructure.Extensions;
+using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,6 +62,25 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = builder.Configuration.GetSection("Jwt:Audience").Value,
         ValidIssuer = builder.Configuration.GetSection("Jwt:Issuer").Value,
     };
+
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var accessToken = context.Request.Query["access_token"];
+            if (!string.IsNullOrEmpty(accessToken))
+            {
+                context.Token = accessToken;
+            }
+            else
+            {
+                Debug.WriteLine($"Hi Yazeed the token is: {accessToken}");
+
+            }
+            return Task.CompletedTask;
+        }
+    };
+
 });
 
 
@@ -107,6 +127,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+//add Hubs
 app.AddHubs();
 
 app.Run();
