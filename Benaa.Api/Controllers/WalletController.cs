@@ -82,7 +82,7 @@ namespace Benaa.Api.Controllers
 
         public async Task<bool> CheckWallet(string u, decimal price)
         {
-             var user = await _dbContext.Users.FirstOrDefaultAsync(s => s.Id == u);
+            var user = await _dbContext.Users.FirstOrDefaultAsync(s => s.Id == u);
             var wallet = await _dbContext.Wallets.FirstOrDefaultAsync(s => s.Id == user.WalletId);
             decimal amount = wallet.Amount;
  
