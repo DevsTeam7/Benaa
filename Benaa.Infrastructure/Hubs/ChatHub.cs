@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Benaa.Infrastructure.Hubs
 {
-    [Authorize]
+   [Authorize]
     public class ChatHub : Hub
     {
         //private readonly HttpContext _context;

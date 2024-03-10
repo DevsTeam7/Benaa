@@ -20,8 +20,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(optins =>
 ));
 
 builder.Services.AddInfrastructure();
-//adding SignalR
-builder.Services.AddSignalR().AddJsonProtocol();
+
 //adding the mapper
 builder.Services.AddAutoMapper(typeof(BaseMapper));
 //adding th identuty
@@ -68,14 +67,14 @@ builder.Services.AddAuthentication(options =>
         OnMessageReceived = context =>
         {
             var accessToken = context.Request.Query["access_token"];
+
             if (!string.IsNullOrEmpty(accessToken))
             {
-                context.Token = accessToken;
+                context.Token = context.Request.Query["access_token"];
             }
             else
             {
-                Debug.WriteLine($"Hi Yazeed the token is: {accessToken}");
-
+                Debug.WriteLine($"The token is null and its : {accessToken}");
             }
             return Task.CompletedTask;
         }
@@ -83,6 +82,8 @@ builder.Services.AddAuthentication(options =>
 
 });
 
+//adding SignalR
+builder.Services.AddSignalR().AddJsonProtocol();
 
 //Register Services
 builder.Services.RegisterService();
