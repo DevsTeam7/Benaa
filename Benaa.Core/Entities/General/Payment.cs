@@ -14,7 +14,7 @@ namespace Benaa.Core.Entities.General
         [Required]
         public Guid ItemId { get; set; }
         public bool? Status { get; set; } = false;
-        public DateTime? CreatedAt { get; set; } = DateTime.Now;
+        public DateTimeOffset CreatedAt { get; set; } = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
 
         [Required]
         [ForeignKey(nameof(Teacher))]

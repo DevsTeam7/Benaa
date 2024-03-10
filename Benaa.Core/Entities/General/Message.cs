@@ -12,7 +12,7 @@ namespace Benaa.Core.Entities.General
         public string Message { get; set; }
         [Required]
         public string Type { get; set; }
-        public DateTime? CreatedAt { get; set; } = DateTime.Now;
+        public DateTimeOffset? SendAt { get; set; } = DateTimeOffset.Now;
 
         [Required]
         public Guid ChatId { get; set; }

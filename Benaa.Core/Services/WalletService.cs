@@ -1,6 +1,12 @@
 ﻿using Benaa.Core.Entities.General;
 using Benaa.Core.Interfaces.IRepositories;
 using Benaa.Core.Interfaces.IServices;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using NpgsqlTypes;
+
+
 //using Benaa.Infrastructure;
 
 namespace Benaa.Core.Services
@@ -8,9 +14,23 @@ namespace Benaa.Core.Services
     public class WalletService : IWalletService
     {
         private readonly IWalletRepository _walletRepository;
-        public WalletService(IWalletRepository walletRepository)
+        private readonly IPaymentRepositoty _paymentRepository;
+
+        public WalletService(IWalletRepository walletRepository, IPaymentRepositoty paymentRepository, UserManager<User> userManager)
         {
             _walletRepository = walletRepository;
+            _paymentRepository = paymentRepository;
+        }
+
+        public async Task<decimal> ChargeWallet(string ui, string code)
+        {
+            Task<int> task = _walletRepository.GetAmountCode(code);
+            int amount = await task;
+
+            Task<decimal> tasks = _walletRepository.AddAmountCode(ui, amount);
+            decimal result = await tasks;
+
+            return result;
         }
         public string IsPayed(decimal amount)
         {
@@ -29,5 +49,35 @@ namespace Benaa.Core.Services
             return "not done";
 
         }
+
+
+        public async Task<bool> Check(string u, decimal price)
+        {
+            Task<decimal> task = _walletRepository.check(u);
+            decimal p = await task;
+            if (p >= price) { return true; }
+
+            return false;
+        }
+
+        public async Task<object>SetPayment(Guid itemID, string type, decimal price,string ui)
+        {
+           
+            if (type == "schedual")
+            {
+                string Techerid = await _walletRepository.getTecherid(itemID);
+                string Studentid = await _walletRepository.getStudentid(itemID);
+                Payment payment= new Payment();
+                payment.Type = type;
+                payment.Amount= price;
+                payment.ItemId= itemID;            
+                payment.TeacherId= Techerid;
+                payment.StudentId = ui;
+                await _paymentRepository.Create(payment);
+                return payment;
+            }
+            return false;   
+        }
+
     }
 }
