@@ -19,6 +19,8 @@ namespace Benaa.Core.Entities.General
         public string TeacherId { get; set; }
         [ForeignKey(nameof(Student))]
         public string? StudentId { get; set; }
+
+        public virtual Chat? Chat { get; set; }
         public virtual User? Teacher { get; set; }
         public virtual User? Student { get; set; }
     }

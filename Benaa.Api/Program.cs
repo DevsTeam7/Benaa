@@ -72,10 +72,6 @@ builder.Services.AddAuthentication(options =>
             {
                 context.Token = context.Request.Query["access_token"];
             }
-            else
-            {
-                Debug.WriteLine($"The token is null and its : {accessToken}");
-            }
             return Task.CompletedTask;
         }
     };

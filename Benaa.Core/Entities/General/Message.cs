@@ -11,11 +11,26 @@ namespace Benaa.Core.Entities.General
         [Required]
         public string Message { get; set; }
         [Required]
-        public string Type { get; set; }
+        public MessagesType Type { get; set; }
         public DateTimeOffset? SendAt { get; set; } = DateTimeOffset.Now;
+        public bool IsRead { get; set; } = false;
+
+        public string UserId { get; set; }
+        public virtual User? User { get; set; }
 
         [Required]
         public Guid ChatId { get; set; }
         public virtual Chat? Chat { get; set; }
+
+    }
+
+
+    public enum MessagesType
+    {
+        Text,
+        Voice,
+        Picture,
     }
 }
+
+

@@ -20,6 +20,7 @@ namespace Benaa.Infrastructure.Services
         public async Task Execute(IJobExecutionContext context)
         {
             int currentTime = DateTime.Now.Hour;
+
             int nextHour = currentTime == 23 ? 0 : currentTime + 1;
             DateTime currentDay = DateTime.Today;
 

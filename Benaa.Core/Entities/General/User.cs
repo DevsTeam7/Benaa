@@ -31,6 +31,7 @@ namespace Benaa.Core.Entities.General
         public ICollection<Report>? Reports { get; }
         public ICollection<Course>? Courses { get; }
         public ICollection<UserCourses>? UserCourses { get; }
+        public ICollection<Messages>? Messages { get; }
 
         public virtual Wallet? Wallet { get; set; }
         public virtual Certification? Certification { get; set; }
