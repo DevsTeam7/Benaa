@@ -1,6 +1,11 @@
-﻿using Benaa.Core.Interfaces.IRepositories;
+﻿using Benaa.Core.Entities.General;
+using Benaa.Core.Interfaces.IRepositories;
 using Benaa.Infrastructure.Data;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
 
 namespace Benaa.Infrastructure.Repositories
 {
@@ -40,6 +45,7 @@ namespace Benaa.Infrastructure.Repositories
             _dbContext.Set<T>().Update(model);
             await _dbContext.SaveChangesAsync();
         }
+       
 
         public async Task Delete(T model)
         {
@@ -58,5 +64,7 @@ namespace Benaa.Infrastructure.Repositories
             await _dbContext.SaveChangesAsync();
             return model;
         }
+
+        
     }
 }

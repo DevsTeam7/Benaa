@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Benaa.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240211212227_addDB")]
-    partial class addDB
+    [Migration("20240303173827_DBbena")]
+    partial class DBbena
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -203,12 +203,12 @@ namespace Benaa.Infrastructure.Migrations
                     b.Property<Guid>("ChatId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<DateTimeOffset?>("SendAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -282,7 +282,7 @@ namespace Benaa.Infrastructure.Migrations
                     b.Property<decimal?>("Amount")
                         .HasColumnType("numeric");
 
-                    b.Property<DateTime?>("CreatedAt")
+                    b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("ItemId")
@@ -381,6 +381,9 @@ namespace Benaa.Infrastructure.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<decimal>("Price")
+                        .HasColumnType("numeric");
+
                     b.Property<string>("StudentId")
                         .HasColumnType("text");
 
@@ -388,11 +391,11 @@ namespace Benaa.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<TimeSpan>("TimeEnd")
-                        .HasColumnType("interval");
+                    b.Property<int>("TimeEnd")
+                        .HasColumnType("integer");
 
-                    b.Property<TimeSpan>("TimeStart")
-                        .HasColumnType("interval");
+                    b.Property<int>("TimeStart")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -555,7 +558,7 @@ namespace Benaa.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<decimal?>("Amount")
+                    b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
                     b.HasKey("Id");
@@ -591,22 +594,22 @@ namespace Benaa.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "9ac59f8e-cd12-4007-a476-1f8fadb2597b",
+                            Id = "073f6c85-258d-438c-9573-6d93c30d50c2",
                             Name = "Student"
                         },
                         new
                         {
-                            Id = "1278ff28-ff54-4e63-82d4-c17fe5731662",
+                            Id = "7962962f-f71a-4b59-b95d-bc357ebd7676",
                             Name = "Teacher"
                         },
                         new
                         {
-                            Id = "4a57ad1b-6d18-41e4-b355-662c5e42b4c3",
+                            Id = "08bde265-8689-4baa-aab7-82835fea3af6",
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = "233677b8-f6de-48bc-9720-7888df5adae7",
+                            Id = "d9d8cdb2-f747-48c0-8656-a1d22a37dc61",
                             Name = "Owner"
                         });
                 });

@@ -4,6 +4,7 @@ using Benaa.Core.Interfaces.IServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic;
 
 namespace Benaa.Api.Controllers
 {
@@ -27,7 +28,6 @@ namespace Benaa.Api.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Register(RegisterRequestDto newUser)
         {
-
             if (ModelState.IsValid)
             {
                 try
@@ -35,7 +35,7 @@ namespace Benaa.Api.Controllers
                     User user = await _authService.Registration(newUser);
                     if (user == null) { return BadRequest("Faild to create the user! try again"); }
                     return Created("", user);
-                }
+                 }
                 catch (Exception ex)
                 {
                     return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);

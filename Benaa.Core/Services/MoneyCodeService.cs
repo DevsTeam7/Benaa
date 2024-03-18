@@ -34,7 +34,7 @@ namespace Benaa.Core.Services
             int counter = 0;
             while (counter < number)
             {
- 
+                rand = "";
                 for(int i=0;i<9;i++)    
                 {
                      rand = rand+ rnd.Next(0, 9).ToString();

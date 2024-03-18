@@ -4,5 +4,6 @@ namespace Benaa.Core.Interfaces.IRepositories
 {
     public interface ISchedualRepository : IBaseRepository<Sceduale>
     {
+        
     }
 }
