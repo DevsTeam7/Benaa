@@ -3,6 +3,7 @@ using Benaa.Core.Interfaces.IRepositories;
 using Benaa.Core.Interfaces.IServices;
 using Benaa.Core.Services;
 using Benaa.Infrastructure.Repositories;
+using Benaa.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 
 namespace Benaa.Api.Extensions
@@ -18,6 +19,7 @@ namespace Benaa.Api.Extensions
             services.AddScoped<IScedualeService, ScedualeService>();
             services.AddScoped<UserManager<User>>();
             services.AddScoped<IScedualeService, ScedualeService>();
+            services.AddScoped<IChatHubService, ChatHubService>();
             #endregion
 
             #region Repositories
@@ -28,6 +30,8 @@ namespace Benaa.Api.Extensions
             services.AddTransient<IPaymentRepositoty, PaymentRepository>();
             services.AddTransient<IReportRepository, ReportRepository>();
             services.AddTransient<ISchedualRepository, SchedualRepository>();
+            services.AddTransient<IChatRepository, ChatRepository>();
+            services.AddTransient<IMessageRepository, MessageRepository>();
             #endregion
 
 

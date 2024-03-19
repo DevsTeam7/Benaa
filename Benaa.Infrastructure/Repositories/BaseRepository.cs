@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using System.Security.Cryptography;
 
 namespace Benaa.Infrastructure.Repositories
@@ -45,7 +46,7 @@ namespace Benaa.Infrastructure.Repositories
             _dbContext.Set<T>().Update(model);
             await _dbContext.SaveChangesAsync();
         }
-       
+
 
         public async Task Delete(T model)
         {
@@ -64,7 +65,10 @@ namespace Benaa.Infrastructure.Repositories
             await _dbContext.SaveChangesAsync();
             return model;
         }
-
-        
+        public async Task<List<T>> Select(Expression<Func<T, bool>> predicate)
+        {
+            var lsitOfItems = await _dbContext.Set<T>().Where(predicate).ToListAsync();
+            return lsitOfItems;
+        }
     }
 }

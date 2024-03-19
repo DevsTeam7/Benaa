@@ -1,4 +1,6 @@
-﻿namespace Benaa.Core.Interfaces.IRepositories
+﻿using System.Linq.Expressions;
+
+namespace Benaa.Core.Interfaces.IRepositories
 {
     public interface IBaseRepository<T> where T : class
     {
@@ -9,5 +11,6 @@
         Task Update(T model);
         Task Delete(T model);
         Task SaveChangeAsync();
+        Task<List<T>> Select(Expression<Func<T, bool>> predicate);
     }
 }

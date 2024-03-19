@@ -4,41 +4,37 @@ using Microsoft.AspNetCore.Authorization;
 using Benaa.Infrastructure.Data;
 using Benaa.Core.Entities.General;
 using Microsoft.EntityFrameworkCore;
+using Benaa.Core.Hubs;
+using Benaa.Core.Interfaces.IServices;
 
 
 namespace Benaa.Infrastructure.Hubs
 {
     [Authorize]
-    public class ChatHub : Hub
+    public class ChatHub : Hub, IChatHub
     {
         private string userId;
-        private Guid chatId;
-
-        private readonly ApplicationDbContext _Dbcontext;
-        public ChatHub(ApplicationDbContext Dbcontext)
+        private readonly IChatHubService _chatHubService;
+        public ChatHub( IChatHubService chatHubService)
         {
-            _Dbcontext = Dbcontext;
+            _chatHubService = chatHubService;
         }
 
         public override async Task OnConnectedAsync()
         {
             userId = Context.UserIdentifier!;
-
-            var sceduales = await _Dbcontext.Sceduales
-                .Where(sceduale => (sceduale.TeacherId == userId
-                || sceduale.StudentId == userId)
-                && sceduale.Status == ScedualeStatus.Opened)
-                .ToListAsync();
+            //Get all open sceduale for current usser
+            var sceduales = await _chatHubService.GetOpenUserSceduales(userId);
 
             foreach (var userSceduale in sceduales)
             {
-                var chat = await _Dbcontext.Chats
-                    .FirstAsync(chat => chat.ScedualeId == userSceduale.Id);
+                //Get a single chat connected to a single sceduale
+                var chat = await _chatHubService.GetScheduledChat(userSceduale.Id);
 
                 if (chat is not null)
                 {
                     //to load all unread messages 
-                    var unreadMessages = await _Dbcontext.Messages.Where(message => message.ChatId == chat.Id && !message.IsRead).ToListAsync();
+                    var unreadMessages = await _chatHubService.GetUnreadMessages(chat.Id);
                     if (unreadMessages is not null)
                     {
                         foreach (var message in unreadMessages)
@@ -60,29 +56,17 @@ namespace Benaa.Infrastructure.Hubs
 
         public async Task SendMessage(string message, string groupName)
         {
-            //how to add mulitble type? i think i need controller to recive a Post request
-            Chat chat = await _Dbcontext.Chats.FirstAsync(chat => chat.Id == Guid.Parse(groupName));
-            var _message = new Messages {
-                UserId = userId,
-                Message = message,
-                Type = MessagesType.Text,
-                ChatId = chat.Id
-            };
-           await _Dbcontext.Messages.AddAsync(_message);
-           await _Dbcontext.SaveChangesAsync();
-
-            await Clients.OthersInGroup(groupName).SendAsync("ReceiveMessage", message);
+           var createdMessage =  await _chatHubService.CreateMessage(Guid.Parse(groupName), userId, message, MessagesType.Text);
+            if (createdMessage is not null)
+                await Clients.OthersInGroup(createdMessage.ChatId.ToString()).SendAsync("ReceiveMessage", createdMessage.Message);
+            else
+                await Clients.Caller.SendAsync("FaildToSendMessage", "The message was not sent try again");
         }
 
         public async Task MarkMessageAsRead(string messageId)
         {
-            string currentConnectionId = Context.ConnectionId;
-            string userId = Context.UserIdentifier!;
-
-            // Update the message's read status in the repository
-           // await _messageRepository.MarkMessageAsReadAsync(messageId, userId);
-
-           //await Clients.Client(senderConnectionId).SendAsync("MessageRead", messageId, currentConnectionId);
+            //TODO : Check if the message exist first
+            await _chatHubService.MarkMessageRead(Guid.Parse(messageId));
         }
 
         public async Task AddToGroup(string groupName)
