@@ -1,8 +1,10 @@
 ﻿using Benaa.Core.Entities.General;
 using Benaa.Core.Entities.DTOs;
 using Benaa.Core.Interfaces.IServices;
-using Benaa.Core.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
+using Benaa.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Benaa.Api.Controllers
 {
@@ -12,16 +14,22 @@ namespace Benaa.Api.Controllers
     {
         private readonly IScedualeService _sc;
         private readonly IWalletService _wallet;
+        private readonly IChatHubService _chatHubService;
         private readonly ApplicationDbContext _context;
         private static string ui;
         private readonly UserManager<User> _userManager;
 
-        public SchedualeController(IScedualeService sc, ApplicationDbContext context, UserManager<User> userManager, IWalletService wallet)
+        public SchedualeController(IScedualeService sc
+            , ApplicationDbContext context,
+            UserManager<User> userManager,
+            IWalletService wallet,
+            IChatHubService chatHubService)
         {
             _sc = sc;
             _context = context;
             _userManager = userManager;
             _wallet = wallet;
+            _chatHubService = chatHubService;
         }
 
         [HttpGet("GetCurrentUser")]
@@ -93,7 +101,7 @@ namespace Benaa.Api.Controllers
                 {
                     ui = GetCurrentUser();
                     var scheduale = await _context.Sceduales.ToListAsync();
-                    var date = scheduale.Where(x => (x.Date.Day == day)&&(x.TeacherId == ui)).Select(x => new { x.TimeStart, x.TimeEnd });
+                    var date = scheduale.Where(x => (x.Date.Day == day) && (x.TeacherId == ui)).Select(x => new { x.TimeStart, x.TimeEnd });
 
                     return Ok(date);
                 }
@@ -115,7 +123,7 @@ namespace Benaa.Api.Controllers
             {
                 try
                 {
-                   await _sc.AddSchedualList(sc);
+                    await _sc.AddSchedualList(sc);
                     return Ok("Save successfully");
                 }
                 catch (Exception ex)
@@ -125,7 +133,7 @@ namespace Benaa.Api.Controllers
             }
             return BadRequest("Please input all required data");
         }
-        
+
 
         [HttpPut("Edit")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -147,47 +155,49 @@ namespace Benaa.Api.Controllers
             }
             return BadRequest("Please input all required data");
         }
-       
+
         [HttpPut("BookAppointment")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> BookAppointment(SchedualDetailsDto sc)
+        public async Task<IActionResult> BookAppointment(SchedualDetailsDto Sceduale)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    
-                    var Isnull = await _context.Sceduales.AnyAsync(x => (x.StudentId == null ) && (x.Date == sc.Date) && (x.TimeStart == sc.TimeStart));
+                    //TODO : make this come form then Sceduales services and filtter the Sceduale using the id
+                    var Isnull = await _context.Sceduales.AnyAsync(sceduale => (sceduale.StudentId == null) && (sceduale.Date == Sceduale.Date) && (sceduale.TimeStart == Sceduale.TimeStart));
                     if (Isnull)
                     {
                         ui = GetCurrentUser();
-                  
+
                         string type = "schedual";
-                       
+                        //TODO : make this come form then Sceduales services and try to make it single query beucz this take time
                         var amount = await _context.Users.Where(u => u.Id == ui)
-                            .Select(u => _context.Wallets.FirstOrDefault(w => w.Id == u.WalletId))
-                            .Where(Wallet=>Wallet!=null).Select(Wallet=>Wallet.Amount).FirstOrDefaultAsync();
+                            .Select(user => _context.Wallets.FirstOrDefault(userWallet => userWallet.Id == user.WalletId))
+                            .Where(Wallet => Wallet != null).Select(Wallet => Wallet.Amount).FirstOrDefaultAsync();
 
-                        if (amount >= sc.Price)
+                        if (amount >= Sceduale.Price)
                         {
+                            var sceduale = await _context.Sceduales.FindAsync(Sceduale.Id);
+                            sceduale.TeacherId = Sceduale.TeacherId;
+                            sceduale.StudentId = ui;
+                            sceduale.Price = Sceduale.Price;
+                            sceduale.Date = Sceduale.Date;
+                            sceduale.TimeStart = Sceduale.TimeStart;
+                            sceduale.TimeEnd = Sceduale.TimeEnd;
 
-                            var user = await _context.Sceduales.FindAsync(sc.Id);
-                            user.TeacherId = sc.TeacherId;
-                            user.StudentId = ui;
-                            user.Price = sc.Price;
-                            user.Date = sc.Date;
-                            user.TimeStart = sc.TimeStart;
-                            user.TimeEnd = sc.TimeEnd;
-
-                            _context.Sceduales.Update(user);
+                            _context.Sceduales.Update(sceduale);
                             await _context.SaveChangesAsync();
-                            var p = await _wallet.SetPayment(sc.Id, type, sc.Price, ui);
-                            return Ok(p);
+                            var payment = await _wallet.SetPayment(Sceduale.Id, type, Sceduale.Price, ui);
+
+                            await _chatHubService.CreateChat(ui, sceduale.TeacherId, sceduale.Id);
+
+                            return Ok(payment);
                         }
-                    return BadRequest("no money in wallet");
-                }
+                        return BadRequest("no money in wallet");
+                    }
                     return BadRequest("Is Booked");
                 }
                 catch (Exception ex)
@@ -198,8 +208,8 @@ namespace Benaa.Api.Controllers
             return BadRequest("Please input all required data");
         }
 
-        
-        [HttpDelete(template:"{Id}")]
+
+        [HttpDelete(template: "{Id}")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -226,7 +236,7 @@ namespace Benaa.Api.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ReaddSchedual()
         {
-            DateTime currentDate = DateTime.Now; 
+            DateTime currentDate = DateTime.Now;
             DateTime startDate = currentDate.AddDays(-7);
 
             if (ModelState.IsValid)

@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
-using Benaa.Infrastructure.Data;
 using Benaa.Core.Entities.General;
-using Microsoft.EntityFrameworkCore;
 using Benaa.Core.Hubs;
 using Benaa.Core.Interfaces.IServices;
 
@@ -54,6 +52,7 @@ namespace Benaa.Infrastructure.Hubs
             await base.OnConnectedAsync();
         }
 
+        //How to deel with mulitMida?? vid, pic and voice note if you can
         public async Task SendMessage(string message, string groupName)
         {
            var createdMessage =  await _chatHubService.CreateMessage(Guid.Parse(groupName), userId, message, MessagesType.Text);
@@ -72,13 +71,13 @@ namespace Benaa.Infrastructure.Hubs
         public async Task AddToGroup(string groupName)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
-            await Clients.Group(groupName).SendAsync("Send", $"{Context.ConnectionId} has joined the chat {groupName}.");
+            await Clients.Group(groupName).SendAsync("SendToGroup", $"{Context.ConnectionId} has joined the chat {groupName}.");
         }
 
         public async Task RemoveFromGroup(string groupName)
         {
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
-            await Clients.Group(groupName).SendAsync("Send", $"{Context.ConnectionId} has left the chat {groupName}.");
+            await Clients.Group(groupName).SendAsync("SendToGroup", $"{Context.ConnectionId} has left the chat {groupName}.");
         }
 
         public override async Task OnDisconnectedAsync(Exception? exception)
