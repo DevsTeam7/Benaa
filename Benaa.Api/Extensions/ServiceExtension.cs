@@ -1,4 +1,5 @@
 ﻿using Benaa.Core.Entities.General;
+using Benaa.Core.Interfaces.Authentication;
 using Benaa.Core.Interfaces.IRepositories;
 using Benaa.Core.Interfaces.IServices;
 using Benaa.Core.Services;
@@ -20,6 +21,7 @@ namespace Benaa.Api.Extensions
             services.AddScoped<UserManager<User>>();
             services.AddScoped<IScedualeService, ScedualeService>();
             services.AddScoped<IChatHubService, ChatHubService>();
+            services.AddScoped<ITokenGeneration, TokenGeneration>();
             #endregion
 
             #region Repositories

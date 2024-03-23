@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Benaa.Core.Entities.DTOs;
 using Benaa.Core.Entities.General;
+using Benaa.Core.Interfaces.Authentication;
 using Benaa.Core.Interfaces.IServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -8,7 +9,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-namespace Benaa.Core.Services
+
+namespace Benaa.Infrastructure.Services
 {
     public class AuthService : IAuthService
     {
@@ -16,15 +18,18 @@ namespace Benaa.Core.Services
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
+        private readonly ITokenGeneration _tokenGeneration;
 
 
         public AuthService(UserManager<User> userManager, IConfiguration config,
-            RoleManager<IdentityRole> roleManager, IMapper mapper)
+            RoleManager<IdentityRole> roleManager, IMapper mapper
+            ,ITokenGeneration tokenGeneration)
         {
             _roleManager = roleManager;
             _userManager = userManager;
             _mapper = mapper;
             _config = config;
+            _tokenGeneration = tokenGeneration;
         }
 
         private async Task<bool> IsUserExist(RegisterRequestDto newUser)
@@ -73,7 +78,7 @@ namespace Benaa.Core.Services
             if (user != null && await _userManager.CheckPasswordAsync(user, applictionUser.Passwrod))
             {
                 var userRoles = await _userManager.GetRolesAsync(user);
-                var token = GenerateTokenString(user, userRoles);
+                var token = _tokenGeneration.GenerateTokenString(user, userRoles);
                 return (token);
             }
             return string.Empty;

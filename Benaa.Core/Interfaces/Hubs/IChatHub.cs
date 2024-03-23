@@ -1,4 +1,4 @@
-﻿namespace Benaa.Core.Hubs
+﻿namespace Benaa.Core.Interfaces.Hubs
 {
     public interface IChatHub
     {
