@@ -1,12 +1,12 @@
 ﻿using Benaa.Core.Entities.DTOs;
 using Benaa.Core.Entities.General;
+using ErrorOr;
 
 namespace Benaa.Core.Interfaces.IServices
 {
     public interface IAuthService
     {
-        string GenerateTokenString(User user, IList<string> roles);
-        Task<User> Registration(RegisterRequestDto user);
-        Task<string> Login(LoginRequestDto ApplicationUser);
+        Task<ErrorOr<LoginRequestDto.Response>> Login(LoginRequestDto.Request applictionUser);
+        Task<ErrorOr<User?>> Registration(RegisterRequestDto newUser);
     }
 }

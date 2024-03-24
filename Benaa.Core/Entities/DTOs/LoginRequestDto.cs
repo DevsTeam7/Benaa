@@ -2,7 +2,18 @@
 {
     public class LoginRequestDto
     {
-        public string Email { get; set; }
-        public string Passwrod { get; set; }
+        public class Request
+        {
+            public required string Email { get; set; }
+            public required string Password { get; set; }
+        }
+
+        public class Response
+        {
+            public required string Token { get; set; }
+            public required string FirstName { get; set; }
+            public required string LastName { get; set; }
+            public required bool ImageUrl { get; set; }
+        }
     }
 }

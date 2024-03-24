@@ -5,10 +5,8 @@ using Benaa.Core.Interfaces.Authentication;
 using Benaa.Core.Interfaces.IServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using ErrorOr;
+
 
 namespace Benaa.Infrastructure.Services
 {
@@ -23,7 +21,7 @@ namespace Benaa.Infrastructure.Services
 
         public AuthService(UserManager<User> userManager, IConfiguration config,
             RoleManager<IdentityRole> roleManager, IMapper mapper
-            ,ITokenGeneration tokenGeneration)
+            , ITokenGeneration tokenGeneration)
         {
             _roleManager = roleManager;
             _userManager = userManager;
@@ -43,7 +41,7 @@ namespace Benaa.Infrastructure.Services
         {
             User user = _mapper.Map<User>(newUser);
             user.UserName = newUser.Email;
-           
+
             var createUserResult = await _userManager.CreateAsync(user, newUser.Password);
             if (!createUserResult.Succeeded)
                 return null;
@@ -57,59 +55,43 @@ namespace Benaa.Infrastructure.Services
 
         }
 
-        public async Task<User?> Registration(RegisterRequestDto newUser)
+        public async Task<ErrorOr<User?>> Registration(RegisterRequestDto newUser)
         {
             if (await IsUserExist(newUser))
-                return null;
+                return Error.Conflict(description: "The Email Exist");
 
             User user = await CreateUser(newUser);
-            if (user != null)
+            if (user is not null)
             {
                 if (await IsRoleExist(newUser))
                     await _userManager.AddToRoleAsync(user, newUser.Role);
                 return (user);
             }
-            return null;
+            return Error.Failure(description: "Faild To Create the Account");
         }
 
-        public async Task<string> Login(LoginRequestDto applictionUser)
+        public async Task<ErrorOr<LoginRequestDto.Response>> Login(LoginRequestDto.Request applictionUser)
         {
             var user = await _userManager.FindByEmailAsync(applictionUser.Email);
-            if (user != null && await _userManager.CheckPasswordAsync(user, applictionUser.Passwrod))
+            if (user is null)
+                return Error.NotFound(description: "The Email Does not Exist");
+
+            bool IsPassWordCorrect = await _userManager.CheckPasswordAsync(user, applictionUser.Password);
+            if (IsPassWordCorrect)
             {
                 var userRoles = await _userManager.GetRolesAsync(user);
                 var token = _tokenGeneration.GenerateTokenString(user, userRoles);
-                return (token);
+
+                LoginRequestDto.Response? authenticatedUser = _mapper.Map<LoginRequestDto.Response>(user);
+
+                if (authenticatedUser is null) return Error.Unexpected();
+
+                authenticatedUser.Token = token;
+
+                return authenticatedUser;
             }
-            return string.Empty;
+            return Error.Validation(description: "The Password Is Wrong!");
         }
 
-        public string GenerateTokenString(User user, IList<string> userRoles)
-        {
-            IList<Claim> claims = new List<Claim> {
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.NameIdentifier, user.Id),
-            };
-
-            foreach (var userRole in userRoles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, userRole));
-            }
-
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("Jwt:Key").Value));
-            SigningCredentials signinCred = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            JwtSecurityToken securityToken = new JwtSecurityToken(
-                claims: claims,
-                expires: DateTime.Now.AddDays(3),
-                issuer: _config.GetSection("Jwt:Audience").Value,
-                audience: _config.GetSection("Jwt:Issuer").Value,
-                signingCredentials: signinCred
-                );
-
-            string tokenString = new JwtSecurityTokenHandler().WriteToken(securityToken);
-
-            return tokenString;
-        }
     }
 }
