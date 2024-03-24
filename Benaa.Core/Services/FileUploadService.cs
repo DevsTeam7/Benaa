@@ -1,34 +1,62 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Benaa.Core.Utils.FileUploadTypes;
 
 namespace Benaa.Core.Services
 {
     public class FileUploadService
     {
-        public async Task UploadFile(IFormFile file)
+        public async Task<string> UploadFile(IFormFile file)
         {
+            var filePath = "";
+            var uniqueIdentifier = Guid.NewGuid().ToString();
+            var timestamp = DateTime.Now.Ticks.ToString();
             if (file != null && file.Length > 0)
             {
                 var extension = ("." + file.FileName.Split('.')[file.FileName.Split('.').Length-1]).ToLower();
-                var fileName = "userId+name" + extension;
+                var fileName = $"{uniqueIdentifier}{timestamp}" + extension;
 
-                if (extension == ".pdf")
-                    fileName = "jjj";
-
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Upload", "UserImge");
-
-                if (!Directory.Exists(filePath))
+                var _filePath = DetermineFileTypeToSaveIt(extension);
+                if (!string.IsNullOrEmpty(_filePath))
                 {
-                    Directory.CreateDirectory(filePath);
+                    filePath = _filePath;
                 }
-
-                var newFileDirectory = Path.Combine(filePath, fileName);
-                using (var stream = new FileStream(newFileDirectory, FileMode.Create))
-                {
-                   await file.CopyToAsync(stream);
-                }
-                //save the url or return it to be saved
-                //item1.Image_1 = "~/UserImg/" + file.FileName;
+                CreateDirectory(filePath);
+                var newFileDirectory = Path.Combine(filePath,fileName);
+                CareateFile(newFileDirectory, file);
+                return filePath;
             }
+            return string.Empty;
+        }
+
+        private void CreateDirectory(string path)
+        {
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+        }
+        private string CareateFile(string filePath, IFormFile file)
+        {
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                file.CopyToAsync(stream);
+            }
+            return filePath;
+        }
+
+        private string DetermineFileTypeToSaveIt(string extension)
+        {
+            if (PhoneUploadFile.FileExtensions.Contains(extension))
+            {
+               return Path.Combine(Directory.GetCurrentDirectory(), "Upload", "TeacherCertification");
+            }
+            else if (PhoneUploadFile.ImageExtensions.Contains(extension))
+            {
+                return Path.Combine(Directory.GetCurrentDirectory(), "Upload", "UserImge");
+            }
+            //TODO : Video Upload?
+            //filePath = Path.Combine(Directory.GetCurrentDirectory(), "Upload", "");]
+            return string.Empty;
         }
     }
 }
