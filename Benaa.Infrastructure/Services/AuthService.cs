@@ -6,6 +6,11 @@ using Benaa.Core.Interfaces.IServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using ErrorOr;
+using Benaa.Infrastructure.Utils.Users;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using System.Runtime.InteropServices;
+using Benaa.Core.Services;
 
 
 namespace Benaa.Infrastructure.Services
@@ -17,57 +22,67 @@ namespace Benaa.Infrastructure.Services
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
         private readonly ITokenGeneration _tokenGeneration;
+        private readonly IFileUploadService _fileUploadService;
+        private readonly IWalletService _walletService;
 
 
         public AuthService(UserManager<User> userManager, IConfiguration config,
             RoleManager<IdentityRole> roleManager, IMapper mapper
-            , ITokenGeneration tokenGeneration)
+            , ITokenGeneration tokenGeneration, IFileUploadService fileUploadService, IWalletService walletService)
         {
             _roleManager = roleManager;
             _userManager = userManager;
             _mapper = mapper;
             _config = config;
             _tokenGeneration = tokenGeneration;
+            _fileUploadService = fileUploadService;
+            _walletService = walletService;
         }
 
-        private async Task<bool> IsUserExist(RegisterRequestDto newUser)
+        private async Task<bool> IsUserExist(User newUser)
         {
             var userExists = await _userManager.FindByEmailAsync(newUser.Email);
             if (userExists != null) return true;
             return false;
         }
 
-        private async Task<User> CreateUser(RegisterRequestDto newUser)
+        private async Task<User> CreateUser(User newUser, IFormFile? file, string Password)
         {
-            User user = _mapper.Map<User>(newUser);
-            user.UserName = newUser.Email;
 
-            var createUserResult = await _userManager.CreateAsync(user, newUser.Password);
+            if (file is not null && file.Length > 0)
+            {
+                var UploadedFile = await _fileUploadService.UploadFile(file);
+                if (!string.IsNullOrEmpty(UploadedFile))
+                    newUser.CertificationUrl = UploadedFile;
+            }
+
+            newUser.UserName = newUser.Email;
+
+            var createUserResult = await _userManager.CreateAsync(newUser, Password);
+
             if (!createUserResult.Succeeded)
                 return null;
-            return user;
+
+            return newUser;
         }
 
-        private async Task<bool> IsRoleExist(RegisterRequestDto newUser)
+        public async Task<ErrorOr<User>> RegisterStudent(StudentRegisterDto newStudent)
         {
-            if (await _roleManager.RoleExistsAsync(newUser.Role)) return true;
-            return false;
-
-        }
-
-        public async Task<ErrorOr<User?>> Registration(RegisterRequestDto newUser)
-        {
+            User newUser = _mapper.Map<User>(newStudent);
             if (await IsUserExist(newUser))
                 return Error.Conflict(description: "The Email Exist");
 
-            User user = await CreateUser(newUser);
-            if (user is not null)
+            User user = await CreateUser(newUser, null, newStudent.Password);
+            var walletId = await _walletService.CraeteWallet();
+            user.WalletId = walletId;
+
+            if (user is null)
             {
-                if (await IsRoleExist(newUser))
-                    await _userManager.AddToRoleAsync(user, newUser.Role);
-                return (user);
+                return Error.Failure(description: "Faild To Create the Account");
             }
-            return Error.Failure(description: "Faild To Create the Account");
+            await _userManager.AddToRoleAsync(user, Role.Student);
+
+            return user;
         }
 
         public async Task<ErrorOr<LoginRequestDto.Response>> Login(LoginRequestDto.Request applictionUser)
@@ -84,13 +99,33 @@ namespace Benaa.Infrastructure.Services
 
                 LoginRequestDto.Response? authenticatedUser = _mapper.Map<LoginRequestDto.Response>(user);
 
+
                 if (authenticatedUser is null) return Error.Unexpected();
 
                 authenticatedUser.Token = token;
+                authenticatedUser.ImageUrl = user.ImageUrl;
 
                 return authenticatedUser;
             }
             return Error.Validation(description: "The Password Is Wrong!");
+        }
+
+
+        public async Task<ErrorOr<User>> RegisterTeacher(TeacherRegisterDto newTeacher)
+        {
+            User newUser = _mapper.Map<User>(newTeacher);
+            if (await IsUserExist(newUser))
+                return Error.Conflict(description: "The Email Exist");
+
+            User user = await CreateUser(newUser, newTeacher.Certifications, newTeacher.Password);
+
+            if (user is null)
+            {
+                return Error.Failure(description: "Faild To Create the Account");
+            }
+            await _userManager.AddToRoleAsync(user, Role.Teacher);
+
+            return user;
         }
 
     }

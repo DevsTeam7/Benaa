@@ -10,7 +10,7 @@
 
         Task<object> SetPayment(Guid itemID, string type, decimal price, string ui);
 
-
+        Task<Guid> CraeteWallet();
 
 
     }

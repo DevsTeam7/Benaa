@@ -21,6 +21,12 @@ namespace Benaa.Core.Services
             _walletRepository = walletRepository;
             _paymentRepository = paymentRepository;
         }
+        public async Task<Guid> CraeteWallet()
+        {
+            Wallet wallet = new Wallet();
+            var createdWallet = await _walletRepository.Create(wallet);
+            return createdWallet.Id;
+        }
 
         public async Task<decimal> ChargeWallet(string ui, string code)
         {

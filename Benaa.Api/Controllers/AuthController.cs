@@ -1,10 +1,11 @@
 ﻿using Benaa.Core.Entities.DTOs;
 using Benaa.Core.Entities.General;
 using Benaa.Core.Interfaces.IServices;
-using Microsoft.AspNetCore.Authorization;
+using Benaa.Core.Utils.FileUploadTypes;
+using ErrorOr;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualBasic;
+
 
 namespace Benaa.Api.Controllers
 {
@@ -14,50 +15,82 @@ namespace Benaa.Api.Controllers
     {
         private readonly IAuthService _authService;
         private readonly UserManager<User> _userManager;
+        private readonly IFileUploadService _fileUploadService;
 
-        public AuthController(IAuthService authService, UserManager<User> userManager)
+        public AuthController(IAuthService authService, UserManager<User> userManager,IFileUploadService fileUploadService)
         {
             _authService = authService;
             _userManager = userManager;
-         
+            _fileUploadService = fileUploadService;
         }
-        [HttpPost("Register")]
-       
+
+        [HttpPost("RegisterStudent")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Register(RegisterRequestDto newUser)
+        public async Task<IActionResult> RegisterStudent([FromForm] StudentRegisterDto newUser)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    User user = await _authService.Registration(newUser);
-                    if (user == null) { return BadRequest("Faild to create the user! try again"); }
-                    return Created("", user);
-                 }
+                    ErrorOr<User> result = await _authService.RegisterStudent(newUser);
+                    if (result.IsError) { return BadRequest(result.Errors); }
+                    else { return Created("Student Created", result); }
+                     
+                }
                 catch (Exception ex)
                 {
                     return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
                 }
             }
-            return BadRequest("Please input all required data");
+            return BadRequest("Please input all required filds");
+        }
+
+        [HttpPost("RegisterTeacher")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> RegisterTeacher([FromForm] TeacherRegisterDto newTeacher)
+        {
+            if (ModelState.IsValid)
+            {
+                var fileExtension = _fileUploadService.GetFileExtension(newTeacher.Certifications.FileName);
+                if (PhoneUploadFile.FileExtensions.Contains(fileExtension) is false)
+                {
+                    return BadRequest("Please Check File Type");
+                }
+                try
+                {
+                    ErrorOr<User> result = await _authService.RegisterTeacher(newTeacher);
+                    if (result.IsError) { return BadRequest(result.Errors); }
+                    else { return Created("Student Created", result); }
+
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
+            }
+            return BadRequest("Please input all required filds");
         }
 
         [HttpPost("Login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Login(LoginRequestDto applictionUser)
+        public async Task<ActionResult<LoginRequestDto.Response>> Login(LoginRequestDto.Request applictionUser)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var userExist = await _authService.Login(applictionUser);
-                    if (!string.IsNullOrEmpty(userExist)) return Ok(userExist);
+                    var result = await _authService.Login(applictionUser);
+                    if(result.IsError) { return Unauthorized("The email or password is incorrect"); }
+                    else { return Ok(result); }
+                    //if (!string.IsNullOrEmpty(userExist)) return Ok(userExist);
                     //TODO: Check if the user exist and the password is incorrect
-                    return Unauthorized("The email or password is incorrect");
+
                 }
                 catch (Exception ex)
                 {
@@ -67,15 +100,6 @@ namespace Benaa.Api.Controllers
             return BadRequest("Please input all required data");
         }
 
-        [HttpGet("GetCurrentUser")]
-        public string GetCurrentUser()
-        {
-            if (User.Identity!.IsAuthenticated)
-            {
-                var userId = _userManager.GetUserId(HttpContext.User);
-                return userId!;
-            }
-            return "the user is not authenticated";
-        }
     }
+
 }

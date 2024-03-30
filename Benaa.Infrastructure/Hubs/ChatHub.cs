@@ -2,7 +2,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Benaa.Core.Entities.General;
-using Benaa.Core.Hubs;
+using Benaa.Infrastructure.Hubs;
+using Benaa.Core.Interfaces.Hubs;
 using Benaa.Core.Interfaces.IServices;
 
 

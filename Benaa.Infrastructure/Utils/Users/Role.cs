@@ -2,9 +2,9 @@
 {
     public static class Role
     {
-        public static readonly string Student = "Student";
-        public static readonly string Teacher = "Teacher";
-        public static readonly string Admin = "Admin";
-        public static readonly string Owner = "Owner";
+        public static string Student = "STUDENT";
+        public static string Teacher = "TEACHER";
+        public static string Admin = "ADMIN";
+        public static string Owner = "OWNER";
     }
 }
