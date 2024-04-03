@@ -1,17 +1,14 @@
 ﻿using Benaa.Core.Entities.DTOs;
 using Benaa.Core.Entities.General;
 using Benaa.Core.Interfaces.IServices;
-using Benaa.Core.Services;
 using Benaa.Core.Utils.FileUploadTypes;
 using Benaa.Infrastructure.Services;
-using ErrorOr;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Runtime.InteropServices;
 
 namespace Benaa.Api.Controllers
 {
-    [Route("api/User")]
+    [Route("api/user")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -37,14 +34,12 @@ namespace Benaa.Api.Controllers
             }
             try
             {
-                if (User.Identity!.IsAuthenticated)
-                {
+       
                     var userId = _userManager.GetUserId(HttpContext.User);
                     var result = await _userService.UploadImage(UserImage, userId);
                     if (result.IsError) { return BadRequest(result.Errors); }
                     return Ok(result);
-                }
-                else return Unauthorized();
+  
 
             }
             catch (Exception ex)
@@ -54,6 +49,12 @@ namespace Benaa.Api.Controllers
         }
 
         //TODO: ALL USER Settings done here  
+        [HttpPost("corseCreation")]
+        public void post([FromForm] CourseDto course)
+        {
+
+        }
+       
 
     }
 }

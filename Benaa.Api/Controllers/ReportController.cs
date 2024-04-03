@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Benaa.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/report")]
     [ApiController]
     public class ReportController : ControllerBase
     {

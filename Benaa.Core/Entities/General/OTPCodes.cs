@@ -8,8 +8,7 @@ namespace Benaa.Core.Entities.General
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
-        public string Code { get; set; }
-        public bool Used { get; set; }
+        public required string Code { get; set; }
         public OtpType Type { get; set; }
 
         public required string UserId { get; set; }
@@ -18,8 +17,8 @@ namespace Benaa.Core.Entities.General
 
     public enum OtpType
     {
-        Confirmation,
-        ResetPassword
+        Confirmation = 0,
+        ResetPassword = 1,
     }
 
 }

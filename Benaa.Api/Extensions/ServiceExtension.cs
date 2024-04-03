@@ -24,6 +24,9 @@ namespace Benaa.Api.Extensions
             services.AddScoped<ITokenGeneration, TokenGeneration>();
             services.AddScoped<IFileUploadService, FileUploadService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IOTPService, OTPService>();
+            services.AddScoped<ICourseService, CourseService>();
             #endregion
 
             #region Repositories

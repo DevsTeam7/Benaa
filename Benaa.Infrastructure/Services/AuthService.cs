@@ -18,25 +18,26 @@ namespace Benaa.Infrastructure.Services
     public class AuthService : IAuthService
     {
         private readonly UserManager<User> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly IConfiguration _config;
         private readonly IMapper _mapper;
         private readonly ITokenGeneration _tokenGeneration;
         private readonly IFileUploadService _fileUploadService;
         private readonly IWalletService _walletService;
-
-
-        public AuthService(UserManager<User> userManager, IConfiguration config,
-            RoleManager<IdentityRole> roleManager, IMapper mapper
-            , ITokenGeneration tokenGeneration, IFileUploadService fileUploadService, IWalletService walletService)
+        private readonly IOTPService _otpService;
+        private readonly IEmailService _emailService;
+        public AuthService(UserManager<User> userManager, IMapper mapper
+            , ITokenGeneration tokenGeneration,
+            IFileUploadService fileUploadService,
+            IWalletService walletService,
+            IEmailService emailService,
+            IOTPService oTPService)
         {
-            _roleManager = roleManager;
             _userManager = userManager;
             _mapper = mapper;
-            _config = config;
             _tokenGeneration = tokenGeneration;
             _fileUploadService = fileUploadService;
             _walletService = walletService;
+            _otpService = oTPService;
+            _emailService = emailService;
         }
 
         private async Task<bool> IsUserExist(User newUser)
@@ -99,15 +100,14 @@ namespace Benaa.Infrastructure.Services
 
                 LoginRequestDto.Response? authenticatedUser = _mapper.Map<LoginRequestDto.Response>(user);
 
-
                 if (authenticatedUser is null) return Error.Unexpected();
-
+                if (user.EmailConfirmed is false) { authenticatedUser.EmailConfirmed = user.EmailConfirmed; }
                 authenticatedUser.Token = token;
                 authenticatedUser.ImageUrl = user.ImageUrl;
 
                 return authenticatedUser;
             }
-            return Error.Validation(description: "The Password Is Wrong!");
+            return Error.Unauthorized(description: "The Password Is Wrong!");
         }
 
 

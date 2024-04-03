@@ -20,8 +20,9 @@ namespace Benaa.Infrastructure.Repositories
         }
         public async Task<bool> VerifyCode(string code, string userId)
         {
-            var Code = await _dbContext.OTPCodes.FirstOrDefaultAsync(user => user.UserId == userId && user.Code == code);
-            if (Code == null) throw new NotFoundException() ;
+            var oTPCodes = await _dbContext.OTPCodes.Where(user => user.UserId == userId && user.Code == code).FirstOrDefaultAsync();
+            if (oTPCodes == null) throw new NotFoundException();
+            await Delete(oTPCodes);
             return true;
         }
     }

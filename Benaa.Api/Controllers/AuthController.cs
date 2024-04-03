@@ -3,25 +3,33 @@ using Benaa.Core.Entities.General;
 using Benaa.Core.Interfaces.IServices;
 using Benaa.Core.Utils.FileUploadTypes;
 using ErrorOr;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 
 namespace Benaa.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     [ApiController]
+
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
         private readonly UserManager<User> _userManager;
         private readonly IFileUploadService _fileUploadService;
+        private readonly IOTPService _otpService;
+        private readonly IEmailService _emailService;
 
-        public AuthController(IAuthService authService, UserManager<User> userManager,IFileUploadService fileUploadService)
+        public AuthController(IAuthService authService,
+            UserManager<User> userManager, IFileUploadService fileUploadService,
+            IOTPService otpService, IEmailService emailService)
         {
             _authService = authService;
             _userManager = userManager;
             _fileUploadService = fileUploadService;
+            this._otpService = otpService;
+            _emailService = emailService;
         }
 
         [HttpPost("RegisterStudent")]
@@ -35,9 +43,9 @@ namespace Benaa.Api.Controllers
                 try
                 {
                     ErrorOr<User> result = await _authService.RegisterStudent(newUser);
-                    if (result.IsError) { return BadRequest(result.Errors); }
-                    else { return Created("Student Created", result); }
-                     
+                    if (result.IsError) { return BadRequest(result.ErrorsOrEmptyList); }
+                    else { return Created("Student Created", result.Value); }
+
                 }
                 catch (Exception ex)
                 {
@@ -63,8 +71,8 @@ namespace Benaa.Api.Controllers
                 try
                 {
                     ErrorOr<User> result = await _authService.RegisterTeacher(newTeacher);
-                    if (result.IsError) { return BadRequest(result.Errors); }
-                    else { return Created("Student Created", result); }
+                    if (result.IsError) { return BadRequest(result.ErrorsOrEmptyList); }
+                    else { return Created("Student Created", result.Value); }
 
                 }
                 catch (Exception ex)
@@ -86,8 +94,8 @@ namespace Benaa.Api.Controllers
                 try
                 {
                     var result = await _authService.Login(applictionUser);
-                    if(result.IsError) { return Unauthorized("The email or password is incorrect"); }
-                    else { return Ok(result); }
+                    if (result.IsError) { return Unauthorized("The email or password is incorrect"); }
+                    else { return Ok(result.Value); }
                     //if (!string.IsNullOrEmpty(userExist)) return Ok(userExist);
                     //TODO: Check if the user exist and the password is incorrect
 
@@ -100,6 +108,29 @@ namespace Benaa.Api.Controllers
             return BadRequest("Please input all required data");
         }
 
+        [HttpPost("GenerateOtp")]
+        [Authorize]
+        public async Task<IActionResult> GenerateOtp(int otpType)
+        {
+
+            string userId = _userManager.GetUserId(HttpContext.User);
+            User user = await _userManager.FindByIdAsync(userId);
+            //check if the user is not null
+            var code = await _otpService.GenerateOTP(userId, otpType);
+            if (string.IsNullOrEmpty(code)) { return BadRequest("Faild To Crete The Code"); }
+            _emailService.SendEmailAsync(user.Email, code);
+            return Ok("Email Is Sent");
+        }
+
+        [HttpPost("VerifyOTP")]
+        public async Task<IActionResult> VerifyOTP(string otpCode)
+        {
+            string userId = _userManager.GetUserId(HttpContext.User);
+            bool IsOtpVerfied = await _otpService.VerifyOTP(otpCode, userId);
+            if (IsOtpVerfied) { return Ok(IsOtpVerfied); }
+            return BadRequest(IsOtpVerfied);
+
+        }
     }
 
 }

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Benaa.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/scheduale")]
     [ApiController]
     public class SchedualeController : ControllerBase
     {

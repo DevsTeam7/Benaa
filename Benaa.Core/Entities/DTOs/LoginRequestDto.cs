@@ -14,6 +14,7 @@
             public required string FirstName { get; set; }
             public required string LastName { get; set; }
             public required string ImageUrl { get; set; }
+            public required bool EmailConfirmed { get; set; }
         }
     }
 }
