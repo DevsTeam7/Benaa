@@ -18,6 +18,7 @@ namespace Benaa.Api.Extensions
             services.AddScoped<IScedualeService, ScedualeService>();
             services.AddScoped<UserManager<User>>();
             services.AddScoped<IScedualeService, ScedualeService>();
+            services.AddScoped<IOwnerService, OwnerService>();
             #endregion
 
             #region Repositories
@@ -28,6 +29,7 @@ namespace Benaa.Api.Extensions
             services.AddTransient<IPaymentRepositoty, PaymentRepository>();
             services.AddTransient<IReportRepository, ReportRepository>();
             services.AddTransient<ISchedualRepository, SchedualRepository>();
+            services.AddTransient<IOwnerRepository, OwnerRepository>();
             #endregion
 
 

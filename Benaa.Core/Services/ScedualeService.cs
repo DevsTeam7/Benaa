@@ -49,7 +49,7 @@ namespace Benaa.Core.Services
                     TimeEnd = Te,
                     Price = i.Price,
                     TeacherId = i.TeacherId,
-                    StudentId = i.StudentId
+                    //StudentId = i.StudentId
                 };
                 await _schedualRepository.Create(scheduale);               
             }

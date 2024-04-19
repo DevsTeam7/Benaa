@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Benaa.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240303173827_DBbena")]
-    partial class DBbena
+    [Migration("20240324192822_add")]
+    partial class add
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -279,7 +279,7 @@ namespace Benaa.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<decimal?>("Amount")
+                    b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
                     b.Property<DateTimeOffset>("CreatedAt")
@@ -288,8 +288,8 @@ namespace Benaa.Infrastructure.Migrations
                     b.Property<Guid>("ItemId")
                         .HasColumnType("uuid");
 
-                    b.Property<bool?>("Status")
-                        .HasColumnType("boolean");
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
 
                     b.Property<string>("StudentId")
                         .IsRequired()
@@ -487,6 +487,9 @@ namespace Benaa.Infrastructure.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("Role")
+                        .HasColumnType("text");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
 
@@ -594,22 +597,22 @@ namespace Benaa.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "073f6c85-258d-438c-9573-6d93c30d50c2",
+                            Id = "72e4afff-cec0-46a6-83fa-9fc102b07bf3",
                             Name = "Student"
                         },
                         new
                         {
-                            Id = "7962962f-f71a-4b59-b95d-bc357ebd7676",
+                            Id = "1e248992-0302-41c8-830c-3f78bc828edb",
                             Name = "Teacher"
                         },
                         new
                         {
-                            Id = "08bde265-8689-4baa-aab7-82835fea3af6",
+                            Id = "8e6b3567-7ed6-4dbc-a795-aaf425a72285",
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = "d9d8cdb2-f747-48c0-8656-a1d22a37dc61",
+                            Id = "fffd2eda-f423-45eb-b848-08b2fca67646",
                             Name = "Owner"
                         });
                 });

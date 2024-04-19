@@ -20,7 +20,7 @@ namespace Benaa.Core.Entities.General
         public string TeacherId { get; set; }
         [ForeignKey(nameof(Student))]
 
-        public string? StudentId { get; set; } 
+        public string? StudentId { get; set; } = null;  
         public virtual User Teacher { get; set; }
         public virtual User? Student { get; set; } 
     }

@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Benaa.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class DBbena : Migration
+    public partial class add : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -119,6 +119,7 @@ namespace Benaa.Infrastructure.Migrations
                     IsAgreedToTerms = table.Column<bool>(type: "boolean", nullable: true),
                     IsApproved = table.Column<bool>(type: "boolean", nullable: true),
                     Gender = table.Column<bool>(type: "boolean", nullable: true),
+                    Role = table.Column<string>(type: "text", nullable: true),
                     WalletId = table.Column<Guid>(type: "uuid", nullable: true),
                     CertificationId = table.Column<Guid>(type: "uuid", nullable: true),
                     BankInformationId = table.Column<Guid>(type: "uuid", nullable: true),
@@ -325,10 +326,10 @@ namespace Benaa.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Amount = table.Column<decimal>(type: "numeric", nullable: true),
+                    Amount = table.Column<decimal>(type: "numeric", nullable: false),
                     Type = table.Column<string>(type: "text", nullable: false),
                     ItemId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Status = table.Column<bool>(type: "boolean", nullable: true),
+                    Status = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     TeacherId = table.Column<string>(type: "text", nullable: false),
                     StudentId = table.Column<string>(type: "text", nullable: false)
@@ -519,10 +520,10 @@ namespace Benaa.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "073f6c85-258d-438c-9573-6d93c30d50c2", null, "Student", null },
-                    { "08bde265-8689-4baa-aab7-82835fea3af6", null, "Admin", null },
-                    { "7962962f-f71a-4b59-b95d-bc357ebd7676", null, "Teacher", null },
-                    { "d9d8cdb2-f747-48c0-8656-a1d22a37dc61", null, "Owner", null }
+                    { "1e248992-0302-41c8-830c-3f78bc828edb", null, "Teacher", null },
+                    { "72e4afff-cec0-46a6-83fa-9fc102b07bf3", null, "Student", null },
+                    { "8e6b3567-7ed6-4dbc-a795-aaf425a72285", null, "Admin", null },
+                    { "fffd2eda-f423-45eb-b848-08b2fca67646", null, "Owner", null }
                 });
 
             migrationBuilder.CreateIndex(
