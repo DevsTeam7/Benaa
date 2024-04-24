@@ -21,7 +21,7 @@ namespace Benaa.Core.Entities.General
         public bool? IsFiles { get; set; }
         public bool? IsRecorded { get; set; }
         public bool? IsPublished { get; set; }
-        public DateTime? CreatedAt { get; set; } = DateTime.Now;
+        public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
         [Required]
         [ForeignKey(nameof(User))]
         public string? TeacherId { get; set; }

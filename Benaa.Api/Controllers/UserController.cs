@@ -48,13 +48,6 @@ namespace Benaa.Api.Controllers
             };
         }
 
-        //TODO: ALL USER Settings done here  
-        [HttpPost("corseCreation")]
-        public void post([FromForm] CourseDto course)
-        {
-
-        }
-       
-
+      //TODO: ALL USER Settings done here  
     }
 }

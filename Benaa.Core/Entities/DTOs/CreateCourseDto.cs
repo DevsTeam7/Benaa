@@ -9,7 +9,7 @@ namespace Benaa.Core.Entities.DTOs
         public string? Description { get; set; }
         public required decimal Price { get; set; }
         public required IFormFile VideoUrl { get; set; }
-        public required CourseType Type { get; set; }
+        public required int Type { get; set; }
         public required IFormFile ImageUrl { get; set; }
 
         public string? TargtedPeople { get; set; }
@@ -17,7 +17,7 @@ namespace Benaa.Core.Entities.DTOs
         public bool? IsFiles { get; set; }
         public bool? IsRecorded { get; set; }
         public bool IsPublished { get; set; }
-        public required string TeacherId { get; set; }
+        public string? TeacherId { get; set; }
     }
 
 }

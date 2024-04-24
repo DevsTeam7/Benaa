@@ -1,25 +1,34 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Benaa.Core.Utils.FileUploadTypes;
 using Benaa.Core.Interfaces.IServices;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Benaa.Core.Services
 {
     public class FileUploadService : IFileUploadService
     {
+        private readonly IHostingEnvironment _environment;
+        public FileUploadService(IHostingEnvironment environment)
+        {
+            _environment = environment;
+        }
+
         public async Task<string> UploadFile(IFormFile file)
         {
             var filePath = "";
             var uniqueIdentifier = Guid.NewGuid().ToString();
             var timestamp = DateTime.Now.Ticks.ToString();
+
             if (file != null && file.Length > 0)
             {
                 var extension = GetFileExtension(file.FileName);
                 var fileName = $"{uniqueIdentifier}{timestamp}" + extension;
 
-                var _filePath = DetermineFileTypeToSaveIt(extension);
-                if (!string.IsNullOrEmpty(_filePath))
+                //user image and certfication
+                var path = DetermineFileTypeToSaveIt(extension);
+                if (!string.IsNullOrEmpty(path))
                 {
-                    filePath = _filePath;
+                    filePath = path;
                 }
                 CreateDirectory(filePath);
                 var newFileDirectory = Path.Combine(filePath, fileName);
@@ -28,7 +37,6 @@ namespace Benaa.Core.Services
             }
             return string.Empty;
         }
-
         private void CreateDirectory(string path)
         {
             if (!Directory.Exists(path))
@@ -43,26 +51,27 @@ namespace Benaa.Core.Services
                 file.CopyToAsync(stream);
             }
         }
-
         private string DetermineFileTypeToSaveIt(string extension)
         {
+            string wwwPath = Path.GetFileName(_environment.WebRootPath);
             if (PhoneUploadFile.FileExtensions.Contains(extension))
             {
-                return Path.Combine(Directory.GetCurrentDirectory(), "Upload", "TeacherCertification");
+                return Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Upload", "TeacherCertification");
             }
             else if (PhoneUploadFile.ImageExtensions.Contains(extension))
             {
-                return Path.Combine(Directory.GetCurrentDirectory(), "Upload", "UserImge");
+                return Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Upload", "UserImge");
             }
-            //TODO : Video Upload?
-            //filePath = Path.Combine(Directory.GetCurrentDirectory(), "Upload", "");]
+            else if (PhoneUploadFile.VideoExtensions.Contains(extension))
+            {
+                return Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Courses");
+            }
             return string.Empty;
         }
-
         public string GetFileExtension(string fileName)
         {
             var lsitOfSplitPath = fileName.Split('.');
-            var lastIndex = lsitOfSplitPath.Length -1;
+            var lastIndex = lsitOfSplitPath.Length - 1;
             return ("." + lsitOfSplitPath[lastIndex]).ToLower();
         }
     }

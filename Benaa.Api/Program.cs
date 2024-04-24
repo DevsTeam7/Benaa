@@ -12,12 +12,24 @@ using Benaa.Infrastructure.Extensions;
 using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
+//builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = ) ;
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<ApplicationDbContext>(optins =>
    optins.UseNpgsql(
    builder.Configuration.GetSection("ConnectionStrings:Defult").Value
 ));
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "allowAll",
+              policy =>
+              {
+                  policy.AllowAnyHeader()
+                      .AllowAnyMethod()
+                      .SetIsOriginAllowed((host) => true)
+                      .AllowCredentials();
+              });
+});
 
 builder.Services.AddInfrastructure();
 
@@ -110,6 +122,7 @@ builder.Services.AddSwaggerGen(c => {
 });
 
 
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -119,11 +132,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors("allowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.UseStaticFiles();
 //add Hubs
 app.AddHubs();
 

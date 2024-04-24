@@ -1,10 +1,13 @@
 ﻿using Benaa.Core.Entities.DTOs;
+using Benaa.Core.Entities.General;
+using ErrorOr;
 
 namespace Benaa.Core.Interfaces.IServices
 {
     public interface ICourseService
     {
-        Task Create(CourseDto newCourse);
+        Task<ErrorOr<Course>> CreateCourse(CourseDto newCourse);
+        Task<ErrorOr<Guid>> CreateCourseOnly(CreateCourseDto newCourse, string teacherId);
         Task Delete(Guid courseId);
         Task<CourseDto> GetById(string courseId); //+rates
         Task<IEnumerable<CourseDto>> GetByType(string courseType);
