@@ -9,10 +9,10 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using Benaa.Infrastructure.Extensions;
-using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
-//builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = ) ;
+//long maxFileSize = 1L * 1024L * 1024L * 1024L; // 1 GB
+//builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = maxFileSize) ;
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<ApplicationDbContext>(optins =>

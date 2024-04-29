@@ -15,11 +15,17 @@ namespace Benaa.Core.Services
     {
         private readonly IWalletRepository _walletRepository;
         private readonly IPaymentRepositoty _paymentRepository;
+        private readonly ISchedualRepository _schedualRepository;
+        private readonly ICourseRepository _courseRepository;
 
-        public WalletService(IWalletRepository walletRepository, IPaymentRepositoty paymentRepository, UserManager<User> userManager)
+
+        public WalletService(IWalletRepository walletRepository, IPaymentRepositoty paymentRepository,
+            UserManager<User> userManager, ISchedualRepository schedualRepository, ICourseRepository courseRepository)
         {
             _walletRepository = walletRepository;
             _paymentRepository = paymentRepository;
+            _schedualRepository = schedualRepository;
+            _courseRepository = courseRepository;
         }
         public async Task<Guid> CraeteWallet()
         {
@@ -68,21 +74,28 @@ namespace Benaa.Core.Services
 
         public async Task<object>SetPayment(Guid itemID, string type, decimal price,string ui)
         {
-           
+            Payment payment = new Payment();
             if (type == "schedual")
             {
-                string Techerid = await _walletRepository.getTecherid(itemID);
-                string Studentid = await _walletRepository.getStudentid(itemID);
-                Payment payment= new Payment();
-                payment.Type = type;
-                payment.Amount= price;
-                payment.ItemId= itemID;            
-                payment.TeacherId= Techerid;
-                payment.StudentId = ui;
-                await _paymentRepository.Create(payment);
-                return payment;
+               var schedual = await _schedualRepository.SelectOneItem(schedual => schedual.Id == itemID);
+                if (schedual == null) { return false; }
+                payment.TeacherId = schedual.TeacherId;
             }
-            return false;   
+            else if(type == "course")
+            {
+                var course = await _courseRepository.SelectOneItem(course => course.Id == itemID);
+                if (course == null){return false; }
+                payment.TeacherId = course.TeacherId;
+            }
+
+            payment.Type = type;
+            payment.Amount = price;
+            payment.ItemId = itemID;
+            payment.StudentId = ui;
+
+            await _paymentRepository.Create(payment);
+            return payment;
+  
         }
 
     }

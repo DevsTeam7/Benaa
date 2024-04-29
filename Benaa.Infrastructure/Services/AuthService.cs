@@ -4,13 +4,9 @@ using Benaa.Core.Entities.General;
 using Benaa.Core.Interfaces.Authentication;
 using Benaa.Core.Interfaces.IServices;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using ErrorOr;
 using Benaa.Infrastructure.Utils.Users;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
-using System.Runtime.InteropServices;
-using Benaa.Core.Services;
 
 
 namespace Benaa.Infrastructure.Services

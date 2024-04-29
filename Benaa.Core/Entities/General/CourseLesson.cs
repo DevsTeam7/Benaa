@@ -9,7 +9,7 @@ namespace Benaa.Core.Entities.General
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         public string? Name { get; set; }
-        public DateTime? CreatedAt { get; set; } = DateTime.Now;
+        public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
         public string? FileUrl { get; set; }
         public Guid? CourseChapterId { get; set; }
 

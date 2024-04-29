@@ -22,7 +22,7 @@ namespace Benaa.Core.Services
             if (file != null && file.Length > 0)
             {
                 var extension = GetFileExtension(file.FileName);
-                var fileName = $"{uniqueIdentifier}{timestamp}" + extension;
+                var fileName = $"{timestamp}{uniqueIdentifier}{extension}";
 
                 //user image and certfication
                 var path = DetermineFileTypeToSaveIt(extension);
@@ -32,7 +32,7 @@ namespace Benaa.Core.Services
                 }
                 CreateDirectory(filePath);
                 var newFileDirectory = Path.Combine(filePath, fileName);
-                CareateFile(newFileDirectory, file);
+                await CareateFile(newFileDirectory, file);
                 return newFileDirectory;
             }
             return string.Empty;
@@ -44,27 +44,27 @@ namespace Benaa.Core.Services
                 Directory.CreateDirectory(path);
             }
         }
-        private void CareateFile(string filePath, IFormFile file)
+        private async Task CareateFile(string filePath, IFormFile file)
         {
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
-                file.CopyToAsync(stream);
+               await file.CopyToAsync(stream);
             }
         }
         private string DetermineFileTypeToSaveIt(string extension)
         {
-            string wwwPath = Path.GetFileName(_environment.WebRootPath);
+           // string wwwPath = Path.GetFileName(_environment.WebRootPath);
             if (PhoneUploadFile.FileExtensions.Contains(extension))
             {
-                return Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Upload", "TeacherCertification");
+                return Path.Combine(_environment.WebRootPath, "Upload", "TeacherCertification");
             }
             else if (PhoneUploadFile.ImageExtensions.Contains(extension))
             {
-                return Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Upload", "UserImge");
+                return Path.Combine(_environment.WebRootPath, "Upload", "UserImge");
             }
             else if (PhoneUploadFile.VideoExtensions.Contains(extension))
             {
-                return Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Courses");
+                return Path.Combine(_environment.WebRootPath, "Courses");
             }
             return string.Empty;
         }

@@ -18,6 +18,8 @@ namespace Benaa.Core.Mapper
             CreateMap<Course, CreateCourseDto>().ReverseMap();
             CreateMap<CourseChapter, CreateChapterDto>().ReverseMap();
             CreateMap<CourseLesson, CreateLessonDto>().ReverseMap();
+            CreateMap<Rate, RateDTO.Request>().ReverseMap();
+            CreateMap<Rate, RateDTO.Response>().ReverseMap();
         }
     }
 }

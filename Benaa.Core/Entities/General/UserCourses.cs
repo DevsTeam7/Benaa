@@ -13,8 +13,8 @@ namespace Benaa.Core.Entities.General
         [Required]
         [ForeignKey(nameof(User))]
         public string StudentId { get; set; }
-        [Required]
-        public bool IsPurchased { get; set; }
+
+        public bool? IsPurchased { get; set; } = false;
 
         public virtual Course? Course { get; set; }
         public virtual User? Student { get; set; }

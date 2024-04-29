@@ -2,9 +2,9 @@
 {
     public static class Role
     {
-        public static string Student = "STUDENT";
-        public static string Teacher = "TEACHER";
-        public static string Admin = "ADMIN";
-        public static string Owner = "OWNER";
+        public const string Student = "STUDENT";
+        public const string Teacher = "TEACHER";
+        public const string Admin = "ADMIN";
+        public const string Owner = "OWNER";
     }
 }

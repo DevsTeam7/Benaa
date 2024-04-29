@@ -17,7 +17,6 @@ namespace Benaa.Core.Entities.DTOs
         public bool? IsFiles { get; set; }
         public bool? IsRecorded { get; set; }
         public bool IsPublished { get; set; }
-        public string? TeacherId { get; set; }
     }
 
 }
