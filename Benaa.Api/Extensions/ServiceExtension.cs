@@ -22,6 +22,7 @@ namespace Benaa.Api.Extensions
             services.AddScoped<IScedualeService, ScedualeService>();
             services.AddScoped<IChatHubService, ChatHubService>();
             services.AddScoped<ITokenGeneration, TokenGeneration>();
+            services.AddScoped<IOwnerService, OwnerService>();
             #endregion
 
             #region Repositories
@@ -32,8 +33,6 @@ namespace Benaa.Api.Extensions
             services.AddTransient<IPaymentRepositoty, PaymentRepository>();
             services.AddTransient<IReportRepository, ReportRepository>();
             services.AddTransient<ISchedualRepository, SchedualRepository>();
-            services.AddTransient<IChatRepository, ChatRepository>();
-            services.AddTransient<IMessageRepository, MessageRepository>();
             #endregion
 
 

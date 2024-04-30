@@ -8,12 +8,12 @@ namespace Benaa.Core.Entities.General
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
-        public decimal? Amount { get; set; } = 0;
+        public decimal Amount { get; set; } = 0;
         [Required]
         public string Type { get; set; }
         [Required]
         public Guid ItemId { get; set; }
-        public bool? Status { get; set; } = false;
+        public int Status { get; set; } = 0;
         public DateTimeOffset CreatedAt { get; set; } = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
 
         [Required]
