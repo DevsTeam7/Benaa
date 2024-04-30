@@ -4,7 +4,6 @@ using Benaa.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-
 namespace Benaa.Infrastructure.Repositories
 {
     public class ChatRepository : BaseRepository<Chat>, IChatRepository

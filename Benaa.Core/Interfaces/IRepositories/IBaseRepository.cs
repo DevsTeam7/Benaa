@@ -12,5 +12,6 @@ namespace Benaa.Core.Interfaces.IRepositories
         Task Delete(T model);
         Task SaveChangeAsync();
         Task<List<T>> Select(Expression<Func<T, bool>> predicate);
+        Task<T> SelectOneItem(Expression<Func<T, bool>> predicate);
     }
 }

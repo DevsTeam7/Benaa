@@ -8,11 +8,11 @@ namespace Benaa.Core.Entities.General
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
-        [Required]
-        public string Name { get; set; }
-        public DateTime? CreatedAt { get; set; } = DateTime.Now;
+        public string? Name { get; set; }
+        public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
+        public string? FileUrl { get; set; }
+        public Guid? CourseChapterId { get; set; }
 
-        public Guid CourseChapterId { get; set; }
         public virtual CourseChapter? CourseChapter { get; set; }
     }
 }

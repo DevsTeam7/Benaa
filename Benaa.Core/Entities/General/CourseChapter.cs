@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 
@@ -9,13 +10,11 @@ namespace Benaa.Core.Entities.General
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
-        [Required]
-        public string Name { get; set; }
-        public DateTime? CreatedAt { get; set; } = DateTime.Now;
+        public string? Name { get; set; }
+        public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
+        public Guid? CourseId { get; set; }
 
-        public Guid CourseId { get; set; }
         public virtual Course? Course { get; set; }
-
-        public ICollection<CourseLesson>? CourseLessons { get; }
+        public List<CourseLesson>? CourseLessons { get; }
     }
 }

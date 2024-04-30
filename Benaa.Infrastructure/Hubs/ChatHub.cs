@@ -2,7 +2,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Benaa.Core.Entities.General;
-using Benaa.Core.Hubs;
+using Benaa.Infrastructure.Hubs;
+using Benaa.Core.Interfaces.Hubs;
 using Benaa.Core.Interfaces.IServices;
 
 
@@ -38,6 +39,7 @@ namespace Benaa.Infrastructure.Hubs
                         foreach (var message in unreadMessages)
                         {
                             //the idea is to sent a meassage to specifc chat with out sinding it to the group agin
+                            // send all messages 
                             await Clients.Caller.SendAsync("LoadMessage", message, chat.Id.ToString());
                         }
                     }
@@ -64,7 +66,7 @@ namespace Benaa.Infrastructure.Hubs
 
         public async Task MarkMessageAsRead(string messageId)
         {
-            //TODO : Check if the message exist first
+            //TODO : Check if the message exist first + make the ids list
             await _chatHubService.MarkMessageRead(Guid.Parse(messageId));
         }
 

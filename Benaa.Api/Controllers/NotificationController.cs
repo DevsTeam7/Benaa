@@ -2,7 +2,7 @@
 
 namespace Benaa.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/notification")]
     [ApiController]
     public class NotificationController : ControllerBase
     {

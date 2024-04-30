@@ -1,12 +1,7 @@
-﻿using Benaa.Core.Entities.General;
-using Benaa.Core.Interfaces.IRepositories;
+﻿using Benaa.Core.Interfaces.IRepositories;
 using Benaa.Infrastructure.Data;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using System.Security.Cryptography;
 
 namespace Benaa.Infrastructure.Repositories
 {
@@ -69,6 +64,11 @@ namespace Benaa.Infrastructure.Repositories
         {
             var lsitOfItems = await _dbContext.Set<T>().Where(predicate).ToListAsync();
             return lsitOfItems;
+        }
+        public async Task<T> SelectOneItem(Expression<Func<T, bool>> predicate)
+        {
+            var Item = await _dbContext.Set<T>().FirstAsync(predicate);
+            return Item;
         }
     }
 }

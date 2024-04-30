@@ -6,7 +6,7 @@ using System.Numerics;
 
 namespace Benaa.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/moneyCode")]
     [ApiController]
     public class MoneyCodeController : ControllerBase
     {

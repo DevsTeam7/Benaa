@@ -9,6 +9,7 @@ namespace Benaa.Core.Entities.General
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? ImageUrl { get; set; }
+        public string? CertificationUrl { get; set; }
         public string? EducationLevel { get; set; } = string.Empty;
         public string? Specialization { get; set; } = string.Empty;
         public string? Experience { get; set; } = string.Empty;
@@ -24,7 +25,6 @@ namespace Benaa.Core.Entities.General
 
         //F.K
         public Guid? WalletId { get; set; }
-        public Guid? CertificationId { get; set; }
         public Guid? BankInformationId { get; set; }
 
 
@@ -35,7 +35,6 @@ namespace Benaa.Core.Entities.General
         public ICollection<Messages>? Messages { get; }
 
         public virtual Wallet? Wallet { get; set; }
-        public virtual Certification? Certification { get; set; }
         public virtual BankInformation? BankInformation { get; set; }
     }
 }

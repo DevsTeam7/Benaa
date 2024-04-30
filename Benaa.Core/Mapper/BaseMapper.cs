@@ -9,7 +9,8 @@ namespace Benaa.Core.Mapper
     {
         public BaseMapper()
         {
-            CreateMap<User, RegisterRequestDto>().ReverseMap();
+            CreateMap<User, StudentRegisterDto>().ReverseMap();
+            CreateMap<User, TeacherRegisterDto>().ReverseMap();
             CreateMap<Sceduale, SchedualDetailsDto>().ReverseMap();
             CreateMap<SchedualDto, Sceduale>();
             CreateMap<SchedualDetailsDto, Sceduale>();
@@ -17,6 +18,11 @@ namespace Benaa.Core.Mapper
             CreateMap<SchedualDto, Sceduale>().ReverseMap();
             CreateMap<SchedualDetailsDto, Sceduale>().ReverseMap();
             CreateMap<User, LoginRequestDto.Response>().ReverseMap();
+            CreateMap<Course, CreateCourseDto>().ReverseMap();
+            CreateMap<CourseChapter, CreateChapterDto>().ReverseMap();
+            CreateMap<CourseLesson, CreateLessonDto>().ReverseMap();
+            CreateMap<Rate, RateDTO.Request>().ReverseMap();
+            CreateMap<Rate, RateDTO.Response>().ReverseMap();
         }
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
+using Benaa.Infrastructure.Utils.Users;
 
 namespace Benaa.Infrastructure.Data
 {
@@ -16,7 +17,6 @@ namespace Benaa.Infrastructure.Data
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<MoneyCode> MoneyCodes { get; set; }
         public DbSet<BankInformation> BankInformations { get; set; }
-        public DbSet<Certification> Certifications { get; set; }
         public DbSet<Chat> Chats { get; set; }
         public DbSet<Messages> Messages { get; set; }
         public DbSet<Course> Courses { get; set; }
@@ -27,6 +27,7 @@ namespace Benaa.Infrastructure.Data
         public DbSet<Report> Reports { get; set; }
         public DbSet<Sceduale> Sceduales { get; set; }
         public DbSet<UserCourses> UserCourses { get; set; }
+        public DbSet<OTPCodes> OTPCodes { get; set; }
 
 
 
@@ -36,10 +37,10 @@ namespace Benaa.Infrastructure.Data
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<IdentityRole>()
                 .HasData(
-                new IdentityRole { Name = "Student" },
-                new IdentityRole { Name = "Teacher" },
-                new IdentityRole { Name = "Admin" },
-                new IdentityRole { Name = "Owner" }
+                new IdentityRole { Name = Role.Student, NormalizedName = Role.Student},
+                new IdentityRole { Name = Role.Teacher, NormalizedName =Role.Teacher },
+                new IdentityRole { Name = Role.Admin, NormalizedName = Role.Admin },
+                new IdentityRole { Name = Role.Owner, NormalizedName = Role.Owner }
                 );
         }
     }

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Benaa.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/wallet")]
     [ApiController]
     public class WalletController : ControllerBase
     {

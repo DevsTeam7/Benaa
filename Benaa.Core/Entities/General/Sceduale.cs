@@ -9,7 +9,7 @@ namespace Benaa.Core.Entities.General
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
-        public DateTime Date { get; set; } = DateTime.Today;
+        public DateTime Date { get; set; } = DateTime.UtcNow;
         public int TimeStart { get; set; }
         public int TimeEnd { get; set; }
         public decimal Price { get; set; } = 0;
