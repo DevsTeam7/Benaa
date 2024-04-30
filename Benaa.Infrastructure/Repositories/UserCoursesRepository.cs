@@ -13,7 +13,7 @@ namespace Benaa.Infrastructure.Repositories
         }
         public async new Task<List<UserCourses>> Select(Expression<Func<UserCourses, bool>> predicate)
         {
-            var lsitOfItems =  _dbContext.UserCourses.Where(predicate).Include(cart => cart.Course).ToList();
+            var lsitOfItems = await  _dbContext.UserCourses.Where(predicate).Include(cart => cart.Course).ToListAsync();
             return lsitOfItems;
         }
     }

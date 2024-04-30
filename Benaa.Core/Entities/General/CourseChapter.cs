@@ -15,6 +15,6 @@ namespace Benaa.Core.Entities.General
         public Guid? CourseId { get; set; }
 
         public virtual Course? Course { get; set; }
-        public ICollection<CourseLesson>? CourseLessons { get; }
+        public List<CourseLesson>? CourseLessons { get; }
     }
 }

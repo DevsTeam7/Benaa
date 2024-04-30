@@ -5,6 +5,7 @@ using Benaa.Core.Interfaces.IRepositories;
 using Benaa.Core.Interfaces.IServices;
 using ErrorOr;
 using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
 
 namespace Benaa.Core.Services
 {
@@ -19,6 +20,7 @@ namespace Benaa.Core.Services
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
         private readonly IWalletService _walletService;
+       
 
         public CourseService(IFileUploadService fileUploadService, ICourseRepository courseRepository, IMapper mapper
             ,IChapterRepository chapterRepository, ILessonRepository lessonRepository,
@@ -30,7 +32,7 @@ namespace Benaa.Core.Services
             _userManager = userManager; _walletService = walletService;
         }
 
-        private async Task<ErrorOr<Guid>> CreateCourseOnly(CreateCourseDto newCourse, string teacherId)
+        public async Task<ErrorOr<Guid>> CreateCourseOnly(CreateCourseDto newCourse, string teacherId)
         {
             var videoUrl = await _fileUploadService.UploadFile(newCourse.VideoUrl);
             var imageUrl = await _fileUploadService.UploadFile(newCourse.ImageUrl);
@@ -58,12 +60,13 @@ namespace Benaa.Core.Services
             return result.Id;
 
         }
-        private async Task<ErrorOr<Guid>> CreateChapterLessons(ChapterLessonsDto chapterLessons, Guid courseId)
+        public async Task<ErrorOr<Guid>> CreateChapterLessons(ChapterLessonsDto chapterLessons, string courseId)
         {
             CourseChapter chapter = _mapper.Map<CourseChapter>(chapterLessons.createChapter);
-            chapter.CourseId = courseId;
+            chapter.CourseId = Guid.Parse(courseId);
             var createdChapter = await _chapterRepository.Create(chapter);
             if(createdChapter == null) { return Error.Failure(); }
+
             List<CourseLesson> courseLessons = new List<CourseLesson>();
             foreach (var lesson in chapterLessons.createLessons)
             {
@@ -78,11 +81,11 @@ namespace Benaa.Core.Services
             return chapter.Id;
         }
 
-        public async Task<ErrorOr<Guid>> CreateCourse(CourseDto newCourse, string teacherId)
+        private async Task<ErrorOr<Guid>> CreateCourse(CourseDto newCourse, string teacherId)
         {
             var result = await CreateCourseOnly(newCourse.CreateCourseDto,teacherId);
             if (result.IsError) { return result.ErrorsOrEmptyList; }
-            var createdChapterLessons = await CreateChapterLessons(newCourse.ChapterLessons,result.Value);
+            var createdChapterLessons = await CreateChapterLessons(newCourse.ChapterLessons,result.Value.ToString());
             if(createdChapterLessons.IsError) { return createdChapterLessons.ErrorsOrEmptyList; }
             return result;
         }
@@ -90,8 +93,7 @@ namespace Benaa.Core.Services
         {
             UserCourses cart = new UserCourses {
                 CourseId = Guid.Parse(courseId),
-                StudentId = userId
-            };
+                StudentId = userId };
             var addingCourseToCart = await _userCoursesRepository.Create(cart);
             if(addingCourseToCart == null) { return Error.Failure(); }
             return addingCourseToCart.Id;
@@ -126,7 +128,7 @@ namespace Benaa.Core.Services
             }
             return ratesResponse;
         }
-        public async Task<ErrorOr<Guid>> BuyCorse(string userId, string courseId)
+        public async Task<ErrorOr<Guid>> BuyCourse(string userId, string courseId)
         {
             Course course = await _courseRepository.GetById(Guid.Parse(courseId));
             User user = await _userManager.FindByIdAsync(userId);
@@ -203,16 +205,18 @@ namespace Benaa.Core.Services
             if(courses == null) { return Error.NotFound(); }
             return courses;
         }
-        public async Task<ErrorOr<ChapterLessonsDto.Respnse>> GetChapterLessons(string courseId)
+        public async Task<ErrorOr<List<ChapterLessonsDto.Respnse>>> GetChapterLessons(string courseId)
         {
-            var chapter = await _chapterRepository.SelectOneItem(course => course.CourseId == Guid.Parse(courseId));
-            var lessons = await _lessonRepository.Select(lesson => lesson.CourseChapterId == chapter.Id);
-            if (chapter == null || lessons.Count == 0) { return Error.NotFound(); }
-
-            ChapterLessonsDto.Respnse respnse = new ChapterLessonsDto.Respnse 
-            { courseChapter = chapter, courseLessons=lessons};
-            return respnse;
+            List<ChapterLessonsDto.Respnse> chapterLessons = new List<ChapterLessonsDto.Respnse>();
+            var chapters = await _chapterRepository.Select(course => course.CourseId == Guid.Parse(courseId));
+            foreach (var chapter in chapters)
+            {
+                ChapterLessonsDto.Respnse respnse = new ChapterLessonsDto.Respnse
+                { courseChapter = chapter, courseLessons = chapter.CourseLessons! };
+                chapterLessons.Add(respnse);
+            }
+             if (chapterLessons.Count == 0) { return Error.NotFound(); }
+             return chapterLessons;
         }
-
     }
 }
