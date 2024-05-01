@@ -40,8 +40,13 @@ namespace Benaa.Api.Extensions
             services.AddTransient<ISchedualRepository, SchedualRepository>();
             services.AddTransient<IChatRepository, ChatRepository>();
             services.AddTransient<IMessageRepository, MessageRepository>();
+            services.AddTransient<IOTPCodesRepository, OTPCodesRepository>();
+            services.AddTransient<IChapterRepository, ChapterRepository>();
+            services.AddTransient<ILessonRepository, LessonRepository>();
+            services.AddTransient<IUserCoursesRepository, UserCoursesRepository>();
+            services.AddTransient<IRateRepository, RateRepository>();
+            services.AddTransient<IOwnerRepository, OwnerRepository>();
             #endregion
-
 
             return services;
         }
