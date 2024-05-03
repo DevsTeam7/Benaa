@@ -1,4 +1,5 @@
-﻿using Benaa.Core.Entities.General;
+﻿using Benaa.Core.Entities.DTOs;
+using Benaa.Core.Entities.General;
 using System;
 using System.Collections.Generic;
 using System.Linq;

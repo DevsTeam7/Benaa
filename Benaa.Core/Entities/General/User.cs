@@ -20,7 +20,7 @@ namespace Benaa.Core.Entities.General
         public bool? IsAgreedToTerms { get; set; }
         public bool? IsApproved { get; set; } = false;
         public bool? Gender { get; set; }
-        public string? Role { get; set; }
+       // public string? Role { get; set; }
 
 
         //F.K

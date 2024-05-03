@@ -46,6 +46,8 @@ namespace Benaa.Api.Extensions
             services.AddTransient<IUserCoursesRepository, UserCoursesRepository>();
             services.AddTransient<IRateRepository, RateRepository>();
             services.AddTransient<IOwnerRepository, OwnerRepository>();
+            services.AddTransient<IBankInformationRepository, BankInformationRepository>();
+            services.AddTransient<IUserRepository,UserRepository >();
             #endregion
 
             return services;

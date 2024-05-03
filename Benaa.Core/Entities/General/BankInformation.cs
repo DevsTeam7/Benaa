@@ -9,7 +9,7 @@ namespace Benaa.Core.Entities.General
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
-        [Required, StringLength(maximumLength: 100, MinimumLength = 5)]
+        [Required]
         public string FullName { get; set; }
         [Required]
         public string BankName { get; set; }

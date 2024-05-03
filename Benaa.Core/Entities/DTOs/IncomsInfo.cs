@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Benaa.Core.Entities.General
+namespace Benaa.Core.Entities.DTOs
 {
     public class IncomsInfo
     {

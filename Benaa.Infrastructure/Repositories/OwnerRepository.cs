@@ -1,38 +1,34 @@
 ﻿using Benaa.Core.Entities.General;
-using Benaa.Core.Interfaces.IRepositories;
 using Benaa.Infrastructure.Data;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-
-
+using Benaa.Infrastructure.Utils.Users;
+using Benaa.Core.Entities.DTOs;
+using Microsoft.AspNetCore.Identity;
+using Benaa.Core.Interfaces.IRepositories;
 
 namespace Benaa.Infrastructure.Repositories
 {
     public class OwnerRepository : BaseRepository<User>, IOwnerRepository
     {
-        public OwnerRepository(ApplicationDbContext dbContext) : base(dbContext)
+        private readonly UserManager<User> _userManager;
+        public OwnerRepository(ApplicationDbContext dbContext, UserManager<User> userManager) : base(dbContext)
         {
-
+            _userManager = userManager;
         }
 
-        public async Task <List<User>> GetNT()
+        public async Task<List<User>> GetNT()
         {
-           List<User> filteruser=await _dbContext.Users.Where(u=>u.IsApproved==false&&u.Role== "Teacher").ToListAsync();
-            return filteruser;
+            var usersInTeacherRole = await _userManager.GetUsersInRoleAsync(Role.Teacher);
+            var filteredUsers = usersInTeacherRole.Where(u => u.IsApproved == false).ToList();
+            return filteredUsers;
         }
+
 
         public async Task<List<User>> GetAD()
         {
-            List<User> filteruser = await _dbContext.Users.Where(u => u.Role == "Admin").ToListAsync();   
-            return filteruser;
+            var usersInAdminRole = await _userManager.GetUsersInRoleAsync(Role.Admin);
+            return usersInAdminRole.ToList();
         }
-
 
 
         public async Task Status()
@@ -47,6 +43,7 @@ namespace Benaa.Infrastructure.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
+
         public async Task<List<JoinPayment>> GetD()
         {
             await Status();
@@ -57,18 +54,13 @@ namespace Benaa.Infrastructure.Repositories
         }
 
 
-
-
-        /////////////////////////////////////////////
-        ///
-
         public async Task<IncomsInfo> GetINFO()
         {
-            IncomsInfo incomsInfo= new IncomsInfo();
-            int students =  _dbContext.Users.Count(u => u.Role == "Student");
-            int teachers = _dbContext.Users.Count(u => u.Role == "Techre");
-            decimal dues =  _dbContext.Payments.Where(u => u.Status == 1).Sum(p=>p.Amount);
-            decimal AllIncoms =  _dbContext.Payments.Sum(u => u.Amount);
+            IncomsInfo incomsInfo = new IncomsInfo();
+            int students = _userManager.GetUsersInRoleAsync(Role.Student).Result.Count();
+            int teachers = _userManager.GetUsersInRoleAsync(Role.Teacher).Result.Count(); ;
+            decimal dues = _dbContext.Payments.Where(u => u.Status == 1).Sum(p => p.Amount);
+            decimal AllIncoms = _dbContext.Payments.Sum(u => u.Amount);
             double a = 0.2;
             decimal Profits = AllIncoms * Convert.ToDecimal(a);
 
@@ -78,17 +70,7 @@ namespace Benaa.Infrastructure.Repositories
             incomsInfo.Profits = Profits;
             incomsInfo.AllIncoms = AllIncoms;
 
-
             return incomsInfo;
         }
-
-
-
-
-
-
-
-
-
     }
 }

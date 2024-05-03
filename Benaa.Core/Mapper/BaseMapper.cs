@@ -2,7 +2,6 @@
 using Benaa.Core.Entities.DTOs;
 using Benaa.Core.Entities.General;
 
-
 namespace Benaa.Core.Mapper
 {
     public class BaseMapper : Profile
@@ -23,6 +22,10 @@ namespace Benaa.Core.Mapper
             CreateMap<CourseLesson, CreateLessonDto>().ReverseMap();
             CreateMap<Rate, RateDTO.Request>().ReverseMap();
             CreateMap<Rate, RateDTO.Response>().ReverseMap();
+            CreateMap<User, UserUpdateDto>().ReverseMap().ForAllMembers(opts => 
+            opts.Condition((src, dest, srcMember) => srcMember != null));
+            CreateMap<BankInformation, CreateBankInfoDto>().ReverseMap();
+            
         }
     }
 }
