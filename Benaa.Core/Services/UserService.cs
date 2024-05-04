@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using AutoMapper;
 using Benaa.Core.Interfaces.IRepositories;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
 namespace Benaa.Core.Services
 {
@@ -19,7 +20,7 @@ namespace Benaa.Core.Services
         private readonly ILogger<UserService> _logger;
         private readonly IUserRepository _userRepository;
 
-        public UserService(UserManager<User> userManager,IUserRepository userRepository,
+        public UserService(UserManager<User> userManager, IUserRepository userRepository,
             IFileUploadService fileUploadService, IMapper mapper, IBankInformationRepository bankInformationRepository, ILogger<UserService> logger)
         {
             _userManager = userManager;
@@ -41,62 +42,63 @@ namespace Benaa.Core.Services
 
             user.ImageUrl = filePath;
             var result = await _userManager.UpdateAsync(user);
-            if(!result.Succeeded) { return Error.Unexpected("Falid To Update The User"); }
+            if (!result.Succeeded) { return Error.Unexpected("Falid To Update The User"); }
             return filePath;
         }
 
         public async Task<ErrorOr<BankInformation>> AddBankInfo(CreateBankInfoDto bankInfoDto)
         {
-            BankInformation  bankInfo = _mapper.Map<BankInformation>(bankInfoDto);
+            BankInformation bankInfo = _mapper.Map<BankInformation>(bankInfoDto);
             var createdbankInfo = await _bankInformationRepository.Create(bankInfo);
             if (createdbankInfo is null) { return Error.Failure(); }
             return createdbankInfo;
         }
-
+        //Its not working
         public async Task<ErrorOr<IdentityResult>> Update(string userId, UserUpdateDto userUpdate)
-        { 
-            User user = await _userManager.FindByIdAsync(userId);
-            if (user == null) { return Error.NotFound("The User Does not Exist"); }
+        {
+            User user = await _userManager.Users.Where(user => user.Id == userId).FirstOrDefaultAsync();
+            if (user is null) { return Error.NotFound("The User Does not Exist"); }
 
-            if(userUpdate.Certification is not null)
+            if (string.IsNullOrEmpty(userUpdate.Email))
             {
-                var certificationUrl = await _fileUploadService.UploadFile(userUpdate.Certification);
-                if (string.IsNullOrEmpty(certificationUrl)) { return Error.Failure("Faild To Upload The certification"); }
-                user.CertificationUrl = certificationUrl;
+                userUpdate.Email = user.Email;
+                userUpdate.UserName = user.Email;
             }
-            if(user.ImageUrl is not null)
-            {
-                var imageUrl = await UploadImage(userUpdate.Image, user.Id);
-                user.ImageUrl = imageUrl.Value;
-            }
-             user = _mapper.Map<User>(userUpdate);
-            if(string.IsNullOrEmpty(userUpdate.Email) || string.IsNullOrEmpty(userUpdate.UserName))
-            {
-                user.Email = user.Email;
-                user.UserName = user.Email;
-            }
-             
-              
-            
-            var result = await _userManager.UpdateAsync(user);
-          // await _userRepository.Update(user);
 
-            foreach (var item in result.Errors.ToList())
-            {
-                _logger.LogError(item.Code);
-                _logger.LogError(item.Description);
-            }
-            if (!result.Succeeded) { return Error.Unexpected("Faild To Update The User"); }
+            userUpdate.City ??= user.City;
+            userUpdate.FirstName ??= user.FirstName;
+            userUpdate.LastName ??= user.LastName;
+            userUpdate.EducationLevel ??= user.EducationLevel;
+            userUpdate.Specialization ??= user.Specialization;
+            userUpdate.Experience ??= user.Experience;
+            userUpdate.University ??= user.University;
+            userUpdate.City ??= user.City;
+            userUpdate.DateOfBirth ??= user.DateOfBirth;
+            userUpdate.Gender ??= user.Gender;
+            userUpdate.PhoneNumber ??= user.PhoneNumber;
+            //var mappedUser = _mapper.Map<User>(userUpdate);
 
+            IdentityResult result = await _userManager.UpdateAsync(user);
+            await _userRepository.Update(user);
+
+
+            //foreach (var item in result.Errors.ToList())
+            //{
+            //    _logger.LogError(item.Code);
+            //    _logger.LogError(item.Description);
+            //}
+            if (!result.Succeeded) { return Error.Unexpected("Faild To Update The User " + user.Id); }
+            //await _userRepository.SaveChangeAsync();
             return result;
         }
+
 
         public async Task<ErrorOr<IdentityResult>> UpdatePassword(string userId, string oldPassword, string newPassword)
         {
             User user = await _userManager.FindByIdAsync(userId)!;
             if (user is null) { return Error.NotFound("The User Does not Exist"); }
 
-            var result =  await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+            var result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
             if (!result.Succeeded) { return Error.Unexpected("Falid To Update The User"); }
             return result;
         }

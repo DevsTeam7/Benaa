@@ -6,9 +6,6 @@ namespace Benaa.Core.Entities.DTOs
     {
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
-
-        public IFormFile? Image { get; set; }
-        public IFormFile? Certification { get; set; }
         public string? EducationLevel { get; set; }
         public string? Specialization { get; set; }
         public string? Experience { get; set; }

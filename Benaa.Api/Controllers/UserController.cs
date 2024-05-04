@@ -45,7 +45,7 @@ namespace Benaa.Api.Controllers
             };
         }
 
-        [HttpPut("Update")]
+        [HttpPost("Update")]
         public async Task<IActionResult> Update([FromForm] UserUpdateDto userUpdateDto)
         {
             if (ModelState.IsValid)

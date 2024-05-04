@@ -9,12 +9,16 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using Benaa.Infrastructure.Extensions;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 //long maxFileSize = 1L * 1024L * 1024L * 1024L; // 1 GB
 //builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = maxFileSize) ;
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(optins => 
+    optins.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles); 
+
 builder.Services.AddDbContext<ApplicationDbContext>(optins =>
    optins.UseNpgsql(
    builder.Configuration.GetSection("ConnectionStrings:Defult").Value
