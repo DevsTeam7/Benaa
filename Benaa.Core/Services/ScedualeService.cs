@@ -2,102 +2,168 @@
 using Benaa.Core.Entities.DTOs;
 using Benaa.Core.Interfaces.IRepositories;
 using Benaa.Core.Interfaces.IServices;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Intrinsics.X86;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using Microsoft.VisualBasic;
-using AutoMapper;
+using ErrorOr;
 
 namespace Benaa.Core.Services
 {
     public class ScedualeService : IScedualeService
     {
-        private readonly ISchedualRepository _schedualRepository;
-        private readonly IMapper _mapper;
+        private readonly ISchedualeRepository _schedualeRepository;
+        private readonly INotificationService _notificationService;
+        private readonly IUserRepository _userRepository;
+        private readonly IWalletService _walletService;
+        private readonly IChatHubService _chatHubService;
+        private readonly IPaymentRepositoty _paymentRepositoty;
 
 
-        public ScedualeService(ISchedualRepository SchedualRepository, IMapper mapper)
+        public ScedualeService(ISchedualeRepository SchedualRepository,
+            INotificationService notificationService, IUserRepository userRepository,
+            IWalletService walletService, IChatHubService chatHubService, IPaymentRepositoty paymentRepositoty)
         {
-            _schedualRepository = SchedualRepository;
-            _mapper = mapper;
+            _schedualeRepository = SchedualRepository;
+            _notificationService = notificationService;
+            _userRepository = userRepository;
+            _walletService = walletService;
+            _chatHubService = chatHubService;
+            _paymentRepositoty = paymentRepositoty;
         }
 
-        public async Task<IEnumerable<Sceduale>> GetSchedual()
+        public async Task<ErrorOr<IEnumerable<Sceduale>>> GetSceduales()
         {
-            return await _schedualRepository.GetAll();
+            var sceduales = await _schedualeRepository.GetAll();
+            if (sceduales == null) { return Error.Failure(); }
+            return sceduales.ToList();
         }
-
-        public async Task AddSchedualList(List<SchedualDto> sc)
-        {          
-            foreach (var i in sc)
+        public async Task<ErrorOr<List<Sceduale>>> AddSceduales(List<SchedualDto> sceduales, string teacherId)
+        {
+            List<Sceduale> Sceduales = new List<Sceduale>();
+            foreach (var schedual in sceduales)
             {
-                DateTime ts = i.TimeStart;
-                int Ts = ts.Hour;
-                DateTime te = i.TimeEnd;
-                int Te = te.Hour;
                 var scheduale = new Sceduale
                 {
-                    Date = i.Date,
-                    TimeStart = Ts,
-                    TimeEnd = Te,
-                    Price = i.Price,
-                    TeacherId = i.TeacherId,
-                    StudentId = i.StudentId,
+                    Date = schedual.Date,
+                    TimeStart = schedual.TimeStart,
+                    TimeEnd = schedual.TimeEnd,
+                    Price = schedual.Price,
+                    TeacherId = teacherId,
                     Status = ScedualeStatus.Still
                 };
-                await _schedualRepository.Create(scheduale);               
+                var sceduale = await _schedualeRepository.Create(scheduale);
+                if (sceduale == null) { return Error.Failure(); }
+                Sceduales.Add(sceduale);
             }
-            
+            return Sceduales;
+
         }
- 
-        public async Task Appointment(SchedualDetailsDto sc)
+        public async Task<ErrorOr<Sceduale>> GetById(Guid id)
         {
-            //var user = await _schedualRepository.GetById(sc.Id);
-
-            Sceduale model = _mapper.Map<Sceduale>(sc);
-            //if (model.StudentId == null)
-
-            //user.TeacherId = sc.TeacherId;
-            //user.StudentId = sc.StudentId;
-            //user.Date = sc.Date;
-            //user.TimeStart = sc.TimeStart;
-            //user.TimeEnd = sc.TimeEnd;
-            //Sceduale model = _mapper.Map<Sceduale>(sc);
-            await _schedualRepository.Update(model);
-
+            var sceduale = await _schedualeRepository.GetById(id);
+            if (sceduale == null) { return Error.Failure(); }
+            return sceduale;
         }
-
-
-        public async Task<ActionResult<Sceduale>> GetById(Guid id)
+        public async Task<ErrorOr<Object>> Delete(Guid id)
         {
-            return await _schedualRepository.GetById(id);
+            var schedule = await _schedualeRepository.GetById(id);
+            if (schedule == null) { return Error.NotFound("schedule is not found"); }
+
+            var scheduledDay = schedule.Date;
+            DateTime currentDate = DateTime.Now.Date;
+
+            if (scheduledDay < currentDate) { return Error.Unexpected("day has already passed"); }
+
+            if (scheduledDay.Date == currentDate.AddDays(-1).Date)
+            {
+                if (scheduledDay.Month == currentDate.Month && scheduledDay.Year == currentDate.Year)
+                {
+                    var payment = await _paymentRepositoty.SelectOneItem(payment => payment.ItemId == schedule.Id);
+                    if (payment == null) { return Error.NotFound(); }
+                    await _paymentRepositoty.Delete(payment);
+                    await _schedualeRepository.Delete(schedule);
+                    await _walletService.RefundUser(schedule.Price, schedule.StudentId!);
+                    await _notificationService.Send(schedule.StudentId!, "لقد تم الغاء موعدك بنجاح");
+                    await _notificationService.Send(schedule.TeacherId, "لقد تم الغاء");
+                    return new Success();
+                }
+            }
+            return Error.Conflict("You can't cansle the appointment in the same day");
         }
-        public async Task Delete(Guid id)
+        public async Task<ErrorOr<Sceduale>> UpdateSceduale(SchedualDetailsDto sceduale)
         {
-            var model = await _schedualRepository.GetById(id);
-            _schedualRepository.Delete(model);
+            var scedualeToUpdate = await _schedualeRepository.GetById(sceduale.Id);
+            if (scedualeToUpdate == null) { return Error.NotFound(); }
 
+            scedualeToUpdate.TeacherId = sceduale.TeacherId;
+            scedualeToUpdate.StudentId = sceduale.StudentId;
+            scedualeToUpdate.Date = sceduale.Date;
+            scedualeToUpdate.TimeStart = sceduale.TimeStart;
+            scedualeToUpdate.TimeEnd = sceduale.TimeEnd;
+
+            await _schedualeRepository.Update(scedualeToUpdate);
+            return scedualeToUpdate;
         }
-
-        public async Task UpdateSceduale(SchedualDetailsDto sc)
+        public async Task<ErrorOr<List<TimeRangeDto>>> GetByDay(int day, string userId)
         {
-            var sce = await _schedualRepository.GetById(sc.Id);
-            
-            sce.TeacherId = sc.TeacherId;
-            sce.StudentId = sc.StudentId;
-            sce.Date = sc.Date;
-            sce.TimeStart =  sc.TimeStart;
-            sce.TimeEnd = sc.TimeEnd;
-
-            await _schedualRepository.Update(sce);
+            var scheduals = await _schedualeRepository.GetAll();
+            var dates = await _schedualeRepository.SelectTimes(x => (x.Date.Day == day) && (x.TeacherId == userId));
+            if (scheduals.ToList().Count == 0 || dates.Count == 0) { return Error.NotFound(); }
+            return dates;
         }
+        public async Task<ErrorOr<Object>> BookAppointment(SchedualDetailsDto schedualDetails, string userId)
+        {
+            var Isnull = await _schedualeRepository.CheckAvailability(schedualDetails);
+            if (Isnull)
+            {
+                string type = "schedual";
+                var wallet = await _userRepository.GetUserWallet(userId);
 
+                if (wallet.Amount >= schedualDetails.Price)
+                {
+                    var sceduale = await _schedualeRepository.GetById(schedualDetails.Id);
+                    sceduale.TeacherId = schedualDetails.TeacherId;
+                    sceduale.StudentId = userId;
+                    sceduale.Price = schedualDetails.Price;
+                    sceduale.Date = schedualDetails.Date;
+                    sceduale.TimeStart = schedualDetails.TimeStart;
+                    sceduale.TimeEnd = schedualDetails.TimeEnd;
+
+                    await _schedualeRepository.Update(sceduale);
+                    var payment = await _walletService.SetPayment(schedualDetails.Id, type, schedualDetails.Price, userId);
+                    await _chatHubService.CreateChat(userId, sceduale.TeacherId, sceduale.Id);
+                    //TODO : send sceduale info with the notification
+                    await _notificationService.Send(sceduale.StudentId, "تم حجز موعدك بنجاح");
+                    await _notificationService.Send(sceduale.TeacherId, "تم حجز موعد جديد");
+                    return payment;
+                }
+                return Error.Failure("no money in wallet");
+            }
+            return Error.Failure("Is Booked");
+        }
+        public async Task<ErrorOr<Object>> RepeatSceduale(string userId)
+        {
+            DateTime currentDate = DateTime.Now;
+            DateTime startDate = currentDate.AddDays(-7);
+
+            for (int i = 1; i <= 7; i++)
+            {
+                var scheduales = await _schedualeRepository.Select(x => (x.Date == startDate.AddDays(+i)) && (x.TeacherId == userId));
+                if (scheduales == null) { return Error.NotFound(); }
+                foreach (var scheduale in scheduales)
+                {
+                    var newScheduale = new Sceduale
+                    {
+                        Date = currentDate.AddDays(+i),
+                        TimeStart = scheduale.TimeStart,
+                        TimeEnd = scheduale.TimeEnd,
+                        Price = scheduale.Price,
+                        TeacherId = scheduale.TeacherId,
+                        StudentId = scheduale.StudentId
+                    };
+                    var createdscheduale = await _schedualeRepository.Create(scheduale);
+                    if (createdscheduale == null) { return Error.Failure(); }
+                    return scheduales;
+                }
+            }
+            return new Success();
+        }
     }
 }

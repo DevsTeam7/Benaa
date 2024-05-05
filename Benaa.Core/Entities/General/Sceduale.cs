@@ -10,8 +10,8 @@ namespace Benaa.Core.Entities.General
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         public DateTime Date { get; set; } = DateTime.UtcNow;
-        public int TimeStart { get; set; }
-        public int TimeEnd { get; set; }
+        public string TimeStart { get; set; }
+        public string TimeEnd { get; set; }
         public decimal Price { get; set; } = 0;
 
         public ScedualeStatus Status { get; set; } = ScedualeStatus.Still;

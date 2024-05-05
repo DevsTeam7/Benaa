@@ -4,7 +4,6 @@ using Benaa.Core.Interfaces.IServices;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Benaa.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
 
 namespace Benaa.Api.Controllers
 {
@@ -12,39 +11,21 @@ namespace Benaa.Api.Controllers
     [ApiController]
     public class SchedualeController : ControllerBase
     {
-        private readonly IScedualeService _sc;
-        private readonly IWalletService _wallet;
-        private readonly IChatHubService _chatHubService;
-        private readonly ApplicationDbContext _context;
+        private readonly IScedualeService _scedualeService;
         private static string ui;
         private readonly UserManager<User> _userManager;
 
-        public SchedualeController(IScedualeService sc
-            , ApplicationDbContext context,
-            UserManager<User> userManager,
-            IWalletService wallet,
-            IChatHubService chatHubService)
+        public SchedualeController(IScedualeService scedualeService, UserManager<User> userManager)
         {
-            _sc = sc;
-            _context = context;
+            _scedualeService = scedualeService;
             _userManager = userManager;
-            _wallet = wallet;
-            _chatHubService = chatHubService;
         }
 
-        [HttpGet("GetCurrentUser")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public string GetCurrentUser()
+        private string GetCurrentUser()
         {
-            if (User.Identity!.IsAuthenticated)
-            {
-                var userId = _userManager.GetUserId(HttpContext.User);
-                //ui = userId!;
-                return userId!;
-            }
-            return "the user is not authenticated";
+            var userId = _userManager.GetUserId(HttpContext.User);
+            return userId!;
+
         }
 
         [HttpGet]
@@ -53,13 +34,13 @@ namespace Benaa.Api.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Get()
         {
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var model = await _sc.GetSchedual();
-                    return Ok(model);
+                    var result = await _scedualeService.GetSceduales();
+                    if(result.IsError) { return BadRequest(result.ErrorsOrEmptyList); }
+                    return Ok(result.Value);
                 }
                 catch (Exception ex)
                 {
@@ -68,8 +49,9 @@ namespace Benaa.Api.Controllers
             }
             return BadRequest();
         }
-        [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+
+        [HttpGet("GetById")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById(Guid id)
@@ -78,8 +60,9 @@ namespace Benaa.Api.Controllers
             {
                 try
                 {
-                    var model = await _sc.GetById(id);
-                    return Ok(model);
+                    var result = await _scedualeService.GetById(id);
+                    if (result.IsError) { return BadRequest(result.ErrorsOrEmptyList); }
+                    return Ok(result.Value);
                 }
                 catch (Exception ex)
                 {
@@ -89,21 +72,20 @@ namespace Benaa.Api.Controllers
             return BadRequest("Please Enter id for Schedual");
         }
 
-        [HttpGet("day")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [HttpGet("GetByday")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetById(int day)
+        public async Task<IActionResult> GetByday(int day)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
                     ui = GetCurrentUser();
-                    var scheduale = await _context.Sceduales.ToListAsync();
-                    var date = scheduale.Where(x => (x.Date.Day == day) && (x.TeacherId == ui)).Select(x => new { x.TimeStart, x.TimeEnd });
-
-                    return Ok(date);
+                    var result = await _scedualeService.GetByDay(day,ui);
+                    if(result.IsError) { return BadRequest(result.ErrorsOrEmptyList); }
+                    return Ok(result.Value);
                 }
                 catch (Exception ex)
                 {
@@ -117,14 +99,16 @@ namespace Benaa.Api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<Sceduale>> Add_Schedual(List<SchedualDto> sc)
+        public async Task<ActionResult<Sceduale>> AddSceduales(List<SchedualDto> Sceduales)
         {
             if (ModelState.IsValid)
             {
+                ui=GetCurrentUser();
                 try
                 {
-                    await _sc.AddSchedualList(sc);
-                    return Ok("Save successfully");
+                  var result =  await _scedualeService.AddSceduales(Sceduales, ui);
+                    if(result.IsError) { return BadRequest(result.ErrorsOrEmptyList); }
+                    return Created("Save successfully", result.Value);
                 }
                 catch (Exception ex)
                 {
@@ -136,7 +120,7 @@ namespace Benaa.Api.Controllers
 
 
         [HttpPut("Edit")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Edit(SchedualDetailsDto sc)
@@ -145,8 +129,9 @@ namespace Benaa.Api.Controllers
             {
                 try
                 {
-                    await _sc.UpdateSceduale(sc);
-                    return Ok();
+                   var result = await _scedualeService.UpdateSceduale(sc);
+                    if (result.IsError) { return BadRequest(result.ErrorsOrEmptyList); }
+                    return Ok(result.Value);
                 }
                 catch (Exception ex)
                 {
@@ -157,48 +142,19 @@ namespace Benaa.Api.Controllers
         }
 
         [HttpPut("BookAppointment")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> BookAppointment(SchedualDetailsDto Sceduale)
         {
             if (ModelState.IsValid)
             {
+                ui = GetCurrentUser();
                 try
                 {
-                    //TODO : make this come form then Sceduales services and filtter the Sceduale using the id
-                    var Isnull = await _context.Sceduales.AnyAsync(sceduale => (sceduale.StudentId == null) && (sceduale.Date == Sceduale.Date) && (sceduale.TimeStart == Sceduale.TimeStart));
-                    if (Isnull)
-                    {
-                        ui = GetCurrentUser();
-
-                        string type = "schedual";
-                        //TODO : make this come form then Sceduales services and try to make it single query beucz this take time
-                        var amount = await _context.Users.Where(u => u.Id == ui)
-                            .Select(user => _context.Wallets.FirstOrDefault(userWallet => userWallet.Id == user.WalletId))
-                            .Where(Wallet => Wallet != null).Select(Wallet => Wallet.Amount).FirstOrDefaultAsync();
-
-                        if (amount >= Sceduale.Price)
-                        {
-                            var sceduale = await _context.Sceduales.FindAsync(Sceduale.Id);
-                            sceduale.TeacherId = Sceduale.TeacherId;
-                            sceduale.StudentId = ui;
-                            sceduale.Price = Sceduale.Price;
-                            sceduale.Date = Sceduale.Date;
-                            sceduale.TimeStart = Sceduale.TimeStart;
-                            sceduale.TimeEnd = Sceduale.TimeEnd;
-
-                            _context.Sceduales.Update(sceduale);
-                            await _context.SaveChangesAsync();
-                            var payment = await _wallet.SetPayment(Sceduale.Id, type, Sceduale.Price, ui);
-
-                            await _chatHubService.CreateChat(ui, sceduale.TeacherId, sceduale.Id);
-
-                            return Ok(payment);
-                        }
-                        return BadRequest("no money in wallet");
-                    }
-                    return BadRequest("Is Booked");
+                    var result = await _scedualeService.BookAppointment(Sceduale, ui);
+                    if (result.IsError) { return BadRequest(result.ErrorsOrEmptyList); }
+                    return Ok(result.Value);
                 }
                 catch (Exception ex)
                 {
@@ -210,8 +166,7 @@ namespace Benaa.Api.Controllers
 
 
         [HttpDelete(template: "{Id}")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -219,7 +174,7 @@ namespace Benaa.Api.Controllers
             {
                 try
                 {
-                    await _sc.Delete(id);
+                    await _scedualeService.Delete(id);
                     return Ok();
                 }
                 catch (Exception ex)
@@ -230,42 +185,21 @@ namespace Benaa.Api.Controllers
             return BadRequest("Please input id for Schedual");
 
         }
-        [HttpPost("Readd")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+
+        [HttpPost("RepeatSceduale")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> ReaddSchedual()
+        public async Task<IActionResult> RepeatSceduale()
         {
-            DateTime currentDate = DateTime.Now;
-            DateTime startDate = currentDate.AddDays(-7);
-
             if (ModelState.IsValid)
             {
+                ui = GetCurrentUser();
                 try
                 {
-                    ui = GetCurrentUser();
-
-                    for (int i = 1; i <= 7; i++)
-                    {
-                        var sc = _context.Sceduales.Where(x => (x.Date == startDate.AddDays(+i)) && (x.TeacherId == ui)).ToList();
-
-                        foreach (var record in sc)
-                        {
-
-                            var scheduale = new Sceduale
-                            {
-                                Date = currentDate.AddDays(+i),
-                                TimeStart = record.TimeStart,
-                                TimeEnd = record.TimeEnd,
-                                Price = record.Price,
-                                TeacherId = record.TeacherId,
-                                StudentId = record.StudentId,
-                            };
-                            await _context.Sceduales.AddAsync(scheduale);
-                            _context.SaveChanges();
-                        }
-                    }
-                    return Ok();
+                    var result = await _scedualeService.RepeatSceduale(ui);
+                    if (result.IsError) { return BadRequest(result.ErrorsOrEmptyList); }
+                    return Ok(result.Value);
                 }
                 catch (Exception ex)
                 {

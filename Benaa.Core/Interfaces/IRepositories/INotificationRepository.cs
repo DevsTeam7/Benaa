@@ -2,7 +2,8 @@
 
 namespace Benaa.Core.Interfaces.IRepositories
 {
-    public interface INotificationRepository : IBaseRepository<Notifaction>
+    public interface INotificationRepository : IBaseRepository<Notification>
     {
+        bool MarkNotificationAsRead(Guid notificationId);
     }
 }

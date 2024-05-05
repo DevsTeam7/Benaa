@@ -40,6 +40,7 @@ namespace Benaa.Infrastructure.Extensions
         public static void AddHubs(this IEndpointRouteBuilder app)
         {
             app.MapHub<ChatHub>("/chathub");
+            app.MapHub<NotificationHub>("/notification");
         }
 
     }

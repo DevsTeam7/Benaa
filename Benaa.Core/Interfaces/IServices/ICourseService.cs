@@ -12,7 +12,6 @@ namespace Benaa.Core.Interfaces.IServices
         Task<ErrorOr<Course>> GetById(string courseId);
         Task<ErrorOr<List<Course>>> GetByType(int courseType);
         Task<ErrorOr<Guid>> AddCourseToCart(string userId, string courseId);
-        Task<ErrorOr<Guid>> BuyCourse(string userId, string courseId);
         Task GetBestRatedCorse();
         Task<ErrorOr<Guid>> AddRate(RateDTO.Request newRate, string studentId);
         Task<ErrorOr<List<RateDTO.Response>>> GetAllRate(string courseId);
@@ -20,5 +19,7 @@ namespace Benaa.Core.Interfaces.IServices
         Task<ErrorOr<List<Course>>> GetByTeacherId(string teacherId);
         Task<ErrorOr<List<ChapterLessonsDto.Respnse>>> GetChapterLessons(string courseId);
         Task<ErrorOr<Guid>> CreateChapterLessons(ChapterLessonsDto chapterLessons, string courseId);
+        Task<ErrorOr<Success>> BuyCourse(string userId, List<string> courses);
+        Task<ErrorOr<Success>> ReturnTheCourse(string courseId, string studentId);
     }
 }

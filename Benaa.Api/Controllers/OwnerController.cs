@@ -18,11 +18,8 @@ namespace Benaa.Api.Controllers
             _ownerService = ownerService;
         }
 
-
-
         [HttpGet("GetNewTeatchers")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> NewTeatchers()
         {
@@ -35,7 +32,7 @@ namespace Benaa.Api.Controllers
         }
 
         [HttpDelete("revuseTeatcher")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Delete(string id)
@@ -56,9 +53,8 @@ namespace Benaa.Api.Controllers
 
         }
 
-
         [HttpPut("acceptTeatcher")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Accept(string id)
@@ -79,39 +75,25 @@ namespace Benaa.Api.Controllers
 
         }
 
-
-
-
-
-
-
-
-
-
         [HttpGet("getAdmins")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Get()
         {
-
             try
             {
-
                 return Ok(await _ownerService.GetA());
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
-
-
         }
 
 
         [HttpDelete("deletAdmin")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteAdmin(string id)
@@ -133,7 +115,7 @@ namespace Benaa.Api.Controllers
         }
 
         [HttpPut("EditAdmin")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Edit(UpdateUserInfo nu)
@@ -156,28 +138,23 @@ namespace Benaa.Api.Controllers
 
 
         [HttpGet("getDues")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> getDues()
         {
-
             try
             {
-
                 return Ok(await _ownerService.GetDues());
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
-
-
         }
 
         [HttpPut("PaidDone")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> PaidDone(Guid id)
@@ -201,24 +178,19 @@ namespace Benaa.Api.Controllers
         ////////////////////////////////////////////////////////////////////////////
         ///
         [HttpGet("GetInfo")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetInfo()
         {
-
             try
             {
-
                 return Ok(await _ownerService.getInfo());
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
-
-
         }
     }
 

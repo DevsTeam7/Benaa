@@ -3,12 +3,6 @@ using Benaa.Core.Entities.DTOs;
 using Benaa.Core.Entities.General;
 using Benaa.Core.Interfaces.IRepositories;
 using Benaa.Core.Interfaces.IServices;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Benaa.Core.Services
 {
@@ -17,11 +11,14 @@ namespace Benaa.Core.Services
         private readonly IOwnerRepository _OwnerRepository;
         private readonly IPaymentRepositoty _paymentRepository;
         private readonly IMapper _mapper;
-        public OwnerService(IOwnerRepository ownerRepository, IPaymentRepositoty paymentRepository, IMapper mapper)
+        private readonly INotificationService _notificationService;
+        public OwnerService(IOwnerRepository ownerRepository, IPaymentRepositoty paymentRepository,
+            IMapper mapper, INotificationService notificationService)
         {
             _OwnerRepository = ownerRepository;
             _paymentRepository = paymentRepository;
             _mapper = mapper;
+            _notificationService = notificationService;
         }
 
 
@@ -41,6 +38,7 @@ namespace Benaa.Core.Services
             var user = await _OwnerRepository.GetById(id);
             user.IsApproved=true;
             await _OwnerRepository.SaveChangeAsync();
+            await _notificationService.Send(user.Id,"تهانينا لقد تم قبولك في منصة بناء");
         }
 
         public async Task<List<User>> GetA()

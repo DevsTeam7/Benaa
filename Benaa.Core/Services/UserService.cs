@@ -21,7 +21,8 @@ namespace Benaa.Core.Services
         private readonly IUserRepository _userRepository;
 
         public UserService(UserManager<User> userManager, IUserRepository userRepository,
-            IFileUploadService fileUploadService, IMapper mapper, IBankInformationRepository bankInformationRepository, ILogger<UserService> logger)
+            IFileUploadService fileUploadService, IMapper mapper,
+            IBankInformationRepository bankInformationRepository, ILogger<UserService> logger)
         {
             _userManager = userManager;
             _fileUploadService = fileUploadService;

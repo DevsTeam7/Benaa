@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Benaa.Core.Entities.General;
 using Microsoft.AspNetCore.Authorization;
 using Benaa.Infrastructure.Utils.Users;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Benaa.Api.Controllers
 {
@@ -121,13 +122,13 @@ namespace Benaa.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Buy(string courseId)
+        public async Task<IActionResult> Buy(List<string> courses)
         {
-            if (string.IsNullOrEmpty(courseId)) { return BadRequest(); }
+            if (courses.Count == 0) { return BadRequest(); }
             try
             {
                 var studentId = _userManager.GetUserId(HttpContext.User);
-                var course = await _courseService.BuyCourse(studentId, courseId);
+                var course = await _courseService.BuyCourse(studentId, courses);
                 if (course.IsError) { return BadRequest(course.ErrorsOrEmptyList); }
                 return Ok(course.Value);
             }
@@ -233,7 +234,7 @@ namespace Benaa.Api.Controllers
             }
         }
 
-        [HttpGet("GetByType")]
+        [HttpGet("ReturnTheCourse")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -252,5 +253,23 @@ namespace Benaa.Api.Controllers
             }
         }
 
+        [HttpPost ("ReturnTheCourse")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ReturnTheCourse(string courseId)
+        {
+            if(string.IsNullOrWhiteSpace(courseId)) { return BadRequest(); }
+            try {
+                var studentId = _userManager.GetUserId(HttpContext.User);
+                var result = await _courseService.ReturnTheCourse(courseId, studentId!);
+                if (result.IsError) { return BadRequest(result.ErrorsOrEmptyList); }
+                return Ok(result.Value);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
     }
 }

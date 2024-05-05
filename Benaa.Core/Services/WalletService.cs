@@ -1,13 +1,8 @@
 ﻿using Benaa.Core.Entities.General;
 using Benaa.Core.Interfaces.IRepositories;
 using Benaa.Core.Interfaces.IServices;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using NpgsqlTypes;
-
-
-//using Benaa.Infrastructure;
+using Microsoft.AspNetCore.Server.IIS.Core;
 
 namespace Benaa.Core.Services
 {
@@ -15,17 +10,20 @@ namespace Benaa.Core.Services
     {
         private readonly IWalletRepository _walletRepository;
         private readonly IPaymentRepositoty _paymentRepository;
-        private readonly ISchedualRepository _schedualRepository;
+        private readonly ISchedualeRepository _schedualRepository;
         private readonly ICourseRepository _courseRepository;
+        private readonly IUserRepository _userRepository;
 
 
         public WalletService(IWalletRepository walletRepository, IPaymentRepositoty paymentRepository,
-            UserManager<User> userManager, ISchedualRepository schedualRepository, ICourseRepository courseRepository)
+            UserManager<User> userManager, ISchedualeRepository schedualRepository, ICourseRepository courseRepository,
+           IUserRepository userRepository)
         {
             _walletRepository = walletRepository;
             _paymentRepository = paymentRepository;
             _schedualRepository = schedualRepository;
             _courseRepository = courseRepository;
+            _userRepository = userRepository;
         }
         public async Task<Guid> CraeteWallet()
         {
@@ -44,24 +42,6 @@ namespace Benaa.Core.Services
 
             return result;
         }
-        public string IsPayed(decimal amount)
-        {
-            User user = new User();
-            Wallet wallet = new Wallet();
-            _walletRepository.GetById(user.Id);
-            wallet.Amount = 1000000;
-
-
-            if (wallet.Amount >= amount)
-            {
-                wallet.Amount -= amount;
-                return "Done";
-            }
-
-            return "not done";
-
-        }
-
 
         public async Task<bool> Check(string u, decimal price)
         {
@@ -85,7 +65,7 @@ namespace Benaa.Core.Services
             {
                 var course = await _courseRepository.SelectOneItem(course => course.Id == itemID);
                 if (course == null){return false; }
-                payment.TeacherId = course.TeacherId;
+                payment.TeacherId = course.TeacherId!;
             }
 
             payment.Type = type;
@@ -96,6 +76,14 @@ namespace Benaa.Core.Services
             await _paymentRepository.Create(payment);
             return payment;
   
+        }
+
+        public async Task RefundUser(decimal amount, string studentId)
+        {
+          var wallet = await  _userRepository.GetUserWallet(studentId);
+            if(wallet == null) { throw new Exception(); }
+            wallet.Amount += amount;
+            await _walletRepository.Update(wallet);
         }
 
     }

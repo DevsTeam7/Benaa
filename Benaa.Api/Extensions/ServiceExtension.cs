@@ -1,8 +1,10 @@
 ﻿using Benaa.Core.Entities.General;
 using Benaa.Core.Interfaces.Authentication;
+using Benaa.Core.Interfaces.Hubs;
 using Benaa.Core.Interfaces.IRepositories;
 using Benaa.Core.Interfaces.IServices;
 using Benaa.Core.Services;
+using Benaa.Infrastructure.Hubs;
 using Benaa.Infrastructure.Repositories;
 using Benaa.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
@@ -17,9 +19,8 @@ namespace Benaa.Api.Extensions
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IWalletService, WalletService>();
             services.AddScoped<IMoneyCodeService, MoneyCodeService>();
-            services.AddScoped<IScedualeService, ScedualeService>();
             services.AddScoped<UserManager<User>>();
-            services.AddScoped<IScedualeService, ScedualeService>();
+            //services.AddScoped<IScedualeService, ScedualeService>();
             services.AddScoped<IChatHubService, ChatHubService>();
             services.AddScoped<ITokenGeneration, TokenGeneration>();
             services.AddScoped<IOwnerService, OwnerService>();
@@ -28,6 +29,7 @@ namespace Benaa.Api.Extensions
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IOTPService, OTPService>();
             services.AddScoped<ICourseService, CourseService>();
+            services.AddScoped<INotificationService, NotificationService>();
             #endregion
 
             #region Repositories
@@ -37,7 +39,7 @@ namespace Benaa.Api.Extensions
             services.AddTransient<INotificationRepository, NotificationRepository>();
             services.AddTransient<IPaymentRepositoty, PaymentRepository>();
             services.AddTransient<IReportRepository, ReportRepository>();
-            services.AddTransient<ISchedualRepository, SchedualRepository>();
+            services.AddTransient<ISchedualeRepository, SchedualRepository>();
             services.AddTransient<IChatRepository, ChatRepository>();
             services.AddTransient<IMessageRepository, MessageRepository>();
             services.AddTransient<IOTPCodesRepository, OTPCodesRepository>();

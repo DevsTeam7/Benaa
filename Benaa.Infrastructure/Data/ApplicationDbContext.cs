@@ -22,7 +22,7 @@ namespace Benaa.Infrastructure.Data
         public DbSet<Course> Courses { get; set; }
         public DbSet<CourseChapter> CourseChapters { get; set; }
         public DbSet<CourseLesson> CourseLessons { get; set; }
-        public DbSet<Notifaction> Notifactions { get; set; }
+        public DbSet<Notification> Notifactions { get; set; }
         public DbSet<Rate> Rates { get; set; }
         public DbSet<Report> Reports { get; set; }
         public DbSet<Sceduale> Sceduales { get; set; }

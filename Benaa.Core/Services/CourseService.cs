@@ -20,16 +20,20 @@ namespace Benaa.Core.Services
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
         private readonly IWalletService _walletService;
-       
+        private readonly INotificationService _notificationService;
+        private readonly IPaymentRepositoty _paymentRepositoty;
+        private readonly IOwnerRepository _ownerRepository;
 
         public CourseService(IFileUploadService fileUploadService, ICourseRepository courseRepository, IMapper mapper
             ,IChapterRepository chapterRepository, ILessonRepository lessonRepository,
             IUserCoursesRepository userCoursesRepository, IRateRepository rateRepository,
-            UserManager<User> userManager, IWalletService walletService)
+            UserManager<User> userManager, IWalletService walletService
+            , INotificationService notificationService,IPaymentRepositoty paymentRepositoty, IOwnerRepository ownerRepository)
         { _fileUploadService = fileUploadService; _courseRepository = courseRepository; _mapper = mapper;
             _lessonRepository = lessonRepository; _chapterRepository = chapterRepository;
              _userCoursesRepository = userCoursesRepository; _rateRepository = rateRepository;
             _userManager = userManager; _walletService = walletService;
+            _notificationService = notificationService; _paymentRepositoty = paymentRepositoty; _ownerRepository = ownerRepository;
         }
 
         public async Task<ErrorOr<Guid>> CreateCourseOnly(CreateCourseDto newCourse, string teacherId)
@@ -110,6 +114,7 @@ namespace Benaa.Core.Services
                 rate.StudentId = studentId;
                 var createdRated = await _rateRepository.Create(rate);
                 if (createdRated == null) { return Error.Failure(); }
+                await _notificationService.Send(cart.StudentId, "تمت عملية شراء بنجاح");
                 return createdRated.Id;
             }
             return Error.Failure();
@@ -128,26 +133,34 @@ namespace Benaa.Core.Services
             }
             return ratesResponse;
         }
-        public async Task<ErrorOr<Guid>> BuyCourse(string userId, string courseId)
+        public async Task<ErrorOr<Success>> BuyCourse(string userId, List<string> courses)
         {
-            Course course = await _courseRepository.GetById(Guid.Parse(courseId));
-            User user = await _userManager.FindByIdAsync(userId);
-            if(user == null || course == null) { return Error.Failure(); }
-
-            bool IsBalanceSufficient= await _walletService.Check(user.Id, course.Price);
-            if (IsBalanceSufficient)
+            foreach (var courseId in courses)
             {
-              var payment = await  _walletService.SetPayment(course.Id, "course", course.Price, user.Id);
-                if(payment == null) { return Error.Failure(); }
-              var cart = await _userCoursesRepository
-                    .SelectOneItem(cart => cart.CourseId == course.Id
-                    && cart.StudentId == userId);
-                if (cart == null) { return Error.Failure(); }
-                cart.IsPurchased = true;
-                await _userCoursesRepository.Update(cart);
-                return course.Id;
+                Course course = await _courseRepository.GetById(Guid.Parse(courseId));
+                User user = await _userManager.FindByIdAsync(userId);
+                if (user == null || course == null) { return Error.Failure(); }
+
+                bool IsBalanceSufficient = await _walletService.Check(user.Id, course.Price);
+                if (IsBalanceSufficient)
+                {
+                    var payment = await _walletService.SetPayment(course.Id, "course", course.Price, user.Id);
+                    if (payment == null) { return Error.Failure(); }
+                    var cart = await _userCoursesRepository
+                          .SelectOneItem(cart => cart.CourseId == course.Id
+                          && cart.StudentId == userId);
+
+                    if (cart == null) { return Error.Failure(); }
+                    cart.IsPurchased = true;
+                    await _userCoursesRepository.Update(cart);
+
+                    await _notificationService.Send(user.Id, "تمت عملية شراء بنجاح");
+                }
+                return Error.Failure();
             }
-            return Error.Failure();
+            return new Success();
+
+
         }
         public async Task Delete(string courseId)
         {
@@ -218,5 +231,34 @@ namespace Benaa.Core.Services
              if (chapterLessons.Count == 0) { return Error.NotFound(); }
              return chapterLessons;
         }
+
+        public async Task<ErrorOr<Success>> ReturnTheCourse(string courseId, string studentId)
+        {
+            var course = await _courseRepository.GetById(Guid.Parse(courseId));
+            if (course == null) { return Error.NotFound(); };
+
+            var cart = await _userCoursesRepository.SelectOneItem(cart =>
+                cart.CourseId == course.Id
+                && cart.IsPurchased == true
+                && cart.StudentId == studentId);
+            if (cart == null) { return Error.NotFound(); };
+            
+
+            await _ownerRepository.Status();
+            var paymentStatus = await _paymentRepositoty.SelectOneItem(payment =>
+                payment.ItemId == course.Id
+                && payment.Status == 0 && payment.StudentId == studentId);
+
+            if (paymentStatus == null) { return Error.NotFound(); };
+             await _userCoursesRepository.Delete(cart);
+             await _walletService.RefundUser(paymentStatus.Amount, studentIsd);
+             await _paymentRepositoty.Delete(paymentStatus);   
+
+            return new Success();
+
+
+        }
+
+        //filtter by name then name + type
     }
 }

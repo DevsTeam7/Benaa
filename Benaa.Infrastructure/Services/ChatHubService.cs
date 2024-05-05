@@ -7,13 +7,13 @@ namespace Benaa.Infrastructure.Services
 {
     public class ChatHubService : IChatHubService
     {
-        private readonly ISchedualRepository _schedualRepository;
+        private readonly ISchedualeRepository _schedualRepository;
         private readonly IChatRepository _chatRepository;
         private readonly IMessageRepository _messageRepository;
 
         private readonly ILogger<ChatHubService> _logger;
 
-        public ChatHubService(ISchedualRepository schedualRepository,
+        public ChatHubService(ISchedualeRepository schedualRepository,
             IChatRepository chatRepository,
             IMessageRepository messageRepository,
             ILogger<ChatHubService> logger)

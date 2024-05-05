@@ -16,5 +16,14 @@ namespace Benaa.Infrastructure.Repositories
             _dbContext.Entry(model).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
         }
+
+        public async Task<Wallet> GetUserWallet(string userId)
+        {
+          var wallet = await _dbContext.Users.Where(u => u.Id == userId)
+                                .Select(user => _dbContext.Wallets.FirstOrDefault(userWallet => userWallet.Id == user.WalletId))
+                                .Where(Wallet => Wallet != null).Select(Wallet => Wallet).FirstOrDefaultAsync();
+            if(wallet == null) { throw new Exception(); }
+            return wallet;
+        }
     }
 }

@@ -28,7 +28,7 @@ namespace Benaa.Core.Entities.General
         public Guid? BankInformationId { get; set; }
 
 
-        public ICollection<Notifaction>? Notifactions { get; }
+        public ICollection<Notification>? Notifactions { get; }
         public ICollection<Report>? Reports { get; }
         public ICollection<Course>? Courses { get; }
         public ICollection<UserCourses>? UserCourses { get; }
