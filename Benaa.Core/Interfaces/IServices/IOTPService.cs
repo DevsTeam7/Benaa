@@ -7,5 +7,6 @@ namespace Benaa.Core.Interfaces.IServices
     {
         Task<string> GenerateOTP(string userId, int type);
         Task<bool> VerifyOTP(string otp, string userId);
+        bool ValidateEmail(string email);
     }
 }

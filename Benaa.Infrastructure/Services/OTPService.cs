@@ -2,6 +2,7 @@
 using Benaa.Core.Interfaces.IRepositories;
 using Benaa.Core.Interfaces.IServices;
 using ErrorOr;
+using System.Text.RegularExpressions;
 namespace Benaa.Infrastructure.Services
 {
     public class OTPService : IOTPService
@@ -26,6 +27,12 @@ namespace Benaa.Infrastructure.Services
             else { return userCode.Code; }
             //Send Code to user
 
+        }
+        public bool ValidateEmail(string email)
+        {
+            string pattern = @"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$";
+            bool isValid = Regex.IsMatch(email, pattern);
+            return isValid;
         }
         public async Task<bool> VerifyOTP(string otp, string userId)
         {

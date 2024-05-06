@@ -110,15 +110,18 @@ namespace Benaa.Api.Controllers
 
         [HttpPost("GenerateOtp")]
         [Authorize]
-        public async Task<IActionResult> GenerateOtp(int otpType)
+        public async Task<IActionResult> GenerateOtp(string email, int otpType)
         {
+            bool IsEmailValid = _otpService.ValidateEmail(email);
+            if(!IsEmailValid) { return BadRequest("Email is invalid"); }
 
             string userId = _userManager.GetUserId(HttpContext.User);
             User user = await _userManager.FindByIdAsync(userId);
-            //check if the user is not null
+
             var code = await _otpService.GenerateOTP(userId, otpType);
             if (string.IsNullOrEmpty(code)) { return BadRequest("Faild To Crete The Code"); }
-            _emailService.SendEmailAsync(user.Email, code);
+
+            _emailService.SendEmailAsync(email, code);
             return Ok("Email Is Sent");
         }
 
@@ -127,6 +130,7 @@ namespace Benaa.Api.Controllers
         {
             string userId = _userManager.GetUserId(HttpContext.User);
             bool IsOtpVerfied = await _otpService.VerifyOTP(otpCode, userId);
+
             if (IsOtpVerfied) { return Ok(IsOtpVerfied); }
             return BadRequest(IsOtpVerfied);
 
