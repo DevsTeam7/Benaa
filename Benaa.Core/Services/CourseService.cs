@@ -5,7 +5,6 @@ using Benaa.Core.Interfaces.IRepositories;
 using Benaa.Core.Interfaces.IServices;
 using ErrorOr;
 using Microsoft.AspNetCore.Identity;
-using System.Collections.Generic;
 
 namespace Benaa.Core.Services
 {
@@ -84,7 +83,6 @@ namespace Benaa.Core.Services
             await _lessonRepository.CreateRange(courseLessons);
             return chapter.Id;
         }
-
         private async Task<ErrorOr<Guid>> CreateCourse(CourseDto newCourse, string teacherId)
         {
             var result = await CreateCourseOnly(newCourse.CreateCourseDto,teacherId);
@@ -174,7 +172,7 @@ namespace Benaa.Core.Services
         }
         public async Task<ErrorOr<Course>> GetById(string courseId)
         {
-            var course = await _courseRepository.GetById(Guid.Parse(courseId));
+            var course = await _courseRepository.SelectOneItem(course => course.Id == Guid.Parse(courseId));
             if(course == null) { return Error.NotFound(); }
             return course;
         }
@@ -218,6 +216,22 @@ namespace Benaa.Core.Services
             if(courses == null) { return Error.NotFound(); }
             return courses;
         }
+        public async Task<ErrorOr<List<Course>>> GetByQuantity(int quantity, int courseType)
+        {
+            Course.CourseType type = Course.CourseType.General;
+            switch (courseType)
+            {
+                case 0:
+                    type = Course.CourseType.HighShcool;
+                    break;
+                case 1:
+                    type = Course.CourseType.College;
+                    break;
+            }
+            var courses = await _courseRepository.SelectQuantity(quantity, type);
+            if (courses == null) { return Error.NotFound(); }
+            return courses;
+        }
         public async Task<ErrorOr<List<ChapterLessonsDto.Respnse>>> GetChapterLessons(string courseId)
         {
             List<ChapterLessonsDto.Respnse> chapterLessons = new List<ChapterLessonsDto.Respnse>();
@@ -231,7 +245,6 @@ namespace Benaa.Core.Services
              if (chapterLessons.Count == 0) { return Error.NotFound(); }
              return chapterLessons;
         }
-
         public async Task<ErrorOr<Success>> ReturnTheCourse(string courseId, string studentId)
         {
             var course = await _courseRepository.GetById(Guid.Parse(courseId));
@@ -251,14 +264,10 @@ namespace Benaa.Core.Services
 
             if (paymentStatus == null) { return Error.NotFound(); };
              await _userCoursesRepository.Delete(cart);
-             await _walletService.RefundUser(paymentStatus.Amount, studentIsd);
+             await _walletService.RefundUser(paymentStatus.Amount, studentId);
              await _paymentRepositoty.Delete(paymentStatus);   
 
             return new Success();
-
-
         }
-
-        //filtter by name then name + type
     }
 }

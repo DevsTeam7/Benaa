@@ -60,6 +60,17 @@ namespace Benaa.Api.Controllers
             return BadRequest("Please input all required filds");
         }
 
+        [HttpPost("UpdatePassword")]
+        public async Task<IActionResult> UpdatePassword(string newPassword, string? oldPassword = null)
+        {
+            var userId = _userManager.GetUserId(HttpContext.User);
+
+            var result = await _userService.UpdatePassword(userId, newPassword, oldPassword);
+
+            if (result.IsError) { return BadRequest(result.ErrorsOrEmptyList); }
+            return Ok(result.Value);
+        }
+
         //TODO: ALL USER Settings done here  
     }
 }

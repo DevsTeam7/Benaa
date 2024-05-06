@@ -11,6 +11,6 @@ namespace Benaa.Core.Interfaces.IServices
         Task<ErrorOr<BankInformation>> AddBankInfo(CreateBankInfoDto bankInfoDto);
         Task<ErrorOr<string>> UploadImage(IFormFile file, string userId);
         Task<ErrorOr<IdentityResult>> Update(string userId, UserUpdateDto userUpdate);
-        Task<ErrorOr<IdentityResult>> UpdatePassword(string userId, string oldPassword, string newPassword);
+        Task<ErrorOr<IdentityResult>> UpdatePassword(string userId, string newPassword, string? oldPassword = null);
     }
 }

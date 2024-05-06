@@ -1,4 +1,5 @@
-﻿using Benaa.Core.Entities.General;
+﻿using Benaa.Core.Entities.DTOs;
+using Benaa.Core.Entities.General;
 using Benaa.Core.Interfaces.Hubs;
 using Benaa.Core.Interfaces.IRepositories;
 using Benaa.Core.Interfaces.IServices;
@@ -17,9 +18,9 @@ namespace Benaa.Infrastructure.Services
             _notificationHub = notificationHub;
         }
 
-        public async Task<bool> Send(string userId, string content)
+        public async Task<bool> Send(string userId, string content, SchedualeNotificationDto? notificationObject = null)
         {
-            Notification notification = new Notification{UserId = userId, Content = content};
+            Notification notification = new Notification{UserId = userId, Content = content , notificationObject = notificationObject};
             await _notificationRepository.Create(notification);
             await _notificationHub.Clients.User(notification.UserId).SendNotification(notification.Content);
             return true;

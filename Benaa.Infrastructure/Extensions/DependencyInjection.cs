@@ -22,9 +22,7 @@ namespace Benaa.Infrastructure.Extensions
                 .AddTrigger(trigger =>
                 trigger.
                 ForJob(jobkey)
-                .WithSimpleSchedule(schedule => schedule.WithIntervalInHours(1).RepeatForever())
-                
-
+                .WithSimpleSchedule(schedule => schedule.WithIntervalInMinutes(1).RepeatForever())
                 ); ;
 
             });

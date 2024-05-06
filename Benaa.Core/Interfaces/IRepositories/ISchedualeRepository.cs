@@ -8,5 +8,6 @@ namespace Benaa.Core.Interfaces.IRepositories
     {
         Task<List<TimeRangeDto>> SelectTimes(Expression<Func<Sceduale, bool>> predicate);
         Task<bool> CheckAvailability(SchedualDetailsDto schedualDetails);
+        Task<List<Sceduale>> SelectByDay(DateTime date);
     }
 }

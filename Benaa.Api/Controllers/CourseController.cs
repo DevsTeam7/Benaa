@@ -234,7 +234,7 @@ namespace Benaa.Api.Controllers
             }
         }
 
-        [HttpGet("ReturnTheCourse")]
+        [HttpGet("GetByType")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -242,8 +242,25 @@ namespace Benaa.Api.Controllers
         {
             try
             {
-                var teacherId = _userManager.GetUserId(HttpContext.User);
                 var courses = await _courseService.GetByType(courseType);
+                if (courses.IsError) { return BadRequest(courses.ErrorsOrEmptyList); }
+                return Ok(courses.Value);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+        
+        [HttpGet("GetByQuantity")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetByQuantity(int quantity, int courseType)
+        {
+            try
+            {
+                var courses = await _courseService.GetByQuantity(quantity, courseType);
                 if (courses.IsError) { return BadRequest(courses.ErrorsOrEmptyList); }
                 return Ok(courses.Value);
             }

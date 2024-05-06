@@ -20,7 +20,7 @@ namespace Benaa.Api.Extensions
             services.AddScoped<IWalletService, WalletService>();
             services.AddScoped<IMoneyCodeService, MoneyCodeService>();
             services.AddScoped<UserManager<User>>();
-            //services.AddScoped<IScedualeService, ScedualeService>();
+            services.AddScoped<IScedualeService, ScedualeService>();
             services.AddScoped<IChatHubService, ChatHubService>();
             services.AddScoped<ITokenGeneration, TokenGeneration>();
             services.AddScoped<IOwnerService, OwnerService>();

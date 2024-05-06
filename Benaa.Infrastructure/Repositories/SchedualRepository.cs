@@ -4,16 +4,15 @@ using Benaa.Core.Interfaces.IRepositories;
 using Benaa.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using static Benaa.Core.Entities.General.Course;
 
 namespace Benaa.Infrastructure.Repositories
 {
     public class SchedualRepository : BaseRepository<Sceduale>, ISchedualeRepository
     {
-        protected readonly ApplicationDbContext _dbContext;
 
         public SchedualRepository(ApplicationDbContext dbContext) : base(dbContext)
         {
-            _dbContext = dbContext;
         }
 
         public async Task<List<TimeRangeDto>> SelectTimes(Expression<Func<Sceduale, bool>> predicate)
@@ -25,17 +24,25 @@ namespace Benaa.Infrastructure.Repositories
             return listOfItems.Cast<TimeRangeDto>().ToList();
         }
 
-
         public async Task<bool> CheckAvailability(SchedualDetailsDto schedualDetails)
         {
             var Isnull = await _dbContext
-                .Sceduales.AnyAsync(sceduale => (sceduale.StudentId == null) 
-                &&(sceduale.Date == schedualDetails.Date) 
+                .Sceduales.AnyAsync(sceduale => (sceduale.StudentId == null)
+                && (sceduale.Date == schedualDetails.Date)
                 && (sceduale.TimeStart == schedualDetails.TimeStart));
             if (!Isnull) { throw new Exception(); }
             return Isnull;
         }
 
-
+        public async Task<List<Sceduale>> SelectByDay(DateTime date)
+        {
+            date = DateTime.SpecifyKind(date, DateTimeKind.Utc);
+            var sceduales =  await _dbContext.Sceduales
+            .Where(schedule => schedule.Date == date)
+            .Include(schedule => schedule.Teacher)
+            .Include(schedule => schedule.Student)
+            .ToListAsync();
+            return sceduales;
+        }
     }
 }

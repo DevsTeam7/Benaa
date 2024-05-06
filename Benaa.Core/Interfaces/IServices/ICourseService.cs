@@ -11,6 +11,7 @@ namespace Benaa.Core.Interfaces.IServices
         Task Delete(string courseId);
         Task<ErrorOr<Course>> GetById(string courseId);
         Task<ErrorOr<List<Course>>> GetByType(int courseType);
+        Task<ErrorOr<List<Course>>> GetByQuantity(int quantity, int courseType);
         Task<ErrorOr<Guid>> AddCourseToCart(string userId, string courseId);
         Task GetBestRatedCorse();
         Task<ErrorOr<Guid>> AddRate(RateDTO.Request newRate, string studentId);

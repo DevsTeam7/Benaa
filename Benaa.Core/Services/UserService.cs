@@ -94,14 +94,21 @@ namespace Benaa.Core.Services
         }
 
 
-        public async Task<ErrorOr<IdentityResult>> UpdatePassword(string userId, string oldPassword, string newPassword)
+        public async Task<ErrorOr<IdentityResult>> UpdatePassword(string userId, string newPassword, string? oldPassword = null)
         {
             User user = await _userManager.FindByIdAsync(userId)!;
             if (user is null) { return Error.NotFound("The User Does not Exist"); }
+            IdentityResult result;
+            if (oldPassword != null)
+            {
+                result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+            }
+            await _userManager.RemovePasswordAsync(user);
+            result = await _userManager.AddPasswordAsync(user, newPassword);
 
-            var result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
             if (!result.Succeeded) { return Error.Unexpected("Falid To Update The User"); }
             return result;
+
         }
     }
 }
