@@ -16,8 +16,8 @@ var builder = WebApplication.CreateBuilder(args);
 //builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = maxFileSize) ;
 
 builder.Services.AddControllers()
-    .AddJsonOptions(optins => 
-    optins.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles); 
+    .AddJsonOptions(optins =>
+    optins.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 builder.Services.AddDbContext<ApplicationDbContext>(optins =>
    optins.UseNpgsql(

@@ -13,8 +13,16 @@ namespace Benaa.Infrastructure.Repositories
         }
         public async new Task<List<Rate>> Select(Expression<Func<Rate, bool>> predicate)
         {
-            var lsitOfItems = await _dbContext.Rates.Where(predicate).Include(user=> user.Student).ToListAsync();
+            var lsitOfItems = await _dbContext.Rates.Where(predicate)
+                .Include(user=> user.Student).ToListAsync();
             return lsitOfItems;
         }
+
+        //public async Task<List<Rate>> GetBestRatedCorse()
+        //{
+        //    var rates = _dbContext.Rates;
+        //    rates.OrderBy(rate => rate.Stars).;
+
+        //}
     }
 }

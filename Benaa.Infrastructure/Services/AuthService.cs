@@ -43,9 +43,9 @@ namespace Benaa.Infrastructure.Services
             return false;
         }
 
-        private async Task<User> CreateUser(User newUser, IFormFile? file, string Password)
+        private async Task<User> CreateUser(User newUser, string Password, IFormFile? file = null)
         {
-
+            
             if (file is not null && file.Length > 0)
             {
                 var UploadedFile = await _fileUploadService.UploadFile(file);
@@ -69,8 +69,9 @@ namespace Benaa.Infrastructure.Services
             if (await IsUserExist(newUser))
                 return Error.Conflict(description: "The Email Exist");
 
-            User user = await CreateUser(newUser, null, newStudent.Password);
-            var walletId = await _walletService.CraeteWallet();
+            User user = await CreateUser(newUser,newStudent.Password);
+            if (user == null) { return Error.Unexpected("Faild To Create the user"); }
+            Guid walletId = await _walletService.CraeteWallet();
             user.WalletId = walletId;
 
             if (user is null)
@@ -113,7 +114,7 @@ namespace Benaa.Infrastructure.Services
             if (await IsUserExist(newUser))
                 return Error.Conflict(description: "The Email Exist");
 
-            User user = await CreateUser(newUser, newTeacher.Certifications, newTeacher.Password);
+            User user = await CreateUser(newUser, newTeacher.Password, newTeacher.Certifications);
 
             if (user is null)
             {

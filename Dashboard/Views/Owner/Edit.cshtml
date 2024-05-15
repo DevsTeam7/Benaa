@@ -1,0 +1,39 @@
+﻿@model Benaa.Dashboard.Models.Admin;
+@{
+    Layout = "~/Views/Shared/_layoutOwner.cshtml";
+}
+
+<div class="content">
+    <div class="users">
+        <div class="tabs">
+            <div class="tab-body">
+                <div class="tab-content active">
+                    <div class="content-header">
+                        <h2 class="title">تعديل معلومات مشرف</h2>
+                    </div>
+                    <div class="content-body">
+                        <div class="add-category">
+                            <form>
+                                <div class="form-item">
+                                    <label>الاسم الكامل</label>
+                                    <input type="text" id="name" name="name" placeholder="حقل اجباري" required value="Model.Name">
+                                </div>
+                                <div class="form-item">
+                                    <label>البريد الالكتروني</label>
+                                    <input type="text" id="email" name="email" placeholder="حقل إجباري" required value="Model.Email">
+                                </div>
+                                <div class="form-item">
+                                    <label>كلمة المرور</label>
+                                    <input type="text" id="password" name="password" placeholder="حقل اجباري" required value="Model.Password">
+                                </div>
+                                <div class="form-item" style="width: 100%;">
+                                    <button onclick="" id="addBtn" type="submit" class="save-btn btn btn-primary">تحديث</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

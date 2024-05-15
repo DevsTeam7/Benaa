@@ -1,0 +1,83 @@
+﻿@{
+	Layout = "~/Views/Shared/_layoutOwner.cshtml";
+}
+
+<!-- main content -->
+<div class="content">
+
+    <div class="users">
+        <div class="tabs">
+            <div class="tab-body">
+
+                <div class="tab-content active">
+                    <div class="content-header">
+                        <h2 class="title">المشرفين حاليا</h2>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>الرقم</th>
+                                <th> الاسم</th>
+                                <th>البريد الالكتروني</th>
+                                <th>كلمة المرور</th>
+                                <th>أوامر</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admins">
+                        </tbody>
+
+
+                    </table>
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- add content -->
+<div class="content">
+
+    <div class="users">
+        <div class="tabs">
+            <div class="tab-body">
+
+                <div class="tab-content active">
+                    <div class="content-header">
+                        <h2 class="title">اضافة مشرف جديد</h2>
+                    </div>
+                    <div class="content-body">
+                        <div class="add-category">
+                            <form>
+
+                                <div class="form-item">
+                                    <label>الاسم الكامل</label>
+                                    <input type="text" id="name" name="name" placeholder="حقل اجباري" required>
+                                </div>
+
+                                <div class="form-item">
+                                    <label>البريد الالكتروني</label>
+                                    <input type="text" id="email" name="email" placeholder="حقل إجباري" required>
+                                </div>
+
+                                <div class="form-item">
+                                    <label>كلمة المرور</label>
+                                    <input type="text" id="password" name="password" placeholder="حقل اجباري" required>
+                                </div>
+
+                                <div class="form-item" style="width: 100%;">
+
+                                    <button onclick="addAdmin()" id="addBtn" type="submit" class="save-btn btn btn-primary">اضافة</button>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

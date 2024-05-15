@@ -93,7 +93,6 @@ namespace Benaa.Core.Services
             return result;
         }
 
-
         public async Task<ErrorOr<IdentityResult>> UpdatePassword(string userId, string newPassword, string? oldPassword = null)
         {
             User user = await _userManager.FindByIdAsync(userId)!;
@@ -109,6 +108,13 @@ namespace Benaa.Core.Services
             if (!result.Succeeded) { return Error.Unexpected("Falid To Update The User"); }
             return result;
 
+        }
+        //TODO: conecte and test the scudule logic
+        public async Task<ErrorOr<List<User>>> GetTeachers(int quantity)
+        {
+           var teachers = await _userRepository.SelectQuantity(quantity); 
+            if(teachers == null) { return Error.NotFound(); }
+            return teachers;
         }
     }
 }

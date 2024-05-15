@@ -1,0 +1,8 @@
+@font-face {
+  font-family: Cairo;
+  src: url("../Cairo/Cairo-VariableFont_slnt,wght.ttf");
+}
+*{
+  font-family:Cairo ;
+}
+

@@ -232,18 +232,18 @@ namespace Benaa.Core.Services
             if (courses == null) { return Error.NotFound(); }
             return courses;
         }
-        public async Task<ErrorOr<List<ChapterLessonsDto.Respnse>>> GetChapterLessons(string courseId)
+        public async Task<ErrorOr<List<CourseChapter>>> GetChapterLessons(string courseId)
         {
             List<ChapterLessonsDto.Respnse> chapterLessons = new List<ChapterLessonsDto.Respnse>();
             var chapters = await _chapterRepository.Select(course => course.CourseId == Guid.Parse(courseId));
-            foreach (var chapter in chapters)
-            {
-                ChapterLessonsDto.Respnse respnse = new ChapterLessonsDto.Respnse
-                { courseChapter = chapter, courseLessons = chapter.CourseLessons! };
-                chapterLessons.Add(respnse);
-            }
-             if (chapterLessons.Count == 0) { return Error.NotFound(); }
-             return chapterLessons;
+            //foreach (var chapter in chapters)
+            //{
+            //    ChapterLessonsDto.Respnse respnse = new ChapterLessonsDto.Respnse
+            //    { courseChapter = chapter, courseLessons = chapter.CourseLessons! };
+            //    chapterLessons.Add(respnse);
+            //}
+             if (chapters.Count == 0) { return Error.NotFound(); }
+             return chapters;
         }
         public async Task<ErrorOr<Success>> ReturnTheCourse(string courseId, string studentId)
         {

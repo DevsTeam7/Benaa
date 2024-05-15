@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
 using Benaa.Infrastructure.Utils.Users;
+using Quartz;
 
 namespace Benaa.Infrastructure.Data
 {
@@ -34,6 +35,17 @@ namespace Benaa.Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            modelBuilder.Entity<Sceduale>()
+                .HasOne(s => s.Student)
+                .WithMany()
+                .HasForeignKey(s => s.StudentId);
+
+            modelBuilder.Entity<Sceduale>()
+            .HasOne(s => s.Teacher)
+            .WithMany()
+            .HasForeignKey(s => s.TeacherId);
+
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<IdentityRole>()
                 .HasData(

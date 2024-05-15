@@ -32,14 +32,14 @@ namespace Benaa.Core.Interfaces.Authentication
                 claims.Add(new Claim(ClaimTypes.Role, userRole));
             }
 
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("Jwt:Key").Value));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("418EBF8D-8968-4406-AAC1-9E7883BAA270"));
             SigningCredentials signinCred = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             JwtSecurityToken securityToken = new JwtSecurityToken(
                 claims: claims,
                 expires: DateTime.Now.AddDays(3),
-                issuer: _config.GetSection("Jwt:Audience").Value,
-                audience: _config.GetSection("Jwt:Issuer").Value,
+                issuer: "http://localhost:5084",
+                audience: "http://localhost:5084",
                 signingCredentials: signinCred
                 );
 

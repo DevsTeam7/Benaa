@@ -1,0 +1,56 @@
+﻿@{
+    Layout = "~/Views/Shared/_layoutAdmin.cshtml";
+}
+
+<div>
+    <!-- Main Content -->
+    <div class="content">
+        <div class="content-header">
+            <h2 class="title"> اكواد الشحن </h2>
+        </div>
+        <div class="content-header">
+            <div class="col-5 mt-4 ">
+                <div style="
+
+           display: flex;
+              height: 30vh;
+              align-items: flex-start;
+              justify-content: space-around;
+              flex-direction: column;
+              ;">
+                    <label for="" class="form-label fs-4">المبلغ الاجمالي</label>
+                    <input type="number" style="width: 40vh; height: 4vh; border-radius: 6px;" class="form-control m-2"
+                           id="amount-input">
+                    <label for="" class="form-label fs-4">عدد اكواد الشحن</label>
+                    <input type="number" style="width: 40vh; height: 4vh; border-radius: 6px;" class="form-control m-2"
+                           id="quantity-input">
+                </div>
+
+                <div style="display: flex;
+                          height: 61vh;
+                          align-items: flex-end;
+                          justify-content: center;">
+                    <button style="width: 30vh;" class="btn btn-primary w-75 text-center"
+                            onclick="generateCodes()">
+                        انشاء
+                    </button>
+                </div>
+
+            </div>
+            <div class="col-6 container-fluid card rounded m-5 mb-3"
+                 style="margin-left: 15%; border-radius: 12px; width: 30%; background-color: rgb(252 252 252); height:90vh;">
+                <div class="row" style="justify-content: space-around;">
+                    <button class="btn btn-primary col-4 " onclick="exportToText()">تصدير</button>
+                    <button class="btn btn-primary col-4" onclick="clearContent()">حذف</button>
+                    <hr size="5">
+                </div>
+                <div style="color: black; position: center; max-height: 690px; overflow-y: auto;" id="code-list">
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+
+</div>

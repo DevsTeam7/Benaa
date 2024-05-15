@@ -1,4 +1,6 @@
-﻿namespace Benaa.Core.Entities.DTOs
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace Benaa.Core.Entities.DTOs
 {
     public class LoginRequestDto
     {

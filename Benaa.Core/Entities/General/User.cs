@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Benaa.Core.Entities.General
 {
@@ -33,6 +34,7 @@ namespace Benaa.Core.Entities.General
         public ICollection<Course>? Courses { get; }
         public ICollection<UserCourses>? UserCourses { get; }
         public ICollection<Messages>? Messages { get; }
+        public List<Sceduale>? Sceduales { get; set; }
 
         public virtual Wallet? Wallet { get; set; }
         public virtual BankInformation? BankInformation { get; set; }

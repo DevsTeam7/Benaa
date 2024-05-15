@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+	<title>منصة بناء التعليمية</title>
+	<link rel="icon" href="~/public/group-4831.svg" type="image/svg+xml">
+
+	<meta charset="utf-8" />
+	<meta name="viewport" content="initial-scale=1, width=device-width" />
+
+
+	<!-- <link rel="stylesheet" href="bootstrap-5.2.0-dist/bootstrap-5.2.0-dist/css/bootstrap.rtl.css"> -->
+	<link href="../css/fontawsome/all.min.css" rel="stylesheet">
+
+	<link rel="stylesheet" href="~/css/main.css">
+	<link rel="stylesheet" href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css'>
+	<link rel="stylesheet" href="~/css/style.css">
+</head>
+
+<body>
+
+
+	<div class="container">
+
+		<!-- sidebar -->
+		<div class="sidebar">
+			<ul class="nav-list">
+				<li class="nav-item brand-name">
+					<a href="">
+						<span class="icon">
+							<img src="../public/group-4831.svg" alt="" width="35px">
+
+						</span>
+						<span class="title"> منصة بناء التعلمية</span>
+					</a>
+				</li>
+				<li class="nav-item @(ViewContext.RouteData.Values["Action"].ToString() == "Income" ? "active" : "") ">
+					<a href="@Url.Action("Income", "Owner")">
+						<span class="icon">
+							<i class='bx bx-md bx-home'></i>
+						</span>
+						<span class="title">الدخل والمستحقات</span>
+					</a>
+				</li>
+				<li class="nav-item @(ViewContext.RouteData.Values["Action"].ToString() == "Admins" ? "active" : "") ">
+					<a href="@Url.Action("Admins", "Owner")">
+						<span class="icon">
+							<i class='bx bx-md bx-home'></i>
+						</span>
+						<span class="title">المشرفين</span>
+					</a>
+				</li>
+
+				<li class="nav-item">
+					<a href="./Login.html">
+						<span class="icon">
+							<i class="bx bx-log-out-circle"></i>
+						</span>
+						<span class="title">تسجيل الخروج</span>
+					</a>
+				</li>
+			</ul>
+		</div>
+
+		<!-- main content -->
+		<div class="main">
+			<!-- Top Bar -->
+			<div class="topbar">
+				<!-- Toggle button -->
+				<div class="toggle">
+					<i class='bx bx-menu' name="menu"></i>
+					<i class='bx bx-x' name="close"></i>
+				</div>
+				<!-- Search field -->
+				<div class="search">
+					<label for="">
+						<input type="text" placeholder="بحث">
+						<i class='bx bx-search'></i>
+					</label>
+				</div>
+
+				<!-- Theme Toggler -->
+				<div class="theme-toggler">
+					<span class="icon">
+						<i class='bx bx-sun' name="sun"></i>
+						<!-- <i class='bx bx-moon' name="moon"></i> -->
+					</span>
+				</div>
+
+			</div>
+
+			<section>
+				@RenderBody()
+			</section>
+		</div>
+
+
+		<script src="~/js/app.js"></script>
+		<script src="~/js/ow_administrations.js"></script>
+		<script src="~/js/theme-script.js"></script>
+		<script src="~/js/alpine.js"></script>
+</body>
+
+</html>
+

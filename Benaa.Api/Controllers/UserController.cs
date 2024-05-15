@@ -2,7 +2,6 @@
 using Benaa.Core.Entities.General;
 using Benaa.Core.Interfaces.IServices;
 using Benaa.Core.Utils.FileUploadTypes;
-using Benaa.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -60,7 +59,7 @@ namespace Benaa.Api.Controllers
             return BadRequest("Please input all required filds");
         }
 
-        [HttpPost("UpdatePassword")]
+        [HttpPut("UpdatePassword")]
         public async Task<IActionResult> UpdatePassword(string newPassword, string? oldPassword = null)
         {
             var userId = _userManager.GetUserId(HttpContext.User);
@@ -71,6 +70,12 @@ namespace Benaa.Api.Controllers
             return Ok(result.Value);
         }
 
-        //TODO: ALL USER Settings done here  
+        [HttpGet("GetTeachers")]
+        public async Task<IActionResult> GetTeachers(int quantity)
+        {
+            var result = await _userService.GetTeachers(quantity);
+            if (result.IsError) { return BadRequest(result.ErrorsOrEmptyList); }
+            return Ok(result.Value);
+        }
     }
 }
