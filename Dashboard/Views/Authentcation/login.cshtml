@@ -20,24 +20,13 @@
     <link rel="stylesheet" href="~/css/style.css">
 
 </head>
-
 <body>
-
-
     <div class="container-fluid">
-
-
-
-        <!-- main content -->
         <div class="main">
-            <!-- main content -->
             <div class="mainCard">
                 <div class="section" style="    width: fit-content;         transform: translate(-90%, 5%);
 
         ">
-
-                    <!-- Main Content -->
-                    <!-- Theme Toggler -->
                     <div class="theme-toggler">
                         <span class="icon">
                             <i class='bx bx-sun' name="sun"></i>
@@ -90,41 +79,7 @@
 
 
     </div>
-        <script>
-            function submitForm() {
-                var form = document.getElementById("myForm");
-                var formData = new FormData(form);
 
-                var jsonObject = {};
-                formData.forEach(function (value, key) {
-                    jsonObject[key] = value;
-                });
-
-                var jsonData = JSON.stringify(jsonObject);
-                fetch("your-service-url", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: jsonData,
-                })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        // Handle the response from the service
-                    })
-                    .catch((error) => {
-                        // Handle any errors that occur during the request
-                    });
-            }
-        </script>
-
-        <form id="myForm" onsubmit="event.preventDefault(); submitForm();">
-            <!-- Form fields -->
-            <input type="text" name="Email" placeholder="اسم المستخدم" required />
-            <input type="password" name="Password" placeholder="كلمة المرور" required />
-
-            <button type="submit">تسجيل الدخول</button>
-        </form>
     <script src="~/js/app.js"></script>
     <script src="~/js/theme-script.js"></script>
     <script src="~/js/alpine.js"></script>

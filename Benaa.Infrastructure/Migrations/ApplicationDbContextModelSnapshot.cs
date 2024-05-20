@@ -367,9 +367,8 @@ namespace Benaa.Infrastructure.Migrations
                     b.Property<Guid>("TargetId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -611,25 +610,25 @@ namespace Benaa.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "6c86bb41-6acd-4ac6-a8d3-c25d77ef28ae",
+                            Id = "2c272f1f-9506-491c-ace6-a477c096a8df",
                             Name = "STUDENT",
                             NormalizedName = "STUDENT"
                         },
                         new
                         {
-                            Id = "aaadddf4-d408-4e16-a5f3-aeba9560e1ff",
+                            Id = "2381c993-8971-40d7-8ca2-a163b35b46f1",
                             Name = "TEACHER",
                             NormalizedName = "TEACHER"
                         },
                         new
                         {
-                            Id = "e834a114-1c19-451e-a75d-52ea372cd880",
+                            Id = "370daf7a-387e-410b-b0aa-b8105a01acfc",
                             Name = "ADMIN",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "c763d2f2-b31f-4a1a-acf9-917687d9287b",
+                            Id = "e1aad4b4-2d90-419e-be54-aa55fc51aa9f",
                             Name = "OWNER",
                             NormalizedName = "OWNER"
                         });

@@ -30,6 +30,7 @@ namespace Benaa.Api.Extensions
             services.AddScoped<IOTPService, OTPService>();
             services.AddScoped<ICourseService, CourseService>();
             services.AddScoped<INotificationService, NotificationService>();
+            services.AddScoped<IReportService, ReportService>();
             #endregion
 
             #region Repositories

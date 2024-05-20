@@ -30,6 +30,7 @@ namespace Benaa.Core.Services
         public async Task del(string id)
         {
             var user = await _OwnerRepository.GetById(id);
+            if (user == null) { throw new Exception(); }
             await _OwnerRepository.Delete(user);
         }
 
@@ -37,9 +38,10 @@ namespace Benaa.Core.Services
         {
             var user = await _OwnerRepository.GetById(id);
             user.IsApproved=true;
-            await _OwnerRepository.SaveChangeAsync();
+            await _OwnerRepository.Update(user);
             await _notificationService.Send(user.Id,"تهانينا لقد تم قبولك في منصة بناء");
         }
+
 
         public async Task<List<User>> GetA()
         {

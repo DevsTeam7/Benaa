@@ -1,39 +1,54 @@
 ﻿using Benaa.Core.Interfaces.IServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
 using Benaa.Core.Interfaces.IRepositories;
 using Benaa.Core.Entities.General;
 using Benaa.Core.Entities.DTOs;
+using ErrorOr;
+using System.Runtime.InteropServices;
+using AutoMapper.Configuration.Annotations;
 
 namespace Benaa.Core.Services
 {
     public class ReportService: IReportService
     {
         private readonly IReportRepository _reoprtRepository;
-        private readonly IMapper _mapper;
 
 
-        public ReportService(IReportRepository reoprtRepository, IMapper mapper)
+        public ReportService(IReportRepository reoprtRepository)
         {
             _reoprtRepository = reoprtRepository;
-            _mapper = mapper;
         }
 
-        public async Task<IEnumerable<Report>> GetReport()
+        public async Task<IEnumerable<ReportDisplyDto>> GetReport()
         {
             return await _reoprtRepository.GetAll();
         }
-
-        public async Task<Report> Report(ReportDto report)
+        public async Task<ErrorOr<Success>> Delete(Guid reportId)
         {
-            var Report = _mapper.Map<Report>(report);
+            var report = await _reoprtRepository.GetById(reportId);
+            if (report == null) { Error.NotFound(); }
+            await _reoprtRepository.Delete(report);
+            return new Success();
+        }
+        public async Task DeleteAll(Guid TargetId)
+        {
+          List<Report> reports = await _reoprtRepository.Select(report => report.TargetId ==  TargetId);
+            foreach (Report report in reports)
+            {
+                await _reoprtRepository.Delete(report);
+            }
+        }
 
-            await _reoprtRepository.Create(Report);
-            return Report;
+        public async Task<ErrorOr<Report>> Report(ReportDto reportDto, string userId)
+        {
+            var report = new Report();
+            report.Problem = reportDto.Problem;
+            report.Description = reportDto.Description;
+            report.Type = reportDto.Type;
+            report.UserId = userId;
+            report.TargetId = Guid.Parse(reportDto.TargetId);
+            var res =await _reoprtRepository.Create(report);
+            if(res == null) { return Error.Failure(description:"Falid To Create The Report"); }
+            return report;
         }
 
     }

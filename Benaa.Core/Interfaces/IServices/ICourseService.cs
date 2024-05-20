@@ -18,9 +18,10 @@ namespace Benaa.Core.Interfaces.IServices
         Task<ErrorOr<List<RateDTO.Response>>> GetAllRate(string courseId);
         Task<ErrorOr<List<Course>>> GetByStudentId(string studentId);
         Task<ErrorOr<List<Course>>> GetByTeacherId(string teacherId);
-        Task<ErrorOr<List<CourseChapter>>> GetChapterLessons(string courseId);
+        //Task<ErrorOr<List<CourseChapter>>> GetChapterLessons(string courseId);
         Task<ErrorOr<Guid>> CreateChapterLessons(ChapterLessonsDto chapterLessons, string courseId);
         Task<ErrorOr<Success>> BuyCourse(string userId, List<string> courses);
         Task<ErrorOr<Success>> ReturnTheCourse(string courseId, string studentId);
+        Task<ErrorOr<Success>> Delete(Guid courseId);
     }
 }

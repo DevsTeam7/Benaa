@@ -1,6 +1,7 @@
 ﻿using Benaa.Core.Entities.General;
 using Benaa.Core.Interfaces.IRepositories;
 using Benaa.Core.Interfaces.IServices;
+using ErrorOr;
 
 
 namespace Benaa.Core.Services
@@ -12,20 +13,19 @@ namespace Benaa.Core.Services
         {
             _moneyCodeRepository = moneyCodeRepository;
         }
-
        
-        public async Task< object> Generate(int amount, int number)
+        public async Task<ErrorOr<List<MoneyCode>>> Generate(int amount, int number)
         {
+            List<MoneyCode> codes = new List<MoneyCode>();
             if(amount==0|| number == 0) 
             {
-                return "the amount field or the number field cannot be 0"; 
+                return Error.Failure(description:"the amount field or the number field cannot be 0"); 
             }
             
             Random rnd = new Random();
             List<string> list = await _moneyCodeRepository.GetAllCode();
             List<string> newlist = new List<string>();
             string rand = "";
-
 
             int counter = 0;
             while (counter < number)
@@ -40,22 +40,15 @@ namespace Benaa.Core.Services
                     MoneyCode mc = new MoneyCode();
                     mc.Amount = amount;
                     mc.Code = rand;
-                    await _moneyCodeRepository.Create(mc);
+                   var createdCodes = await _moneyCodeRepository.Create(mc);
+                    if (createdCodes == null) { throw new Exception(); }
+                    codes.Add(createdCodes);
                     counter++;
+                    newlist.Add(amount.ToString());
                     newlist.Add(rand);
-                    
-
                 }
             }
-
-           return newlist;
-
+           return codes;
         }
-
-
-
-
-       
-
     }
 }

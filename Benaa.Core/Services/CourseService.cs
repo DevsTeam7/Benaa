@@ -232,19 +232,19 @@ namespace Benaa.Core.Services
             if (courses == null) { return Error.NotFound(); }
             return courses;
         }
-        public async Task<ErrorOr<List<CourseChapter>>> GetChapterLessons(string courseId)
-        {
-            List<ChapterLessonsDto.Respnse> chapterLessons = new List<ChapterLessonsDto.Respnse>();
-            var chapters = await _chapterRepository.Select(course => course.CourseId == Guid.Parse(courseId));
-            //foreach (var chapter in chapters)
-            //{
-            //    ChapterLessonsDto.Respnse respnse = new ChapterLessonsDto.Respnse
-            //    { courseChapter = chapter, courseLessons = chapter.CourseLessons! };
-            //    chapterLessons.Add(respnse);
-            //}
-             if (chapters.Count == 0) { return Error.NotFound(); }
-             return chapters;
-        }
+        //public async Task<ErrorOr<List<CourseChapter>>> GetChapterLessons(string courseId)
+        //{
+        //    List<ChapterLessonsDto.Respnse> chapterLessons = new List<ChapterLessonsDto.Respnse>();
+        //    var chapters = await _chapterRepository.Select(course => course.CourseId == Guid.Parse(courseId));
+        //    //foreach (var chapter in chapters)
+        //    //{
+        //    //    ChapterLessonsDto.Respnse respnse = new ChapterLessonsDto.Respnse
+        //    //    { courseChapter = chapter, courseLessons = chapter.CourseLessons! };
+        //    //    chapterLessons.Add(respnse);
+        //    //}
+        //     if (chapters.Count == 0) { return Error.NotFound(); }
+        //     return chapters;
+        //}
         public async Task<ErrorOr<Success>> ReturnTheCourse(string courseId, string studentId)
         {
             var course = await _courseRepository.GetById(Guid.Parse(courseId));
@@ -267,6 +267,14 @@ namespace Benaa.Core.Services
              await _walletService.RefundUser(paymentStatus.Amount, studentId);
              await _paymentRepositoty.Delete(paymentStatus);   
 
+            return new Success();
+        }
+
+        public async Task<ErrorOr<Success>> Delete(Guid courseId)
+        {
+            var course = await _courseRepository.GetById(courseId);
+            if(course == null) { return Error.NotFound(); };
+            await _courseRepository.Delete(course); ;
             return new Success();
         }
     }

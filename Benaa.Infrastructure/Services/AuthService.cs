@@ -38,7 +38,7 @@ namespace Benaa.Infrastructure.Services
 
         private async Task<bool> IsUserExist(User newUser)
         {
-            var userExists = await _userManager.FindByEmailAsync(newUser.Email);
+            var userExists = await _userManager.FindByEmailAsync(newUser.Email!);
             if (userExists != null) return true;
             return false;
         }
@@ -100,7 +100,8 @@ namespace Benaa.Infrastructure.Services
                 if (authenticatedUser is null) return Error.Unexpected();
                 if (user.EmailConfirmed is false) { authenticatedUser.EmailConfirmed = user.EmailConfirmed; }
                 authenticatedUser.Token = token;
-                authenticatedUser.ImageUrl = user.ImageUrl;
+                authenticatedUser.ImageUrl = user.ImageUrl!;
+                authenticatedUser.Role = userRoles.First();
 
                 return authenticatedUser;
             }

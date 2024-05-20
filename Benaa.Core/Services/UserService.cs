@@ -47,10 +47,13 @@ namespace Benaa.Core.Services
             return filePath;
         }
 
-        public async Task<ErrorOr<BankInformation>> AddBankInfo(CreateBankInfoDto bankInfoDto)
+        public async Task<ErrorOr<BankInformation>> AddBankInfo(CreateBankInfoDto bankInfoDto, string userId)
         {
+            var user = await _userManager.Users.FirstAsync(user => user.Id == userId);
             BankInformation bankInfo = _mapper.Map<BankInformation>(bankInfoDto);
             var createdbankInfo = await _bankInformationRepository.Create(bankInfo);
+            user.BankInformationId = createdbankInfo.Id;
+			await _userManager.UpdateAsync(user);
             if (createdbankInfo is null) { return Error.Failure(); }
             return createdbankInfo;
         }
@@ -115,6 +118,15 @@ namespace Benaa.Core.Services
            var teachers = await _userRepository.SelectQuantity(quantity); 
             if(teachers == null) { return Error.NotFound(); }
             return teachers;
+        }
+
+        public async Task<ErrorOr<Success>> Delete(string userId)
+        {
+            var user = _userManager.Users.First(user => user.Id == userId);
+            if (user is null) { return Error.NotFound(); };
+            IdentityResult result = await _userManager.DeleteAsync(user);
+            if(!result.Succeeded) { return Error.Failure();}
+            return new Success();
         }
     }
 }

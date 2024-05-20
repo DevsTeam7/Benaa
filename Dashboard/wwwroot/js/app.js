@@ -21,11 +21,11 @@ toggle.onclick = function () {
   }
 }
 
-// User drop down menu toggle
-const resultBox = document.querySelector('.result-box'),
-  selectBtn = document.querySelector('.select-btn')
+//// User drop down menu toggle
+//const resultBox = document.querySelector('.result-box'),
+//  selectBtn = document.querySelector('.select-btn')
 
-selectBtn.addEventListener('click', () => {
-  resultBox.classList.toggle('active');
-  selectBtn.classList.toggle('active');
-})
+//selectBtn.addEventListener('click', () => {
+//  resultBox.classList.toggle('active');
+//  selectBtn.classList.toggle('active');
+//})

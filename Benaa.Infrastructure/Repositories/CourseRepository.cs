@@ -15,8 +15,9 @@ namespace Benaa.Infrastructure.Repositories
         public async Task<List<Course>> SelectQuantity(int quantity, CourseType? type = null)
         {
             IQueryable<Course> query = _dbContext.Courses
-                .Include(course => course.Rates)
-                .Include(course => course.CourseChapters)
+				.Include(course => course.Rates)!
+				.ThenInclude(rate => rate.Student)
+				.Include(course => course.CourseChapters)!
                     .ThenInclude(chapter => chapter.CourseLessons);
 
             query = query.Take(quantity);

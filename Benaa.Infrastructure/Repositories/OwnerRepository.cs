@@ -5,6 +5,7 @@ using Benaa.Infrastructure.Utils.Users;
 using Benaa.Core.Entities.DTOs;
 using Microsoft.AspNetCore.Identity;
 using Benaa.Core.Interfaces.IRepositories;
+using static Benaa.Core.Entities.General.Course;
 
 namespace Benaa.Infrastructure.Repositories
 {
@@ -15,16 +16,18 @@ namespace Benaa.Infrastructure.Repositories
         {
             _userManager = userManager;
         }
+		public async Task<List<User>> GetNT()
+		{
+			var usersInTeacherRole = await _userManager.GetUsersInRoleAsync(Role.Teacher);
+			var filteredUsers = _dbContext.Users
+				.Where(user => usersInTeacherRole.Contains(user) && user.IsApproved == false)
+				.Include(user => user.BankInformation)
+				.ToList();
+			return filteredUsers;
+		}
 
-        public async Task<List<User>> GetNT()
-        {
-            var usersInTeacherRole = await _userManager.GetUsersInRoleAsync(Role.Teacher);
-            var filteredUsers = usersInTeacherRole.Where(u => u.IsApproved == false).ToList();
-            return filteredUsers;
-        }
 
-
-        public async Task<List<User>> GetAD()
+		public async Task<List<User>> GetAD()
         {
             var usersInAdminRole = await _userManager.GetUsersInRoleAsync(Role.Admin);
             return usersInAdminRole.ToList();
@@ -48,7 +51,7 @@ namespace Benaa.Infrastructure.Repositories
         {
             await Status();
             List<JoinPayment> resultlist = new List<JoinPayment>();
-            var result = await _dbContext.Users.Join(_dbContext.Payments, user => user.Id, payment => payment.TeacherId, (user, payment) => new { user, payment }).Join(_dbContext.BankInformations, u => u.user.BankInformationId, bank => bank.Id, (u, bank) => new JoinPayment { UserName = u.user.UserName, Amount = u.payment.Amount, Status = u.payment.Status, Id = u.payment.Id, BankName = bank.BankName, AccontNumber = bank.Account_Number }).ToListAsync();
+            var result = await _dbContext.Users.Join(_dbContext.Payments, user => user.Id, payment => payment.TeacherId, (user, payment) => new { user, payment }).Join(_dbContext.BankInformations, u => u.user.BankInformationId, bank => bank.Id, (u, bank) => new JoinPayment { UserName = u.user.UserName!, Amount = u.payment.Amount, Status = u.payment.Status, Id = u.payment.Id, BankName = bank.BankName, AccontNumber = bank.Account_Number }).ToListAsync();
             resultlist.AddRange(result);
             return resultlist;
         }

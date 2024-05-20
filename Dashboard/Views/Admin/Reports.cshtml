@@ -1,4 +1,5 @@
-﻿@{
+﻿@model IEnumerable<Benaa.Core.Entities.DTOs.ReportDisplyDto>;
+@{
     Layout = "~/Views/Shared/_layoutAdmin.cshtml";
 }
 <div class="content">
@@ -13,8 +14,8 @@
                         <thead>
                             <tr>
                                 <th>الرقم</th>
-                                <th> اسم المدرس</th>
-                                <th>اسم الطالب </th>
+                                <th>المبلغ</th>
+                                <th>المبلغ عليه</th>
                                 <th>تصنيف البلاغ</th>
                                 <th>نوع البلاغ</th>
                                 <th>محتوى البلاغ</th>
@@ -22,18 +23,51 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>احمد هاشم</td>
-                                <td>علي علي</td>
-                                <td>متحوى</td>
-                                <td>مسيى</td>
-                                <td>المحتوى غير واضح.......</td>
-                                <td>
-                                    <a href=""><button class="btn btn-success">عرض</button></a>
-                                    <a href=""><button class=" btn btn-warning">حذف</button></a>
-                                    <a href=""><button class=" btn btn-danger">الغاء</button></a>
-                                </td>
+                            @{
+                                int index = 1;
+                            }
+                            @if(Model.Count() == 0)
+                            {
+                                <h4>لا يوجد بلاغات</h4>
+                            }
+                            else
+                            {
+                                @foreach (var report in Model)
+                                {
+                                    <tr>
+                                        <td>@index</td>
+                                        <td>@report.Reporter</td>
+                                        <td>@report.ReportedAt</td>
+                                        <td>@report.TypeContent</td>
+                                        <td>@report.Problem</td>
+                                        <td>@report.Description</td>
+                                        @if (@report.Type == 0)
+                                        {
+                                            <td>
+                                                <a href="@Url.Action("DeleteCousrse", "Admin", new { courseId =report.CourseId})" type="button" class="btn btn-warning" style="margin-bottom: 6px;">
+                                                    حذف المحتوى
+                                                </a>
+                                                <a href="@Url.Action("DeleteReport", "Admin", new { reportId =report.reportId})" type="button" class="btn btn-danger ">
+                                                    الغاء البلاغ
+                                                </a>
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td>
+                                                <a href="@Url.Action("DeleteUser", "Admin", new { userId = report.UserId})" type="button" class="btn btn-warning" style="margin-bottom: 6px;">
+                                                    حذف المبلغ عليه
+                                                </a>
+                                                <a href="@Url.Action("DeleteReport", "Admin", new { reportId = report.reportId})" type="button" class="btn btn-danger ">
+                                                    الغاء البلاغ
+                                                </a>
+                                            </td>
+                                        }
+
+                                    </tr>
+                                    index++;
+                                }
+                            }
                         </tbody>
                     </table>
                 </div>

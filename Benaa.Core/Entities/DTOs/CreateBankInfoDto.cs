@@ -1,5 +1,4 @@
-﻿
-namespace Benaa.Core.Entities.DTOs
+﻿namespace Benaa.Core.Entities.DTOs
 {
     public class CreateBankInfoDto
     {

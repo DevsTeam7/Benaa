@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Benaa.Core.Entities.General;
+using ErrorOr;
 
 namespace Benaa.Core.Interfaces.IServices
 {
     public interface IMoneyCodeService
     {
-        Task<object> Generate(int amount, int number);
-        
+        Task<ErrorOr<List<MoneyCode>>> Generate(int amount, int number);
     }
 }

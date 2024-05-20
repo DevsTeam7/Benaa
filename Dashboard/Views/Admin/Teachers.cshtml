@@ -1,149 +1,167 @@
-﻿@{
-    Layout = "~/Views/Shared/_layoutAdmin.cshtml";
+﻿@model IEnumerable<Benaa.Core.Entities.General.User>;
+@{
+	Layout = "~/Views/Shared/_layoutAdmin.cshtml";
 }
 
 
 <div class="content">
-    <div class="content-header">
-        <h2 class="title">المعلمين الجدد</h2>
-    </div>
-    <div class="content-body">
-        <div class="categories">
-            <table>
-                <thead>
-                    <tr>
-                        <th>الرقم</th>
-                        <th>الاسم</th>
-                        <th>البريد الالكتروني</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>يزيد </td>
-                        <td>GRX@gmail.com</td>
-                        <td>
-                            <button type="button" id="infoBtn1" class="btn btn-success" data-bs-toggle="modal"
-                                    data-bs-target="#techersInfo">
-                                معلومات
-                            </button>
-                            <a href=""><button class="btn btn-warning">قبول</button></a>
-                            <a href=""><button class="btn btn-danger">رفض</button></a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+	<div class="content-header">
+		<h2 class="title">المعلمين الجدد</h2>
+	</div>
+	<div class="content-body">
+		<div class="categories">
+			@{
+				int index = 1;
+			}
+			<table>
+				<thead>
+					<tr>
+						<th>الرقم</th>
+						<th>الاسم</th>
+						<th>البريد الالكتروني</th>
+					</tr>
+				</thead>
+				
+				@if (Model.Count() == 0)
+				{
+					<tbody>
+						<h4>لا يوجد معلمين جدد</h4>
+					</tbody>
+				}
+				else
+				{
+					@foreach (var user in Model)
+					{
+						<tbody>
+							<tr>
+								<td>@index</td>
+								<td>@user.FirstName @user.LastName</td>
+								<td>@user.Email</td>
+								<td>
+									<button type="button" onclick="displayPopup('@user.Id')" class="btn btn-success">
+										معلومات
+									</button>
+									<a href="@Url.Action("Accept", "Admin", new { id=@user.Id})" type="button" class="btn btn-warning ">
+										قبول
+									</a>
+									<a href="@Url.Action("Delete", "Admin", new { id=@user.Id})" type="button" class="btn btn-danger ">
+										رفض
+									</a>
+								</td>
+							</tr>
+						</tbody>
+						<div class="popCardT" id="Pup_@user.Id">
+							<div class="popUpT">
+								<div class="tab-content active">
+									<div class="content-header">
+										<h2 class="title"> معلومات المدرس </h2>
+										<button id="closeBtn1" onclick="closePopup('@user.Id')" class="btn btn-warning">اغلاق</button>
+									</div>
+									@if (@user.ImageUrl == null)
+									{
+										<div class="content-header" style="display: flex;
+                                            justify-content: space-around;
+                                            margin: 20px 0;
+                                            flex-direction: row;">
+											<img src="~/public/ellipse-443@2x.png" height="100" width="100">
+										</div>
+									}
+									else
+									{
+										<div class="content-header" style="display: flex;
+                                            justify-content: space-around;
+                                            margin: 20px 0;
+                                            flex-direction: row;">
+											<img src="@Url.Content(@user.ImageUrl!)" height="100" width="100">
+										</div>
+									}
 
-    <div class="popCardT" id="popup1">
-        <div class="popUpT">
-            <!-- add content -->
-            <div class="tab-content active">
-                <div class="content-header">
-                    <h2 class="title"> معلومات المدرس </h2>
-                    <button id="closeBtn1" class="btn btn-warning">اغلاق</button>
-                </div>
-                <div class="content-header" style="display: flex;
-            justify-content: space-around;
-            margin: 20px 0;
-            flex-direction: row;">
-                    <img src="../public/ellipse-443@2x.png" height="100" width="100">
-                </div>
-                <div class="content-body" style="overflow-y: auto; max-height: 400px;">
-                    <div class="add-category">
-                        <form>
+									<div class="content-body" style="overflow-y: auto; max-height: 400px;">
+										<div class="add-category">
+											<form class="ggg">
+												<div class="form-item">
+													<label>الاسم الأول</label>
+													<input type="text" value="@user.FirstName" disabled>
+												</div>
 
-                            <div class="form-item">
-                                <label>الاسم الأول</label>
-                                <input type="text" value="name" disabled>
-                            </div>
+												<div class="form-item">
+													<label>الاسم الأخير</label>
+													<input type="text" value="@user.LastName" disabled>
+												</div>
 
-                            <div class="form-item">
-                                <label>الاسم الأخير</label>
-                                <input type="text" value="jjjj" disabled>
-                            </div>
+												<div class="form-item">
+													<label>رقم الجوال</label>
+													<input type="text" value="@user.PhoneNumber" disabled>
+												</div>
 
-                            <div class="form-item">
-                                <label>رقم الجوال</label>
-                                <input type="text" value="999999" disabled>
-                            </div>
+												<div class="form-item">
+													<label>البريد الإلكتوني</label>
+													<input type="text" value="@user.Email" disabled>
+												</div>
+
+												<div class="form-item">
+													<label>مقر الإقامة</label>
+													<input type="text" value="@user.Contry" disabled>
+												</div>
+
+												<div class="form-item">
+													<label> الجنس</label>
+													<input type="text" value="@user.Gender" disabled>
+												</div>
+
+												<div class="form-item">
+													<label> المستوى التعليمي الحالي</label>
+													<input type="text" value="@user.EducationLevel" disabled>
+												</div>
+
+												@if (@user.DateOfBirth == null)
+												{
+													<div class="form-item">
+														<label> تاريخ الميلاد</label>
+														<input type="text" value="لا يوجد" disabled>
+													</div>
+												}
+												else
+												{
+													<div class="form-item">
+														<label> تاريخ الميلاد</label>
+														<input type="text" value="@user.DateOfBirth?.Year/@user.DateOfBirth?.Month/@user.DateOfBirth?.Day" disabled>
+													</div>
+												}
+
+												<div class="form-item">
+													<label>الشهادات التعليمية والخبرات</label>
+													<a href="@System.Web.HttpUtility.UrlEncode(user.CertificationUrl)" target="_blank" class="pdf-link">Click here to view PDF</a>
+												</div>
+
+												<div class="form-item">
+													<label> اسم الجامعة التي درس / تخرج منها</label>
+													<input type="text" value="@user.University" disabled>
+												</div>
+
+												<div class="form-item">
+													<label>الخبرة</label>
+													<input type="text" value="@user.Experience" disabled>
+												</div>
+
+												<div class="form-item">
+													<label> التخصص</label>
+													<input type="text" value="@user.Specialization" disabled>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						index++;
+					}
+				}
+			
+			</table>
+		</div>
+	</div>
 
 
-                            <div class="form-item">
-                                <label>البريد الإلكتوني</label>
-                                <input type="text" value="ali.alattas.it@gmail.com" disabled>
-                            </div>
-
-                            <div class="form-item">
-                                <label>مقر الإقامة</label>
-                                <input type="text" value="اليمن" disabled>
-                            </div>
-
-                            <div class="form-item">
-                                <label> الجنس</label>
-                                <input type="text" value="ذكر" disabled>
-                            </div>
-
-
-                            <div class="form-item">
-                                <label> المستوى التعليمي الحالي</label>
-                                <input type="text" value="بكالوريس" disabled>
-                            </div>
-
-                            <div class="form-item">
-                                <label> تاريخ الميلاد</label>
-                                <input type="text" value="12/11/1111" disabled>
-                            </div>
-
-                            <div class="form-item">
-                                <label> الشهادات التعليمية و الخبرات </label>
-                                <a href="/path/to/your/file.pdf" target="_blank" class="pdf-link">Click here to view PDF</a>
-                            </div>
-
-
-                            <div class="form-item">
-                                <label> اسم الجامعة التي درس / تخرج منها</label>
-                                <input type="text" value="جامعة حضرموت" disabled>
-                            </div>
-
-                            <div class="form-item">
-                                <label>الخبرة</label>
-                                <input type="text" value="متمكن" disabled>
-                            </div>
-
-                            <div class="form-item">
-                                <label> التخصص</label>
-                                <input type="text" value="تقنية معلومات" disabled>
-                            </div>
-
-
-                        </form>
-                        <div class="content-header">
-                            <h2 class="title"> البيانات البنكية </h2>
-                        </div>
-                        <form>
-
-                            <div class="form-item">
-                                <label> اسم مالك الحساب</label>
-                                <input type="text" value="name" disabled>
-                            </div>
-
-                            <div class="form-item">
-                                <label> حدد البنك او الصراف</label>
-                                <input type="text" value="الكريمي" disabled>
-                            </div>
-
-                            <div class="form-item">
-                                <label> رقم الحساب</label>
-                                <input type="text" value="11112121" disabled>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
-
 <script src="~/js/ad_new_teacher.js"></script>

@@ -20,11 +20,11 @@ namespace Benaa.Api.Controllers
             _userManager = userManager;
         }
 
-        [HttpGet]
+        [HttpGet("Get")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetReport()
+        public async Task<IActionResult> Get()
         {
 
             if (ModelState.IsValid)
@@ -42,18 +42,20 @@ namespace Benaa.Api.Controllers
             return BadRequest();
         }
 
-        [HttpPost]
+        [HttpPost("Create")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<Sceduale>> Add_Report(ReportDto report)
+        public async Task<ActionResult<Sceduale>> Create(ReportDto report)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _report.Report(report);
-                    return Ok();
+                    string userId = _userManager.GetUserId(HttpContext.User)!;
+                    var result = await _report.Report(report, userId);
+                    if (result.IsError) { return BadRequest(result.ErrorsOrEmptyList); }
+                    return Created("", result.Value);
                 }
                 catch (Exception ex)
                 {

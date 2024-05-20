@@ -53,7 +53,8 @@ namespace Benaa.Core.Services
         }
         private string DetermineFileTypeToSaveIt(string extension)
         {
-           // string wwwPath = Path.GetFileName(_environment.WebRootPath);
+            // string wwwPath = Path.GetFileName(_environment.WebRootPath);
+            //if(_environment.WebRootPath == null) { CreateDirectory("wwwroot"); }
             if (PhoneUploadFile.FileExtensions.Contains(extension))
             {
                 return Path.Combine(_environment.WebRootPath, "Upload", "TeacherCertification");

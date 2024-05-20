@@ -22,7 +22,8 @@ namespace Benaa.Core.Mapper
             CreateMap<User, UserUpdateDto>().ReverseMap().ForAllMembers(opts => 
             opts.Condition((src, dest, srcMember) => srcMember != null));
             CreateMap<BankInformation, CreateBankInfoDto>().ReverseMap();
-            
+            CreateMap<Report,ReportDto>().ReverseMap();
+            CreateMap<ReportDisplyDto, Report>().ReverseMap();
         }
     }
 }

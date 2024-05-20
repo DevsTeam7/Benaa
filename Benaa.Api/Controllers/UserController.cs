@@ -44,7 +44,7 @@ namespace Benaa.Api.Controllers
             };
         }
 
-        [HttpPost("Update")]
+        [HttpPut("Update")]
         public async Task<IActionResult> Update([FromForm] UserUpdateDto userUpdateDto)
         {
             if (ModelState.IsValid)
@@ -77,5 +77,19 @@ namespace Benaa.Api.Controllers
             if (result.IsError) { return BadRequest(result.ErrorsOrEmptyList); }
             return Ok(result.Value);
         }
-    }
+
+        [HttpPost("AddBankInfo")]
+        public async Task<IActionResult> AddBankInfo(CreateBankInfoDto bankInfoDto)
+        {
+			if (ModelState.IsValid)
+            {
+				var userId = _userManager.GetUserId(HttpContext.User);
+				var result = await _userService.AddBankInfo(bankInfoDto, userId!);
+				if (result.IsError) { return BadRequest(result.ErrorsOrEmptyList); }
+				return Ok(result.Value);
+			}
+			return BadRequest("Please input all required filds");
+		}
+
+	}
 }

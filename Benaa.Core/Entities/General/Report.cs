@@ -13,11 +13,17 @@ namespace Benaa.Core.Entities.General
         [Required]
         public string Problem { get; set; }
         [Required]
-        public string Type { get; set; }
+        public ReportType Type { get; set; }
         [Required]
         public Guid TargetId { get; set; }
         [Required]
         public string UserId { get; set; }
         public virtual User? User { get; set; }
+    }
+
+    public enum ReportType
+    {
+        Content = 0,
+        Chat = 1
     }
 }

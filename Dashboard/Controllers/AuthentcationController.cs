@@ -2,6 +2,7 @@
 using Benaa.Core.Entities.DTOs;
 using Benaa.Core.Interfaces.IServices;
 using Benaa.Core.Entities.General;
+using Benaa.Infrastructure.Utils.Users;
 
 namespace Benaa.Dashboard.Controllers
 {
@@ -23,23 +24,22 @@ namespace Benaa.Dashboard.Controllers
             {
                 var res = await _authService.Login(request);
                 if (res.IsError) { return RedirectToAction("Authentcation", "login", new { error = res.ErrorsOrEmptyList }); }
-                HttpContext.Session.SetString("token", res.Value.Token);
-                return RedirectToAction("Authentcation", "login", new { success = res.Value.Token });
-
+                HttpContext.Session.SetString("token", res.Value.Role);
+                if(res.Value.Role == Role.Admin) { return RedirectToAction("Admin", "Teachers"); }
+                return RedirectToAction("Owner", "Income"); 
             }
             catch (Exception ex)
             {
                 return RedirectToAction("Authentcation", "login", new
                 {
-                    bad = ex.Message
+                    error = ex.Message
                 });
             }
-
         }
         public ActionResult Logout()
         {
             var UserToken = HttpContext.Session.GetString("token");
-            
+
             if (UserToken != null)
             {
                 HttpContext.Session.Remove("token");

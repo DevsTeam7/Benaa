@@ -101,22 +101,22 @@ namespace Benaa.Api.Controllers
             return BadRequest("Please input all required filds");
         }
 
-        [HttpGet("GetAllRate")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAllRate(string courseId)
-        {
-            if (string.IsNullOrEmpty(courseId)) { return BadRequest(); }
-            try{
-                var rates = await _courseService.GetAllRate(courseId);
-                if (rates.IsError) { return BadRequest(rates.ErrorsOrEmptyList); }
-                return Ok(rates.Value);
-            }
-            catch (Exception ex){
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-        }
+        //[HttpGet("GetAllRate")]
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        //public async Task<IActionResult> GetAllRate(string courseId)
+        //{
+        //    if (string.IsNullOrEmpty(courseId)) { return BadRequest(); }
+        //    try{
+        //        var rates = await _courseService.GetAllRate(courseId);
+        //        if (rates.IsError) { return BadRequest(rates.ErrorsOrEmptyList); }
+        //        return Ok(rates.Value);
+        //    }
+        //    catch (Exception ex){
+        //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        //    }
+        //}
 
         [HttpPost("Buy")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -175,25 +175,25 @@ namespace Benaa.Api.Controllers
             }
         }
 
-        [HttpGet("GetChapterLessons")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetChapterLessons(string courseId)
-        {
-            if (string.IsNullOrEmpty(courseId)) { return BadRequest(); }
-            try
-            {
-                var studentId = _userManager.GetUserId(HttpContext.User);
-                var course = await _courseService.GetChapterLessons(courseId);
-                if (course.IsError) { return BadRequest(course.ErrorsOrEmptyList); }
-                return Ok(course.Value);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-        }
+        //[HttpGet("GetChapterLessons")]
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        //public async Task<IActionResult> GetChapterLessons(string courseId)
+        //{
+        //    if (string.IsNullOrEmpty(courseId)) { return BadRequest(); }
+        //    try
+        //    {
+        //        var studentId = _userManager.GetUserId(HttpContext.User);
+        //        var course = await _courseService.GetChapterLessons(courseId);
+        //        if (course.IsError) { return BadRequest(course.ErrorsOrEmptyList); }
+        //        return Ok(course.Value);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        //    }
+        //}
 
         [HttpGet("GetByStudentId")]
         [ProducesResponseType(StatusCodes.Status200OK)]
