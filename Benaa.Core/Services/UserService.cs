@@ -20,11 +20,7 @@ namespace Benaa.Core.Services
         private readonly ILogger<UserService> _logger;
         private readonly IUserRepository _userRepository;
 
-        public async Task<User> Getuser(string id)
-        {
-            var user = await _userRepository.GetById(id);
-            return user;
-        }
+
 
         public UserService(UserManager<User> userManager, IUserRepository userRepository,
             IFileUploadService fileUploadService, IMapper mapper,
@@ -133,6 +129,11 @@ namespace Benaa.Core.Services
             IdentityResult result = await _userManager.DeleteAsync(user);
             if(!result.Succeeded) { return Error.Failure();}
             return new Success();
+        }
+        public async Task<User> Getuser(string id)
+        {
+            var user = await _userRepository.GetById(id);
+            return user;
         }
     }
 }
