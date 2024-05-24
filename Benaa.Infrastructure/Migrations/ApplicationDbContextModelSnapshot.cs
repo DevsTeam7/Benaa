@@ -17,7 +17,7 @@ namespace Benaa.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.15")
+                .HasAnnotation("ProductVersion", "7.0.19")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -610,25 +610,41 @@ namespace Benaa.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
+<<<<<<< HEAD
                             Id = "2c272f1f-9506-491c-ace6-a477c096a8df",
+=======
+                            Id = "c6030087-a729-4653-b699-1fdd3bfd3823",
+>>>>>>> OwnerDashBaord
                             Name = "STUDENT",
                             NormalizedName = "STUDENT"
                         },
                         new
                         {
+<<<<<<< HEAD
                             Id = "2381c993-8971-40d7-8ca2-a163b35b46f1",
+=======
+                            Id = "a37be839-d4d5-4372-8186-033830cfb0cc",
+>>>>>>> OwnerDashBaord
                             Name = "TEACHER",
                             NormalizedName = "TEACHER"
                         },
                         new
                         {
+<<<<<<< HEAD
                             Id = "370daf7a-387e-410b-b0aa-b8105a01acfc",
+=======
+                            Id = "838f332f-9999-4315-827c-df70aa253c58",
+>>>>>>> OwnerDashBaord
                             Name = "ADMIN",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
+<<<<<<< HEAD
                             Id = "e1aad4b4-2d90-419e-be54-aa55fc51aa9f",
+=======
+                            Id = "669d8549-77af-4cf9-a948-1c874eefa70e",
+>>>>>>> OwnerDashBaord
                             Name = "OWNER",
                             NormalizedName = "OWNER"
                         });
