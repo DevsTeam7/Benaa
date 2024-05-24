@@ -51,7 +51,7 @@
 							</tr>
 						</tbody>
 						<div class="popCardT" id="Pup_@user.Id">
-							<div class="popUpT">
+							<div class="popUpT" style="width:100vh">
 								<div class="tab-content active">
 									<div class="content-header">
 										<h2 class="title"> معلومات المدرس </h2>
@@ -78,7 +78,6 @@
 
 									<div class="content-body" style="overflow-y: auto; max-height: 400px;">
 										<div class="add-category">
-											<form class="ggg">
 												<div class="form-item">
 													<label>الاسم الأول</label>
 													<input type="text" value="@user.FirstName" disabled>
@@ -131,7 +130,7 @@
 
 												<div class="form-item">
 													<label>الشهادات التعليمية والخبرات</label>
-													<a href="@System.Web.HttpUtility.UrlEncode(user.CertificationUrl)" target="_blank" class="pdf-link">Click here to view PDF</a>
+													<a href="@user.CertificationUrl" target="_blank" class="pdf-link btn">Click here to view PDF</a>
 												</div>
 
 												<div class="form-item">
@@ -148,7 +147,6 @@
 													<label> التخصص</label>
 													<input type="text" value="@user.Specialization" disabled>
 												</div>
-											</form>
 										</div>
 									</div>
 								</div>

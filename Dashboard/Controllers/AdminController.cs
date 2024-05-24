@@ -2,6 +2,7 @@
 using Benaa.Core.Entities.General;
 using Benaa.Core.Interfaces.IServices;
 using Microsoft.AspNetCore.Mvc;
+using System.Text;
 
 namespace Benaa.Dashboard.Controllers
 {
@@ -70,6 +71,7 @@ namespace Benaa.Dashboard.Controllers
             await _reportService.Delete(reportId);
             return RedirectToAction("Reports", "Admin");
         }
+
     }
 
 }

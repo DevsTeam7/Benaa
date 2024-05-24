@@ -4,7 +4,6 @@ using Benaa.Core.Interfaces.IRepositories;
 using Benaa.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using static Benaa.Core.Entities.General.Course;
 
 namespace Benaa.Infrastructure.Repositories
 {

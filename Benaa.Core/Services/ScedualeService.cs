@@ -58,7 +58,7 @@ namespace Benaa.Core.Services
         public async Task<ErrorOr<Sceduale>> GetById(Guid id)
         {
             var sceduale = await _schedualeRepository.GetById(id);
-            if (sceduale == null) { return Error.Failure(); }
+            if (sceduale == null) { return Error.NotFound(); }
             return sceduale;
         }
         public async Task<ErrorOr<Object>> Delete(Guid id)

@@ -36,16 +36,16 @@ namespace Benaa.Dashboard.Controllers
                 });
             }
         }
+        [HttpGet]
         public ActionResult Logout()
         {
             var UserToken = HttpContext.Session.GetString("token");
-
             if (UserToken != null)
             {
-                HttpContext.Session.Remove("token");
-                return RedirectToAction("Index", "Home");
-            }
-            return NotFound();
-        }
+				HttpContext.Session.Remove("token");
+				return RedirectToAction("login", "Authentcation");
+			}
+			return RedirectToAction("login", "Authentcation");
+		}
     }
 }

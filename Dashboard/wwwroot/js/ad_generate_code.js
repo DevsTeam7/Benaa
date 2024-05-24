@@ -34,17 +34,20 @@ function generateRandomCode() {
 }
 
 function exportToText() {
-  var text = generatedCodes.join('\n');
-  var blob = new Blob([text], { type: 'text/plain' });
-  var url = URL.createObjectURL(blob);
-  var link = document.createElement('a');
-  link.href = url;
-  link.download = 'codes.txt';
-  link.click();
+    var codeList = document.getElementById('code-list');
+    var codeText = codeList.innerText.trim();
+    var blob = new Blob([codeText], { type: 'text/plain' });
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement('a');
+    link.href = url;
+    link.download = 'codes.txt';
+    link.click();
 }
+
 
 function clearContent() {
   var codeList = document.getElementById('code-list');
   codeList.innerHTML = '';
   generatedCodes = [];
 }
+

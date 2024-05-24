@@ -47,48 +47,76 @@ namespace Benaa.Api.Controllers
         [HttpPut("Update")]
         public async Task<IActionResult> Update([FromForm] UserUpdateDto userUpdateDto)
         {
-            if (ModelState.IsValid)
-            {
-                var userId = _userManager.GetUserId(HttpContext.User);
+            try {
+                if (ModelState.IsValid)
+                {
+                    var userId = _userManager.GetUserId(HttpContext.User);
 
-                var result = await _userService.Update(userId, userUpdateDto);
+                    var result = await _userService.Update(userId, userUpdateDto);
 
-                if (result.IsError) { return BadRequest(result.ErrorsOrEmptyList); }
-                return Ok(result.Value);
+                    if (result.IsError) { return BadRequest(result.ErrorsOrEmptyList); }
+                    return Ok(result.Value);
+                }
+                return BadRequest("Please input all required filds");
             }
-            return BadRequest("Please input all required filds");
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            };
+
         }
 
         [HttpPut("UpdatePassword")]
         public async Task<IActionResult> UpdatePassword(string newPassword, string? oldPassword = null)
         {
-            var userId = _userManager.GetUserId(HttpContext.User);
+            try
+            {
+                var userId = _userManager.GetUserId(HttpContext.User);
 
-            var result = await _userService.UpdatePassword(userId, newPassword, oldPassword);
+                var result = await _userService.UpdatePassword(userId, newPassword, oldPassword);
 
-            if (result.IsError) { return BadRequest(result.ErrorsOrEmptyList); }
-            return Ok(result.Value);
+                if (result.IsError) { return BadRequest(result.ErrorsOrEmptyList); }
+                return Ok(result.Value);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            };
         }
 
         [HttpGet("GetTeachers")]
         public async Task<IActionResult> GetTeachers(int quantity)
         {
-            var result = await _userService.GetTeachers(quantity);
-            if (result.IsError) { return BadRequest(result.ErrorsOrEmptyList); }
-            return Ok(result.Value);
+            try
+            {
+                var result = await _userService.GetTeachers(quantity);
+                if (result.IsError) { return BadRequest(result.ErrorsOrEmptyList); }
+                return Ok(result.Value);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            };
         }
 
         [HttpPost("AddBankInfo")]
         public async Task<IActionResult> AddBankInfo(CreateBankInfoDto bankInfoDto)
         {
-			if (ModelState.IsValid)
+            try{
+                if (ModelState.IsValid)
+                {
+                    var userId = _userManager.GetUserId(HttpContext.User);
+                    var result = await _userService.AddBankInfo(bankInfoDto, userId!);
+                    if (result.IsError) { return BadRequest(result.ErrorsOrEmptyList); }
+                    return Ok(result.Value);
+                }
+                return BadRequest("Please input all required filds");
+            }
+            catch (Exception ex)
             {
-				var userId = _userManager.GetUserId(HttpContext.User);
-				var result = await _userService.AddBankInfo(bankInfoDto, userId!);
-				if (result.IsError) { return BadRequest(result.ErrorsOrEmptyList); }
-				return Ok(result.Value);
-			}
-			return BadRequest("Please input all required filds");
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            };
+
 		}
 
 	}
