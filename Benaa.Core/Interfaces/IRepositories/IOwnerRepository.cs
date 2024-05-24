@@ -14,6 +14,7 @@ namespace Benaa.Core.Interfaces.IRepositories
         public Task<List<User>> GetAD();
         public Task<List<JoinPayment>> GetD();
         public Task<IncomsInfo> GetINFO();
-        Task Status();
+        public Task Status();
+        public  Task<List<JoinPayment>> GetP();
     }
 }

@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Benaa.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class aa : Migration
+    public partial class ADD : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -541,10 +541,10 @@ namespace Benaa.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "6c86bb41-6acd-4ac6-a8d3-c25d77ef28ae", null, "STUDENT", "STUDENT" },
-                    { "aaadddf4-d408-4e16-a5f3-aeba9560e1ff", null, "TEACHER", "TEACHER" },
-                    { "c763d2f2-b31f-4a1a-acf9-917687d9287b", null, "OWNER", "OWNER" },
-                    { "e834a114-1c19-451e-a75d-52ea372cd880", null, "ADMIN", "ADMIN" }
+                    { "669d8549-77af-4cf9-a948-1c874eefa70e", null, "OWNER", "OWNER" },
+                    { "838f332f-9999-4315-827c-df70aa253c58", null, "ADMIN", "ADMIN" },
+                    { "a37be839-d4d5-4372-8186-033830cfb0cc", null, "TEACHER", "TEACHER" },
+                    { "c6030087-a729-4653-b699-1fdd3bfd3823", null, "STUDENT", "STUDENT" }
                 });
 
             migrationBuilder.CreateIndex(

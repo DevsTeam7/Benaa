@@ -12,15 +12,15 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Benaa.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240507075148_aa")]
-    partial class aa
+    [Migration("20240517212140_ADD")]
+    partial class ADD
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.15")
+                .HasAnnotation("ProductVersion", "7.0.19")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -614,25 +614,25 @@ namespace Benaa.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "6c86bb41-6acd-4ac6-a8d3-c25d77ef28ae",
+                            Id = "c6030087-a729-4653-b699-1fdd3bfd3823",
                             Name = "STUDENT",
                             NormalizedName = "STUDENT"
                         },
                         new
                         {
-                            Id = "aaadddf4-d408-4e16-a5f3-aeba9560e1ff",
+                            Id = "a37be839-d4d5-4372-8186-033830cfb0cc",
                             Name = "TEACHER",
                             NormalizedName = "TEACHER"
                         },
                         new
                         {
-                            Id = "e834a114-1c19-451e-a75d-52ea372cd880",
+                            Id = "838f332f-9999-4315-827c-df70aa253c58",
                             Name = "ADMIN",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "c763d2f2-b31f-4a1a-acf9-917687d9287b",
+                            Id = "669d8549-77af-4cf9-a948-1c874eefa70e",
                             Name = "OWNER",
                             NormalizedName = "OWNER"
                         });

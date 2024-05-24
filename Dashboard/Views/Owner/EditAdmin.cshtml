@@ -1,7 +1,14 @@
-﻿@model Benaa.Dashboard.Models.Admin;
+﻿
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+@using Benaa.Core.Entities.General;
 @{
     Layout = "~/Views/Shared/_layoutOwner.cshtml";
 }
+@model User
 
 <div class="content">
     <div class="users">
@@ -13,21 +20,25 @@
                     </div>
                     <div class="content-body">
                         <div class="add-category">
-                            <form>
+                            <form action="/Owner/EditAdmin" method="post">
+
+
+                                <input type="hidden" id="id" name="id" value="@Model.Id">
+                               
                                 <div class="form-item">
                                     <label>الاسم الكامل</label>
-                                    <input type="text" id="name" name="name" placeholder="حقل اجباري" required value="Model.Name">
+                                    <input type="text" id="name" name="name" required placeholder="" value="@Model.FirstName">
                                 </div>
                                 <div class="form-item">
                                     <label>البريد الالكتروني</label>
-                                    <input type="text" id="email" name="email" placeholder="حقل إجباري" required value="Model.Email">
+                                    <input type="text" id="email" name="email" placeholder="" required value="@Model.Email">
                                 </div>
                                 <div class="form-item">
                                     <label>كلمة المرور</label>
-                                    <input type="text" id="password" name="password" placeholder="حقل اجباري" required value="Model.Password">
+                                    <input type="text" id="password" name="password" placeholder="" required value="@Model.PasswordHash">
                                 </div>
                                 <div class="form-item" style="width: 100%;">
-                                    <button onclick="" id="addBtn" type="submit" class="save-btn btn btn-primary">تحديث</button>
+                                    <button   type="submit" class="save-btn btn btn-primary">تحديث</button>
                                 </div>
                             </form>
                         </div>
@@ -37,3 +48,4 @@
         </div>
     </div>
 </div>
+<

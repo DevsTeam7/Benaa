@@ -104,16 +104,12 @@ namespace Benaa.Api.Controllers
             if (ModelState.IsValid)
             {
                 ui=GetCurrentUser();
-                try
-                {
+               
                   var result =  await _scedualeService.AddSceduales(Sceduales, ui);
                     if(result.IsError) { return BadRequest(result.ErrorsOrEmptyList); }
                     return Created("Save successfully", result.Value);
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-                }
+                
+               
             }
             return BadRequest("Please input all required data");
         }

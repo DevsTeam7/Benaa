@@ -18,5 +18,8 @@ namespace Benaa.Core.Interfaces.IServices
         public Task<List<JoinPayment>> GetDues();
         public Task delpay(Guid id);
         public Task<IncomsInfo> getInfo();
+        public Task<List<JoinPayment>> GetPaid();
+
+
     }
 }

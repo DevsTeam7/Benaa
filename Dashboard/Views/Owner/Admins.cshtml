@@ -1,6 +1,15 @@
-﻿@{
+﻿
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+@using Benaa.Core.Entities.General;
+@using Benaa.Dashboard.Models;
+@{
 	Layout = "~/Views/Shared/_layoutOwner.cshtml";
 }
+@model List<User>
 
 <!-- main content -->
 <div class="content">
@@ -13,22 +22,52 @@
                     <div class="content-header">
                         <h2 class="title">المشرفين حاليا</h2>
                     </div>
-
+                
                     <table>
                         <thead>
                             <tr>
                                 <th>الرقم</th>
                                 <th> الاسم</th>
                                 <th>البريد الالكتروني</th>
-                                <th>كلمة المرور</th>
+                               @* <th>كلمة المرور</th>*@
                                 <th>أوامر</th>
                             </tr>
                         </thead>
                         <tbody id="admins">
+
+                            @{
+                                int rownumber = 1;
+                            }
+
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @(rownumber++)
+                                    </td>
+                                    <td>
+                                        @item.FirstName
+                                    </td>
+                                    <td>
+                                        @item.Email
+                                    </td>
+                                    @*<td>
+                                        @item.PasswordHash
+                                    </td>*@
+                                    <td>
+                                      
+                                        <a type="button" class="edit-btn btn btn-primary" href="@Url.Action("EditAdmin",new{Id=item.Id})"> تعديل</a>
+
+                                        <a type="button" class="btn btn-warning" href="@Url.Action("Del",new{Id=item.Id})">  حذف</a>
+                                        
+                                    </td>
+                                </tr>
+                            }
                         </tbody>
 
 
                     </table>
+               
 
 
                 </div>
@@ -50,7 +89,7 @@
                     </div>
                     <div class="content-body">
                         <div class="add-category">
-                            <form>
+                            <form action="/Owner/Admins" method="post">
 
                                 <div class="form-item">
                                     <label>الاسم الكامل</label>
@@ -69,7 +108,7 @@
 
                                 <div class="form-item" style="width: 100%;">
 
-                                    <button onclick="addAdmin()" id="addBtn" type="submit" class="save-btn btn btn-primary">اضافة</button>
+                                    <button  id="addBtn" type="submit" class="save-btn btn btn-primary">اضافة</button>
                                 </div>
 
                             </form>
@@ -81,3 +120,38 @@
         </div>
     </div>
 </div>
+
+@*<script>
+    $(document).ready(function () {
+        $(".edit-btn").click(function () {
+            var id = $(this).data("id");
+            var name = $(this).data("name");
+            var email = $(this).data("email");
+            // تعيين قيمة Id والاسم والوصف في حقول الإدخال في واجهة التعديل
+            $("#editId").val(id);
+            $("#name").val(name);
+            $("#email").val(email);
+            // تحويل المستخدم إلى صفحة التعديل مع تضمين Id في عنوان URL
+            window.location.href = "/Owner/Edit?id=" + id;
+
+           
+        });
+    });
+</script>
+@section script{
+<script>
+    function deleterecord(id){
+        if(confirm('are you sure?')){
+            var form=document.createElement('form');
+            form.method='post';
+            form.action='/Owner/Delete/'+id;
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+</script>
+}
+*@
+
+                  

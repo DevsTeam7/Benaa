@@ -55,7 +55,30 @@ namespace Benaa.Api.Controllers
             return BadRequest("Please input all required filds");
         }
 
-        [HttpPost("RegisterTeacher")]
+		[HttpPost("RegisterAdmin")]
+		[ProducesResponseType(StatusCodes.Status201Created)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+		public async Task<IActionResult> RegisterAdmin([FromForm] AdminRegesterDTO New)
+		{
+			if (ModelState.IsValid)
+			{
+				try
+				{
+					ErrorOr<User> result = await _authService.RegisterAdmin(New);
+					if (result.IsError) { return BadRequest(result.ErrorsOrEmptyList); }
+					else { return Created("Admin Created", result.Value); }
+
+				}
+				catch (Exception ex)
+				{
+					return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+				}
+			}
+			return BadRequest("Please input all required filds");
+		}
+
+		[HttpPost("RegisterTeacher")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -73,12 +96,15 @@ namespace Benaa.Api.Controllers
                     ErrorOr<User> result = await _authService.RegisterTeacher(newTeacher);
                     if (result.IsError) { return BadRequest(result.ErrorsOrEmptyList); }
                     else { return Created("Student Created", result.Value); }
-
                 }
+
                 catch (Exception ex)
                 {
                     return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
                 }
+
+
+
             }
             return BadRequest("Please input all required filds");
         }

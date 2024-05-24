@@ -14,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(optins =>
-   optins.UseNpgsql("Host=localhost;Port=5432;Database=BenaaDB;Username=postgres;Password=1419")
+   optins.UseNpgsql("Host=localhost;Port=5432;Database=BenaaDB;Username=postgres;Password=123456789")
 );
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>

@@ -13,5 +13,6 @@ namespace Benaa.Core.Interfaces.IServices
         Task<ErrorOr<IdentityResult>> Update(string userId, UserUpdateDto userUpdate);
         Task<ErrorOr<IdentityResult>> UpdatePassword(string userId, string newPassword, string? oldPassword = null);
         Task<ErrorOr<List<User>>> GetTeachers(int quantity);
+        Task<User> Getuser(string id);
     }
 }
