@@ -3,6 +3,8 @@ using Benaa.Core.Entities.DTOs;
 using Benaa.Core.Entities.General;
 using Benaa.Core.Interfaces.IRepositories;
 using Benaa.Core.Interfaces.IServices;
+using ErrorOr;
+using Microsoft.AspNetCore.Identity;
 
 namespace Benaa.Core.Services
 {
@@ -12,13 +14,17 @@ namespace Benaa.Core.Services
         private readonly IPaymentRepositoty _paymentRepository;
         private readonly IMapper _mapper;
         private readonly INotificationService _notificationService;
+        private readonly UserManager<User> _userManager;
+
+       
         public OwnerService(IOwnerRepository ownerRepository, IPaymentRepositoty paymentRepository,
-            IMapper mapper, INotificationService notificationService)
+            IMapper mapper, INotificationService notificationService, UserManager<User> userManager)
         {
             _OwnerRepository = ownerRepository;
             _paymentRepository = paymentRepository;
             _mapper = mapper;
             _notificationService = notificationService;
+            _userManager = userManager;
         }
 
 
@@ -48,12 +54,16 @@ namespace Benaa.Core.Services
             return await _OwnerRepository.GetAD();
         }
 
-        public async Task UpdateUser(UpdateUserInfo nu)
+		
+		public async Task UpdateUser(UpdateUserInfo nu)
         {
             var us = await _OwnerRepository.GetById(nu.Id);
+            await _userManager.RemovePasswordAsync(us);
+           var result = await _userManager.AddPasswordAsync(us, nu.Password);
 
-            us.IsApproved = nu.IsApproved;
+            // us.IsApproved = nu.IsApproved;
             us.Email = nu.Email;
+            us.FirstName = nu.FirstName;
             //us.PasswordHash = nu.Password;
 
             await _OwnerRepository.Update(us);
@@ -67,6 +77,11 @@ namespace Benaa.Core.Services
         public async Task<List<JoinPayment>> GetDues()
         {
             return await _OwnerRepository.GetD();
+        }
+
+        public async Task<List<JoinPayment>> GetPaid()
+        {
+            return await _OwnerRepository.GetP();
         }
 
         public async Task delpay(Guid id)

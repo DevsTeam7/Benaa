@@ -8,6 +8,7 @@ namespace Benaa.Core.Interfaces.IServices
     {
         Task<ErrorOr<LoginRequestDto.Response>> Login(LoginRequestDto.Request applictionUser);
         Task<ErrorOr<User>> RegisterStudent(StudentRegisterDto newStudent);
-        Task<ErrorOr<User>> RegisterTeacher(TeacherRegisterDto newTeacher);
+		Task<ErrorOr<User>> RegisterAdmin(AdminRegesterDTO New);
+		Task<ErrorOr<User>> RegisterTeacher(TeacherRegisterDto newTeacher);
     }
 }

@@ -1,40 +1,44 @@
-﻿@{
+﻿@using Benaa.Dashboard.Models;
+@using Benaa.Core.Entities.DTOs;
+
+@{
 	Layout = "~/Views/Shared/_layoutOwner.cshtml";
 }
+@model (IncomsInfos,List<JoinPayment>)
 
 <!-- Cards Box -->
 <div class="cardsBox">
 	<div class="card">
 		<div>
-			<div class="number">30000</div>
+			<div class="number">@Model.Item1.AllIncoms</div>
 			<div class="cardName">اجمالي الدخل</div>
 		</div>
 
 	</div>
 	<div class="card ">
 		<div>
-			<div class="number">15000</div>
+			<div class="number">@Model.Item1.Profits</div>
 			<div class="cardName">الارباح</div>
 		</div>
 
 	</div>
 	<div class="card">
 		<div>
-			<div class="number">44444</div>
+			<div class="number">@Model.Item1.dues</div>
 			<div class="cardName">مستحقات المدرسين</div>
 		</div>
 
 	</div>
 	<div class="card">
 		<div>
-			<div class="number">462</div>
+			<div class="number">@Model.Item1.teachers</div>
 			<div class="cardName">عدد المدرسين</div>
 		</div>
 
 	</div>
 	<div class="card">
 		<div>
-			<div class="number">4642</div>
+			<div class="number">@Model.Item1.students</div>
 			<div class="cardName">عدد الطلاب</div>
 		</div>
 
@@ -50,11 +54,13 @@
 				<div class="content-header">
 					<h2 class="title">الطلبات الاخيرة</h2>
 
-					<button id="infoBtn" class="btn btn-primary"> الطلبات المدفوعة</button>
+					@*<button id="infoBtn" class="btn btn-primary"> الطلبات المدفوعة</button>*@
+					<a type="button" class="btn btn-primary" asp-action="Income" asp-route-type="P">   الطلبات المدفوعة</a>
+					<a type="button" class="btn btn-primary" asp-action="Income" asp-route-type="D">   المستحقات</a>
 				</div>
 				<div class="content-body">
 					<div class="products">
-						<table>
+						<table id="data2">
 							<thead>
 								<tr>
 									<th>الرقم</th>
@@ -62,27 +68,65 @@
 									<th>البنك</th>
 									<th>رقم الحساب </th>
 									<th>المبلغ</th>
-									<th>الوقت المتبقي</th>
+									<!--<th>الوقت المتبقي</th>-->
 									<th>حالة الطلب</th>
 									<th>أوامر</th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr>
-									<td>1</td>
-									<td>جاسم بوسالم</td>
-									<td>الكريمي</td>
-									<td>243000</td>
-									<td>$12.50</td>
-									<td>00:00:00</td>
-									<td>
-										<span class="status-success">مستحق</span>
-										<!-- status-danger  -->
-									</td>
-									<td>
-										<a href=""><button class="btn btn-warning">دفع</button></a>
-									</td>
-								</tr>
+								 @{
+                                int rownumber = 1;
+                                  }
+								@foreach (var item in Model.Item2)
+								{
+									<tr>
+										<td>
+											@(rownumber++)
+										</td>
+										<td>
+											@item.UserName
+										</td>
+										<td>
+											@item.BankName
+										</td>
+										<td>
+											@item.AccontNumber
+										</td>
+										<td>
+											@item.Amount
+										</td>
+										<td>
+											@*@item.Status*@
+											@if(item.Status==0){<span style="background-color:yellow;">غير مستحق</span>}
+											@if (item.Status == 1)
+											{
+												<span style="background-color:lawngreen;"> مستحق</span>
+											}
+											@if (item.Status == 2)
+											{
+												<span style="background-color:plum;">تم الدفع </span>
+											}
+										</td>
+										<td>
+											@if (item.Status == 0)
+											{
+												<a type="button" class="btn btn-warning" disabled style="opacity:0.5; cursor:not-allowed;">   الدفع</a>
+											}
+											@if (item.Status == 1)
+											{
+												<a type="button" class="btn btn-warning" href="@Url.Action("Done",new{Id=item.Id})">   الدفع</a>
+											}
+											@if (item.Status == 2)
+											{
+												<a type="button" class="btn btn-warning" disabled style="opacity:0.5; cursor:not-allowed;">   تم الدفع</a>
+											}
+
+											
+
+										</td>
+									</tr>
+								}
+								
 							</tbody>
 						</table>
 
@@ -96,3 +140,28 @@
 
 
 </div>
+
+				@*@section script{
+					<script>
+						$(document).ready(function(){
+			$("#infoBtn").click(function(){
+				$.ajax({url:'@Url.Action("Income2","Owner")',type:"POST",success:function(data){
+						$("#data2tbody").empty();
+						$.each(data,function(index,item){
+							var row=$("<tr></tr>");
+							row.append($("<td></td>").text(item.Id));
+							row.append($("<td></td>").text(item.UserName));
+							row.append($("<td></td>").text(item.BankName));
+							row.append($("<td></td>").text(item.AccontNumber));
+							row.append($("<td></td>").text(item.Amount));
+							row.append($("<td></td>").text(item.Status));
+							row.append($("<td><a href=""><button class="btn btn - warning">دفع</button></a></td>"));
+							$("#data2tbody").append(row);
+						});
+						$("#data2").show();
+						}
+				});
+			});
+						});
+					</script>
+				}*@

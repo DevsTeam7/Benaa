@@ -83,7 +83,27 @@ namespace Benaa.Infrastructure.Services
             return user;
         }
 
-        public async Task<ErrorOr<LoginRequestDto.Response>> Login(LoginRequestDto.Request applictionUser)
+		public async Task<ErrorOr<User>> RegisterAdmin(AdminRegesterDTO New)
+		{
+			User newUser = _mapper.Map<User>(New);
+			if (await IsUserExist(newUser))
+				return Error.Conflict(description: "The Email Exist");
+
+			User user = await CreateUser(newUser, New.Password);
+			if (user == null) { return Error.Unexpected("Faild To Create the user"); }
+			//Guid walletId = await _walletService.CraeteWallet();
+			//user.WalletId = walletId;
+
+			if (user is null)
+			{
+				return Error.Failure(description: "Faild To Create the Account");
+			}
+			await _userManager.AddToRoleAsync(user, Role.Admin);
+
+			return user;
+		}
+
+		public async Task<ErrorOr<LoginRequestDto.Response>> Login(LoginRequestDto.Request applictionUser)
         {
             var user = await _userManager.FindByEmailAsync(applictionUser.Email);
             if (user is null)
