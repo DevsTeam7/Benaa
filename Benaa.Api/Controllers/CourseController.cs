@@ -77,8 +77,47 @@ namespace Benaa.Api.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-         
-        [HttpPost("AddRate")]
+
+		[HttpGet("GetCartContent")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+		public async Task<IActionResult> GetCartContent()
+		{
+			try
+			{
+				var studentId = _userManager.GetUserId(HttpContext.User);
+				var courses = await _courseService.GetCartContent(studentId!);
+				if (courses.IsError) { return BadRequest(courses.ErrorsOrEmptyList); }
+				return Ok(courses.Value);
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+			}
+		}
+
+		[HttpDelete("DeleteCartItem")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+		public async Task<IActionResult> DeleteCartItem(string courseId)
+		{
+			if (string.IsNullOrEmpty(courseId)) { return BadRequest(); }
+			try
+			{
+				var studentId = _userManager.GetUserId(HttpContext.User);
+				var courses = await _courseService.DeleteCartItem(studentId!, courseId);
+				if (courses.IsError) { return BadRequest(courses.ErrorsOrEmptyList); }
+				return Ok(courses.Value);
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+			}
+		}
+
+		[HttpPost("AddRate")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -146,7 +185,7 @@ namespace Benaa.Api.Controllers
         {
             try
             {
-               await _courseService.Delete(courseId);
+                await _courseService.Delete(Guid.Parse(courseId));
                 return Ok("Deleted");
             }
             catch (Exception ex)

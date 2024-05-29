@@ -8,12 +8,13 @@ namespace Benaa.Core.Interfaces.IServices
     {
         Task<ErrorOr<Guid>> CreateCourseOnly(CreateCourseDto newCourse, string teacherId);
         //Task<ErrorOr<Guid>> CreateCourse(CourseDto newCourse, string teacherId);
-        Task Delete(string courseId);
         Task<ErrorOr<Course>> GetById(string courseId);
         Task<ErrorOr<List<Course>>> GetByType(int courseType);
         Task<ErrorOr<List<Course>>> GetByQuantity(int quantity, int courseType);
         Task<ErrorOr<Guid>> AddCourseToCart(string userId, string courseId);
-        Task GetBestRatedCorse();
+        Task<ErrorOr<List<Course>>> GetCartContent(string userId);
+        Task<ErrorOr<Success>> DeleteCartItem(string userId, string coursesId);
+		Task GetBestRatedCorse();
         Task<ErrorOr<Guid>> AddRate(RateDTO.Request newRate, string studentId);
         Task<ErrorOr<List<RateDTO.Response>>> GetAllRate(string courseId);
         Task<ErrorOr<List<Course>>> GetByStudentId(string studentId);

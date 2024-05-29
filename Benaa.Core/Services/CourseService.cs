@@ -100,7 +100,29 @@ namespace Benaa.Core.Services
             if(addingCourseToCart == null) { return Error.Failure(); }
             return addingCourseToCart.Id;
         }
-        public async Task<ErrorOr<Guid>> AddRate(RateDTO.Request newRate,string studentId)
+		public async Task<ErrorOr<List<Course>>> GetCartContent(string userId)
+		{
+            List<Course> courses = new List<Course>();
+			var cartItems = await _userCoursesRepository.Select(cart => cart.StudentId == userId && cart.IsPurchased == false);
+			if (cartItems == null) { return Error.NotFound(); }
+            foreach(var cartItem in cartItems)
+            {
+               var course = await _courseRepository.GetById(cartItem.CourseId);
+                courses.Add(course); 
+            }
+			return courses;
+		}
+		public async Task<ErrorOr<Success>> DeleteCartItem(string userId, string coursesId)
+		{
+           var cartItem =  await _userCoursesRepository.SelectOneItem(cart => 
+            cart.StudentId == userId && 
+            cart.CourseId == Guid.Parse(coursesId) &&
+            cart.IsPurchased == false);
+            if(cartItem == null) { return Error.NotFound(); }
+            await _userCoursesRepository.Delete(cartItem);
+            return new Success();
+		}
+		public async Task<ErrorOr<Guid>> AddRate(RateDTO.Request newRate,string studentId)
         {
             UserCourses cart = await _userCoursesRepository
                 .SelectOneItem(cart => cart.StudentId == studentId 
@@ -159,11 +181,6 @@ namespace Benaa.Core.Services
             return new Success();
 
 
-        }
-        public async Task Delete(string courseId)
-        {
-            Course course = await _courseRepository.GetById(Guid.Parse(courseId));
-            await _courseRepository.Delete(course);
         }
         //TODO
         public Task GetBestRatedCorse()
