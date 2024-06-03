@@ -28,7 +28,7 @@ namespace Benaa.Api.Controllers
 
         }
 
-        [HttpGet]
+        [HttpGet("Get")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -95,11 +95,11 @@ namespace Benaa.Api.Controllers
             return BadRequest("Please Enter Specific day");
         }
 
-        [HttpPost]
+        [HttpPost("AddSceduales")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<Sceduale>> AddSceduales(List<SchedualDto> Sceduales)
+        public async Task<ActionResult> AddSceduales(List<SchedualDto> Sceduales)
         {
             if (ModelState.IsValid)
             {

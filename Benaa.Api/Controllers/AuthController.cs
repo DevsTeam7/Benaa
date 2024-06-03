@@ -36,7 +36,7 @@ namespace Benaa.Api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> RegisterStudent([FromForm] StudentRegisterDto newUser)
+        public async Task<IActionResult> RegisterStudent(StudentRegisterDto newUser)
         {
             if (ModelState.IsValid)
             {
@@ -95,7 +95,7 @@ namespace Benaa.Api.Controllers
                 {
                     ErrorOr<User> result = await _authService.RegisterTeacher(newTeacher);
                     if (result.IsError) { return BadRequest(result.ErrorsOrEmptyList); }
-                    else { return Created("Student Created", result.Value); }
+                    else { return Created("Teacher Created", result.Value); }
                 }
 
                 catch (Exception ex)
@@ -113,7 +113,7 @@ namespace Benaa.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<LoginRequestDto.Response>> Login(LoginRequestDto.Request applictionUser)
+        public async Task<ActionResult<LoginResponseDto>> Login(LoginRequestDto applictionUser)
         {
             if (ModelState.IsValid)
             {

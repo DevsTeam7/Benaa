@@ -16,15 +16,23 @@ namespace Benaa.Infrastructure.Services
             MailboxAddress emailReciever = new MailboxAddress("", email);
             message.From.Add(emailSedner);
             message.To.Add(emailReciever);
-            message.Subject = "Email Confirmation";
-            message.Body = new TextPart("plain")
-            {
-                Text = $"منصة بناء التعليمية\n" +
-                $" كودك المؤقت هو: {content}\n" +
-                $"لا تشارك كودك مع اي شخص"
-            };
+            message.Subject = "إعادة ضبط كلمة المرور";
+			message.Body = new TextPart("html")
+			{
+				Text = $@"
+                    <html>
+                    <body style='font-family: Arial, sans-serif;'>
+                        <div style='text-align: center;'>
+                            <h1 style='color: #00008B;'>منصة بناء التعليمية</h1>
+                            <p style='font-size: 18px;'>كودك المؤقت هو: <strong>{content}</strong></p>
+                            <p style='font-size: 14px; color: #555;'>لا تشارك كودك مع أي شخص</p>
+                        </div>
+                    </body>
+                    </html>"
+			};
 
-            using (MailKit.Net.Smtp.SmtpClient client = new MailKit.Net.Smtp.SmtpClient())
+
+			using (MailKit.Net.Smtp.SmtpClient client = new MailKit.Net.Smtp.SmtpClient())
             {
                 client.Connect(smtpHost, smtpPort, MailKit.Security.SecureSocketOptions.StartTls);
                 client.Authenticate(smtpUsername, smtpPassword);

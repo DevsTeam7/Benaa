@@ -103,7 +103,7 @@ namespace Benaa.Infrastructure.Services
 			return user;
 		}
 
-		public async Task<ErrorOr<LoginRequestDto.Response>> Login(LoginRequestDto.Request applictionUser)
+		public async Task<ErrorOr<LoginResponseDto>> Login(LoginRequestDto applictionUser)
         {
             var user = await _userManager.FindByEmailAsync(applictionUser.Email);
             if (user is null)
@@ -115,7 +115,7 @@ namespace Benaa.Infrastructure.Services
                 var userRoles = await _userManager.GetRolesAsync(user);
                 var token = _tokenGeneration.GenerateTokenString(user, userRoles);
 
-                LoginRequestDto.Response? authenticatedUser = _mapper.Map<LoginRequestDto.Response>(user);
+				LoginResponseDto? authenticatedUser = _mapper.Map<LoginResponseDto>(user);
 
                 if (authenticatedUser is null) return Error.Unexpected();
                 if (user.EmailConfirmed is false) { authenticatedUser.EmailConfirmed = user.EmailConfirmed; }

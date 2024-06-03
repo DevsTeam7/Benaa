@@ -3,7 +3,6 @@
     public class StudentRegisterDto
     {
         public required string FirstName { get; set; }
-        public required string LastName { get; set; }
         public string? City { get; set; }
         public string? Contry { get; set; }
         public DateTime? DateOfBirth { get; set; }

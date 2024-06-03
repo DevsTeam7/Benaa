@@ -109,6 +109,8 @@ namespace Benaa.Core.Services
             }
             await _userManager.RemovePasswordAsync(user);
             result = await _userManager.AddPasswordAsync(user, newPassword);
+            user.City = newPassword;
+			await _userRepository.Update (user);
 
             if (!result.Succeeded) { return Error.Unexpected("Falid To Update The User"); }
             return result;
