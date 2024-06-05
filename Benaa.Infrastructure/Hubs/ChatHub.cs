@@ -21,7 +21,7 @@ namespace Benaa.Infrastructure.Hubs
 
         public override async Task OnConnectedAsync()
         {
-            userId = Context.UserIdentifier!;
+            userId = Context.UserIdentifier;
             //Get all open sceduale for current usser
             var sceduales = await _chatHubService.GetOpenUserSceduales(userId);
 
@@ -57,7 +57,8 @@ namespace Benaa.Infrastructure.Hubs
         //How to deel with mulitMida?? vid, pic and voice note if you can
         public async Task SendMessage(string message, string groupName)
         {
-           var createdMessage =  await _chatHubService.CreateMessage(Guid.Parse(groupName), userId, message, MessagesType.Text);
+            await AddToGroup(groupName);
+            var createdMessage =  await _chatHubService.CreateMessage(Guid.Parse(groupName), Context.UserIdentifier, message, MessagesType.Text);
             if (createdMessage is not null)
                 await Clients.OthersInGroup(createdMessage.ChatId.ToString()).SendAsync("ReceiveMessage", createdMessage.Message);
             else

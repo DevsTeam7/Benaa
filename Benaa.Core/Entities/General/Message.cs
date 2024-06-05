@@ -12,7 +12,7 @@ namespace Benaa.Core.Entities.General
         public string Message { get; set; }
         [Required]
         public MessagesType Type { get; set; }
-        public DateTimeOffset? SendAt { get; set; } = DateTimeOffset.Now;
+        public DateTimeOffset? SendAt { get; set; } = DateTimeOffset.UtcNow;
         public bool IsRead { get; set; } = false;
 
         public string UserId { get; set; }

@@ -3,6 +3,7 @@ using Benaa.Core.Entities.DTOs;
 using Benaa.Core.Interfaces.IRepositories;
 using Benaa.Core.Interfaces.IServices;
 using ErrorOr;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Benaa.Core.Services
 {
@@ -93,7 +94,6 @@ namespace Benaa.Core.Services
             if (scedualeToUpdate == null) { return Error.NotFound(); }
 
             scedualeToUpdate.TeacherId = sceduale.TeacherId;
-            scedualeToUpdate.StudentId = sceduale.StudentId;
             scedualeToUpdate.Date = sceduale.Date;
             scedualeToUpdate.TimeStart = sceduale.TimeStart;
             scedualeToUpdate.TimeEnd = sceduale.TimeEnd;
@@ -130,8 +130,8 @@ namespace Benaa.Core.Services
                     var payment = await _walletService.SetPayment(schedualDetails.Id, type, schedualDetails.Price, userId);
                     await _chatHubService.CreateChat(userId, sceduale.TeacherId, sceduale.Id);
                     //TODO : send sceduale info with the notification
-                    await _notificationService.Send(sceduale.StudentId, "تم حجز موعدك بنجاح");
-                    await _notificationService.Send(sceduale.TeacherId, "تم حجز موعد جديد");
+                    //await _notificationService.Send(sceduale.StudentId, "تم حجز موعدك بنجاح");
+                    //await _notificationService.Send(sceduale.TeacherId, "تم حجز موعد جديد");
                     return payment;
                 }
                 return Error.Failure("no money in wallet");
@@ -165,5 +165,12 @@ namespace Benaa.Core.Services
             }
             return new Success();
         }
-    }
+		public async Task<ErrorOr<List<Sceduale>>> GetTeacherSceduales(string userId)
+		{
+            var sceduales =  await _schedualeRepository.Select(scheduale => scheduale.TeacherId == userId && scheduale.StudentId == null);
+            if(sceduales == null) { return Error.NotFound(); }
+            return sceduales;
+
+		}
+	}
 }

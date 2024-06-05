@@ -8,6 +8,5 @@
         public string TimeEnd { get; set; }
         public decimal Price { get; set; }
         public  string TeacherId { get; set; }
-        public string? StudentId { get; set; }
     }
 }

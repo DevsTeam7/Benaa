@@ -18,7 +18,7 @@ namespace Benaa.Dashboard.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<ActionResult> login([FromForm] LoginRequestDto.Request request)
+        public async Task<ActionResult> login([FromForm] LoginRequestDto request)
         {
             try
             {

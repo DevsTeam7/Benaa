@@ -37,6 +37,7 @@ namespace Benaa.Core.Services
 
         public async Task<ErrorOr<Guid>> CreateCourseOnly(CreateCourseDto newCourse, string teacherId)
         {
+            var user =  _userManager.Users.FirstOrDefault(user => user.Id == teacherId);
             var videoUrl = await _fileUploadService.UploadFile(newCourse.VideoUrl);
             var imageUrl = await _fileUploadService.UploadFile(newCourse.ImageUrl);
             if (string.IsNullOrEmpty(imageUrl) && string.IsNullOrEmpty(videoUrl))
@@ -58,9 +59,10 @@ namespace Benaa.Core.Services
             course.ImageUrl = imageUrl;
             course.VideoUrl = videoUrl;
             course.TeacherId = teacherId;
+            course.TeacherName = user!.FirstName + " "+ user.LastName;
             var result = await _courseRepository.Create(course);
             if (result == null) { Error.Failure("فشل في انشاء الكورس"); }
-            return result.Id;
+            return result!.Id;
 
         }
         public async Task<ErrorOr<Guid>> CreateChapterLessons(ChapterLessonsDto chapterLessons, string courseId)

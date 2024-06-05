@@ -15,6 +15,8 @@ namespace Benaa.Core.Interfaces.IServices
         Task<ErrorOr<Object>> BookAppointment(SchedualDetailsDto schedualDetails, string userId);
         Task<ErrorOr<Object>> RepeatSceduale(string userId);
         Task<ErrorOr<IEnumerable<Sceduale>>> GetSceduales();
-    }
+        Task<ErrorOr<List<Sceduale>>> GetTeacherSceduales(string userId);
+
+	}
 
 }

@@ -74,7 +74,10 @@ namespace Benaa.Core.Services
             payment.StudentId = ui;
 
             await _paymentRepository.Create(payment);
-            return payment;
+			var wallet = await _userRepository.GetUserWallet(ui);
+            wallet.Amount -= price;
+            await _walletRepository.Update(wallet);
+			return payment;
   
         }
 

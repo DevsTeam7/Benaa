@@ -15,6 +15,7 @@ namespace Benaa.Core.Entities.General
         public string? VideoUrl { get; set; }
         public CourseType Type { get; set; }
         public string? ImageUrl { get; set; }
+        public string? TeacherName;
 
         public string? TargtedPeople { get; set; }
         public string? GoalsDescription { get; set; }

@@ -258,11 +258,15 @@ namespace Benaa.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetByTeacherId()
+        public async Task<IActionResult> GetByTeacherId(string? userId = null)
         {
             try
             {
-                var teacherId = _userManager.GetUserId(HttpContext.User);
+                var teacherId = "";
+				if (userId == null) {
+				     teacherId = _userManager.GetUserId(HttpContext.User);
+				}
+                teacherId = userId;
                 var courses = await _courseService.GetByTeacherId(teacherId);
                 if (courses.IsError) { return BadRequest(courses.ErrorsOrEmptyList); }
                 return Ok(courses.Value);
