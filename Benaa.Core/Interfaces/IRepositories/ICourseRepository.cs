@@ -9,5 +9,7 @@ namespace Benaa.Core.Interfaces.IRepositories
         Task<List<Course>> SelectQuantity(int quantity, CourseType? type = null);
         new Task<Course> SelectOneItem(Expression<Func<Course, bool>> predicate);
         new Task<List<Course>> Select(Expression<Func<Course, bool>> predicate);
-    }
+        new Task<List<Course>> GetAll();
+
+	}
 }

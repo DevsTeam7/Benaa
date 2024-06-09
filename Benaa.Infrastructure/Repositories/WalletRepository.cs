@@ -13,12 +13,11 @@ namespace Benaa.Infrastructure.Repositories
         
        
 
-        public async Task<int> GetAmountCode(string code)
+        public async Task<MoneyCode> GetCode(string code)
         {
             
-            var mc = await _dbContext.MoneyCodes.FirstOrDefaultAsync(s=>s.Code== code);
-            int amount = mc.Amount;
-            return amount;  
+            var moneyCode = await _dbContext.MoneyCodes.FirstOrDefaultAsync(s=>s.Code== code && s.Status == false);
+            return moneyCode;  
 
 
         }
@@ -27,18 +26,11 @@ namespace Benaa.Infrastructure.Repositories
         {
             var user = await _dbContext.Users.FirstOrDefaultAsync(s => s.Id == ui);
 
-
-            if (user.Wallet == null)
-            {
-                user.Wallet = new Wallet();
-                 
-                await Create(user.Wallet);
-            }
             string wi = user.WalletId.ToString();
 
             var wallet = await _dbContext.Wallets.FirstOrDefaultAsync(s => s.Id.ToString() == wi);
             wallet.Amount += amount;
-            await _dbContext.SaveChangesAsync();
+            await SaveChangeAsync();
             decimal am = (decimal)wallet.Amount;
             return am;
         }
@@ -66,5 +58,6 @@ namespace Benaa.Infrastructure.Repositories
             string id = sc.StudentId;
             return id;
         }
-    }
+
+	}
 }

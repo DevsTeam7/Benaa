@@ -16,6 +16,7 @@ namespace Benaa.Core.Services
         public async Task<string> UploadFile(IFormFile file)
         {
             var filePath = "";
+            var dbPath = "";
             var uniqueIdentifier = Guid.NewGuid().ToString();
             var timestamp = DateTime.Now.Ticks.ToString();
 
@@ -26,14 +27,25 @@ namespace Benaa.Core.Services
 
                 //user image and certfication
                 var path = DetermineFileTypeToSaveIt(extension);
-                if (!string.IsNullOrEmpty(path))
+				if (!string.IsNullOrEmpty(path))
+				{
+					filePath = path;
+				}
+				dbPath = path;
+
+				if (PhoneUploadFile.ImageExtensions.Contains(extension))
                 {
-                    filePath = path;
-                }
+					path = Path.Combine("wwwroot", path);
+				}
+				if (PhoneUploadFile.VideoExtensions.Contains(extension))
+				{
+					path = Path.Combine("wwwroot", path);
+				}
+	
                 CreateDirectory(filePath);
                 var newFileDirectory = Path.Combine(filePath, fileName);
                 await CareateFile(newFileDirectory, file);
-                return newFileDirectory;
+                return Path.Combine(dbPath, fileName) ;
             }
             return string.Empty;
         }
@@ -61,11 +73,11 @@ namespace Benaa.Core.Services
             }
             else if (PhoneUploadFile.ImageExtensions.Contains(extension))
             {
-                return Path.Combine(_environment.WebRootPath, "Upload", "UserImge");
+                return Path.Combine("Upload", "UserImge");
             }
             else if (PhoneUploadFile.VideoExtensions.Contains(extension))
             {
-                return Path.Combine(_environment.WebRootPath, "Courses");
+                return Path.Combine("Courses");
             }
             return string.Empty;
         }

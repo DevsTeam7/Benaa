@@ -82,15 +82,15 @@ namespace Benaa.Api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> RegisterTeacher([FromForm] TeacherRegisterDto newTeacher)
+        public async Task<IActionResult> RegisterTeacher(TeacherRegisterDto newTeacher)
         {
             if (ModelState.IsValid)
             {
-                var fileExtension = _fileUploadService.GetFileExtension(newTeacher.Certifications.FileName);
-                if (PhoneUploadFile.FileExtensions.Contains(fileExtension) is false)
-                {
-                    return BadRequest("Please Check File Type");
-                }
+                //var fileExtension = _fileUploadService.GetFileExtension(newTeacher.Certifications.FileName);
+                //if (PhoneUploadFile.FileExtensions.Contains(fileExtension) is false)
+                //{
+                //    return BadRequest("Please Check File Type");
+                //}
                 try
                 {
                     ErrorOr<User> result = await _authService.RegisterTeacher(newTeacher);

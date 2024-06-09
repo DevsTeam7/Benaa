@@ -47,5 +47,22 @@ namespace Benaa.Infrastructure.Repositories
 
             return selectedUsers.ToList();
         }
-    }
+        public async new Task<List<User>> GetAll()
+        {
+			var usersInRole = await _userManager.GetUsersInRoleAsync(Role.Teacher);
+            if(usersInRole.Count == 0) { throw new Exception(); }
+
+			//foreach (User user in usersInRole)
+			//{
+			//	List<Sceduale> sceduale = await _dbContext.Sceduales
+			//		.Where(s => s.TeacherId == user.Id)
+			//		.ToListAsync();
+
+			//	user.Sceduales = sceduale;
+			//}
+
+			return usersInRole.ToList();
+		}
+
+	}
 }

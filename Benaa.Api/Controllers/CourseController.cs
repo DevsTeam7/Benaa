@@ -62,21 +62,22 @@ namespace Benaa.Api.Controllers
         [HttpPost("AddToCart")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> AddToCart(string courseId){
-            if(string.IsNullOrEmpty(courseId)){return BadRequest();}
-            try
-            {
-                var studentId = _userManager.GetUserId(HttpContext.User);
-                var cartId = await _courseService.AddCourseToCart(courseId, studentId);
-                if (cartId.IsError) { return BadRequest(cartId.ErrorsOrEmptyList); }
-                return Ok(cartId.Value);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-        }
+		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+		public async Task<IActionResult> AddToCart(string courseId)
+		{
+			if (string.IsNullOrEmpty(courseId)) { return BadRequest(); }
+			try
+			{
+				var studentId = _userManager.GetUserId(HttpContext!.User);
+				var cartId = await _courseService.AddCourseToCart(studentId, courseId);
+				if (cartId.IsError) { return BadRequest(cartId.ErrorsOrEmptyList); }
+				return Created("",cartId.Value);
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+			}
+		}
 
 		[HttpGet("GetCartContent")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
@@ -88,6 +89,23 @@ namespace Benaa.Api.Controllers
 			{
 				var studentId = _userManager.GetUserId(HttpContext.User);
 				var courses = await _courseService.GetCartContent(studentId!);
+				if (courses.IsError) { return BadRequest(courses.ErrorsOrEmptyList); }
+				return Ok(courses.Value);
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+			}
+		}
+
+		[HttpGet("GetAll")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+		public async Task<IActionResult> GetAll()
+		{
+			try{
+				var courses = await _courseService.GetAll();
 				if (courses.IsError) { return BadRequest(courses.ErrorsOrEmptyList); }
 				return Ok(courses.Value);
 			}
@@ -121,21 +139,21 @@ namespace Benaa.Api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> AddRate(RateDTO.Request newRate)
+        public async Task<IActionResult> AddRate(RateDTORequest newRate)
         {
             if (ModelState.IsValid)
             {
-                try
-                {
+                //try
+                //{
                     var TeacherId = _userManager.GetUserId(HttpContext.User);
                     var result = await _courseService.AddRate(newRate, TeacherId);
                     if (result.IsError) { return BadRequest(result.ErrorsOrEmptyList); }
                     return Created("", result.Value);
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-                }
+                //}
+                //catch (Exception ex)
+                //{
+                //    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                //}
             }
             return BadRequest("Please input all required filds");
         }
@@ -262,11 +280,7 @@ namespace Benaa.Api.Controllers
         {
             try
             {
-                var teacherId = "";
-				if (userId == null) {
-				     teacherId = _userManager.GetUserId(HttpContext.User);
-				}
-                teacherId = userId;
+				var teacherId = userId ?? _userManager.GetUserId(HttpContext.User);
                 var courses = await _courseService.GetByTeacherId(teacherId);
                 if (courses.IsError) { return BadRequest(courses.ErrorsOrEmptyList); }
                 return Ok(courses.Value);

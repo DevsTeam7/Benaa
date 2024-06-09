@@ -51,5 +51,17 @@ namespace Benaa.Infrastructure.Repositories
 
             return course;
         }
-    }
+
+        public async new Task<List<Course>> GetAll()
+        {
+			List<Course> course = await _dbContext.Courses
+				.Include(course => course.Rates)
+                .ThenInclude(rate => rate.Student)
+				.Include(course => course.CourseChapters)
+                .Include(course => course.User).ToListAsync();
+			if (course is null) { throw new Exception(); }
+
+			return course;
+		}
+	}
 }

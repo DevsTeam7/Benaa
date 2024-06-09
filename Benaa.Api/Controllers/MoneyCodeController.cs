@@ -26,7 +26,9 @@ namespace Benaa.Api.Controllers
             try
             {
                 if (amount == 0 || number == 0) { return BadRequest("Please input all required data&Cannot be 0"); }
-                return Ok(await _moneycodeService.Generate(amount, number));
+                var result = await _moneycodeService.Generate(amount, number);
+                if(result.IsError) { return BadRequest(result.ErrorsOrEmptyList); }
+				return Ok(result.Value);
             }
                
             catch (Exception ex)

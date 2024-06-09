@@ -8,6 +8,8 @@ using AutoMapper;
 using Benaa.Core.Interfaces.IRepositories;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Benaa.Core.Services
 {
@@ -34,19 +36,31 @@ namespace Benaa.Core.Services
             _userRepository = userRepository;
         }
 
-        public async Task<ErrorOr<string>> UploadImage(IFormFile file, string userId)
+        public async Task<ErrorOr<Success>> Upload(string userId, IFormFile? image = null, IFormFile? certification = null)
         {
             User user = await _userManager.FindByIdAsync(userId);
 
             if (user is null) { return Error.NotFound("The User Does not Exist"); }
+            if(image != null)
+            {
+				string imagePath = await _fileUploadService.UploadFile(image);
+				if (string.IsNullOrEmpty(imagePath)) { return Error.Failure("Faild To Upload The Image"); }
+				user.ImageUrl = imagePath;
+			}
+			if (certification != null)
+			{
+				string certificationPath = await _fileUploadService.UploadFile(certification);
+				if (string.IsNullOrEmpty(certificationPath)) { return Error.Failure("Faild To Upload The Image"); }
+				user.ImageUrl = certificationPath;
+			}
 
-            string filePath = await _fileUploadService.UploadFile(file);
-            if (string.IsNullOrEmpty(filePath)) { return Error.Failure("Faild To Upload The Image"); }
 
-            user.ImageUrl = filePath;
+
+
             var result = await _userManager.UpdateAsync(user);
             if (!result.Succeeded) { return Error.Unexpected("Falid To Update The User"); }
-            return filePath;
+
+            return new Success();
         }
 
         public async Task<ErrorOr<BankInformation>> AddBankInfo(CreateBankInfoDto bankInfoDto, string userId)
@@ -59,42 +73,34 @@ namespace Benaa.Core.Services
             if (createdbankInfo is null) { return Error.Failure(); }
             return createdbankInfo;
         }
-        //Its not working
-        public async Task<ErrorOr<IdentityResult>> Update(string userId, UserUpdateDto userUpdate)
+
+        public async Task<ErrorOr<IdentityResult>> Update(string userId, UserUpdateDto updaatedUser)
         {
             User user = await _userManager.Users.Where(user => user.Id == userId).FirstOrDefaultAsync();
             if (user is null) { return Error.NotFound("The User Does not Exist"); }
-
-            if (string.IsNullOrEmpty(userUpdate.Email))
+            if (string.IsNullOrEmpty(updaatedUser.Email))
             {
-                userUpdate.Email = user.Email;
-                userUpdate.UserName = user.Email;
+				updaatedUser.Email = user.Email;
+				updaatedUser.UserName = user.Email;
             }
+			updaatedUser.UserName = updaatedUser.UserName;
+			var mappedUser = _mapper.Map(updaatedUser, user);
 
-            userUpdate.City ??= user.City;
-            userUpdate.FirstName ??= user.FirstName;
-            userUpdate.LastName ??= user.LastName;
-            userUpdate.EducationLevel ??= user.EducationLevel;
-            userUpdate.Specialization ??= user.Specialization;
-            userUpdate.Experience ??= user.Experience;
-            userUpdate.University ??= user.University;
-            userUpdate.City ??= user.City;
-            userUpdate.DateOfBirth ??= user.DateOfBirth;
-            userUpdate.Gender ??= user.Gender;
-            userUpdate.PhoneNumber ??= user.PhoneNumber;
-            //var mappedUser = _mapper.Map<User>(userUpdate);
+            if (updaatedUser.ImageUrl != null)
+            {
+				string imagePath = await _fileUploadService.UploadFile(updaatedUser.ImageUrl);
+				if (string.IsNullOrEmpty(imagePath)) { return Error.Failure("Faild To Upload The Image"); }
+				user.ImageUrl = imagePath;
+			}
+            if (updaatedUser.CertificationUrl != null){
+				string certificationPath = await _fileUploadService.UploadFile(updaatedUser.CertificationUrl);
+				if (string.IsNullOrEmpty(certificationPath)) { return Error.Failure("Faild To Upload The certification"); }
+				user.CertificationUrl = certificationPath;
+			}
+
 
             IdentityResult result = await _userManager.UpdateAsync(user);
-            await _userRepository.Update(user);
-
-
-            //foreach (var item in result.Errors.ToList())
-            //{
-            //    _logger.LogError(item.Code);
-            //    _logger.LogError(item.Description);
-            //}
             if (!result.Succeeded) { return Error.Unexpected("Faild To Update The User " + user.Id); }
-            //await _userRepository.SaveChangeAsync();
             return result;
         }
 
@@ -116,10 +122,9 @@ namespace Benaa.Core.Services
             return result;
 
         }
-        //TODO: conecte and test the scudule logic
-        public async Task<ErrorOr<List<User>>> GetTeachers(int quantity)
+        public async Task<ErrorOr<List<User>>> GetTeachers()
         {
-           var teachers = await _userRepository.SelectQuantity(quantity); 
+           var teachers = await _userRepository.GetAll(); 
             if(teachers == null) { return Error.NotFound(); }
             return teachers;
         }

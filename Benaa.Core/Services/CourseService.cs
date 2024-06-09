@@ -4,6 +4,7 @@ using Benaa.Core.Entities.General;
 using Benaa.Core.Interfaces.IRepositories;
 using Benaa.Core.Interfaces.IServices;
 using ErrorOr;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 
 namespace Benaa.Core.Services
@@ -95,9 +96,14 @@ namespace Benaa.Core.Services
         }
         public async Task<ErrorOr<Guid>> AddCourseToCart(string userId, string courseId)
         {
+            //var course = await _courseRepository.GetById();
+
+            //if(course == null) { return Error.NotFound("Not Found"); }
             UserCourses cart = new UserCourses {
-                CourseId = Guid.Parse(courseId),
-                StudentId = userId };
+                CourseId =Guid.Parse(courseId),
+                StudentId = userId,
+                IsPurchased = false
+            };
             var addingCourseToCart = await _userCoursesRepository.Create(cart);
             if(addingCourseToCart == null) { return Error.Failure(); }
             return addingCourseToCart.Id;
@@ -124,11 +130,11 @@ namespace Benaa.Core.Services
             await _userCoursesRepository.Delete(cartItem);
             return new Success();
 		}
-		public async Task<ErrorOr<Guid>> AddRate(RateDTO.Request newRate,string studentId)
+		public async Task<ErrorOr<Guid>> AddRate(RateDTORequest newRate,string studentId)
         {
             UserCourses cart = await _userCoursesRepository
                 .SelectOneItem(cart => cart.StudentId == studentId 
-                 && cart.CourseId == newRate.CourseId);
+                 && cart.CourseId == newRate.CourseId && cart.IsPurchased == true);
             if(cart  == null) { return Error.Failure(); }
 
             if (cart.IsPurchased is true) { 
@@ -136,25 +142,25 @@ namespace Benaa.Core.Services
                 rate.StudentId = studentId;
                 var createdRated = await _rateRepository.Create(rate);
                 if (createdRated == null) { return Error.Failure(); }
-                await _notificationService.Send(cart.StudentId, "تمت عملية شراء بنجاح");
+                //await _notificationService.Send(cart.StudentId, "تمت عملية شراء بنجاح");
                 return createdRated.Id;
             }
             return Error.Failure();
         }
-        public async Task<ErrorOr<List<RateDTO.Response>>> GetAllRate(string courseId)
-        {
-           List<Rate> rates = await _rateRepository
-                .Select(rate => rate.CourseId == Guid.Parse(courseId));
-            if(rates == null) { return Error.Failure(); }
-            List<RateDTO.Response> ratesResponse = _mapper.Map<List<RateDTO.Response>>(rates);
-            int index = 0;
-            foreach(var rate in ratesResponse)
-            {
-                rate.FullName = rates[index].Student!.FirstName + " " + rates[index].Student!.LastName;
+        //public async Task<ErrorOr<List<RateDTO.Response>>> GetAllRate(string courseId)
+        //{
+        //   List<Rate> rates = await _rateRepository
+        //        .Select(rate => rate.CourseId == Guid.Parse(courseId));
+        //    if(rates == null) { return Error.Failure(); }
+        //    List<RateDTO.Response> ratesResponse = _mapper.Map<List<RateDTO.Response>>(rates);
+        //    int index = 0;
+        //    foreach(var rate in ratesResponse)
+        //    {
+        //        rate.FullName = rates[index].Student!.FirstName + " " + rates[index].Student!.LastName;
 
-            }
-            return ratesResponse;
-        }
+        //    }
+        //    return ratesResponse;
+        //}
         public async Task<ErrorOr<Success>> BuyCourse(string userId, List<string> courses)
         {
             foreach (var courseId in courses)
@@ -185,10 +191,11 @@ namespace Benaa.Core.Services
 
         }
         //TODO
-        public Task GetBestRatedCorse()
-        {
-            throw new NotImplementedException();
-        }
+        //public async Task<ErrorOr<List<Course>>> GetBestRatedCorse()
+        //{
+        //    var courses = await _courseRepository.GetAll();
+
+		//}
         public async Task<ErrorOr<Course>> GetById(string courseId)
         {
             var course = await _courseRepository.SelectOneItem(course => course.Id == Guid.Parse(courseId));
@@ -296,5 +303,17 @@ namespace Benaa.Core.Services
             await _courseRepository.Delete(course); ;
             return new Success();
         }
-    }
+
+        public async Task<ErrorOr<List<Course>>> GetAll()
+        {
+            var courses = await _courseRepository.GetAll();
+            if(courses == null) { return Error.NotFound(); }
+            return courses;
+		}
+
+		public Task GetBestRatedCorse()
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

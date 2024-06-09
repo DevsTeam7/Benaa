@@ -52,7 +52,7 @@ namespace Benaa.Infrastructure.Services
                 if (!string.IsNullOrEmpty(UploadedFile))
                     newUser.CertificationUrl = UploadedFile;
             }
-
+            newUser.DateOfBirth = newUser.DateOfBirth.Value.ToUniversalTime();
             newUser.UserName = newUser.Email;
 
             var createUserResult = await _userManager.CreateAsync(newUser, Password);
@@ -135,7 +135,7 @@ namespace Benaa.Infrastructure.Services
             if (await IsUserExist(newUser))
                 return Error.Conflict(description: "The Email Exist");
 
-            User user = await CreateUser(newUser, newTeacher.Password, newTeacher.Certifications);
+            User user = await CreateUser(newUser, newTeacher.Password);
 
             if (user is null)
             {
