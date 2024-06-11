@@ -9,13 +9,11 @@ namespace Benaa.Core.Interfaces.IServices
     public interface IUserService
     {
         Task<ErrorOr<BankInformation>> AddBankInfo(CreateBankInfoDto bankInfoDto, string userId);
-
         Task<ErrorOr<Success>> Upload(string userId, IFormFile? image = null, IFormFile? certification = null);
 		Task<ErrorOr<IdentityResult>> Update(string userId, UserUpdateDto userUpdate);
         Task<ErrorOr<IdentityResult>> UpdatePassword(string userId, string newPassword, string? oldPassword = null);
         Task<ErrorOr<Success>> Delete(string userId);
-        Task<User> Getuser(string id);
         Task<ErrorOr<List<User>>> GetTeachers();
-
+        Task<ErrorOr<LoginResponseDto>> GetUserInfo(string userId);
 	}
 }

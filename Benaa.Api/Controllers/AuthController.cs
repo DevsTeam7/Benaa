@@ -20,16 +20,18 @@ namespace Benaa.Api.Controllers
         private readonly IFileUploadService _fileUploadService;
         private readonly IOTPService _otpService;
         private readonly IEmailService _emailService;
+        private readonly INotificationService _notificationService;
 
         public AuthController(IAuthService authService,
             UserManager<User> userManager, IFileUploadService fileUploadService,
-            IOTPService otpService, IEmailService emailService)
+            IOTPService otpService, IEmailService emailService, INotificationService notificationService)
         {
             _authService = authService;
             _userManager = userManager;
             _fileUploadService = fileUploadService;
-            this._otpService = otpService;
+            _otpService = otpService;
             _emailService = emailService;
+            _notificationService = notificationService;
         }
 
         [HttpPost("RegisterStudent")]
@@ -161,6 +163,17 @@ namespace Benaa.Api.Controllers
             return BadRequest(IsOtpVerfied);
 
         }
-    }
+
+		[HttpPost("SendNotfication")]
+		public async Task<IActionResult> SendNotfication(string content)
+		{
+			string userId = _userManager.GetUserId(HttpContext.User);
+			bool IsSent = await _notificationService.Send(userId,content);
+
+			if (IsSent) { return Ok(IsSent); }
+			return BadRequest(IsSent);
+
+		}
+	}
 
 }

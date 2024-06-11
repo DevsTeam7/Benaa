@@ -14,8 +14,7 @@ namespace Benaa.Core.Entities.General
         [Required]
         public Guid CourseId { get; set; }
         public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
-        [Required]
-        public string Content { get; set; }
+        public string? Content { get; set; }
 
         public virtual Course? Course { get; set; }
         public virtual User? Student { get; set; }

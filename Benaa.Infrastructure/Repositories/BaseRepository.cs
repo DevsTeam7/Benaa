@@ -67,8 +67,9 @@ namespace Benaa.Infrastructure.Repositories
         }
         public async Task<T> SelectOneItem(Expression<Func<T, bool>> predicate)
         {
-            var Item = await _dbContext.Set<T>().FirstAsync(predicate);
-            return Item;
+            var item = await _dbContext.Set<T>().FirstOrDefaultAsync(predicate);
+            if(item == null) { return null; }
+            return item;
         }
     }
 }

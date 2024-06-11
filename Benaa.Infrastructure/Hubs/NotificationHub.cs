@@ -1,13 +1,13 @@
-﻿using Benaa.Core.Entities.General;
-using Benaa.Core.Interfaces.Hubs;
+﻿using Benaa.Core.Interfaces.Hubs;
 using Benaa.Core.Interfaces.IRepositories;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
 
 namespace Benaa.Infrastructure.Hubs 
 {
-    public class NotificationHub : Hub<INotificationHub>
+    [Authorize]
+	public class NotificationHub : Hub<INotificationHub>
     {
         private readonly INotificationRepository _notificationRepository;
         public NotificationHub(INotificationRepository notificationRepository)

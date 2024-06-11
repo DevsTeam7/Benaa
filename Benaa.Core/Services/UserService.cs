@@ -137,10 +137,18 @@ namespace Benaa.Core.Services
             if(!result.Succeeded) { return Error.Failure();}
             return new Success();
         }
-        public async Task<User> Getuser(string id)
+
+        public async Task<ErrorOr<LoginResponseDto>> GetUserInfo(string userId)
         {
-            var user = await _userRepository.GetById(id);
-            return user;
+            var user = await _userManager.Users.FirstOrDefaultAsync(user => user.Id == userId);
+            if(user == null) { return Error.NotFound("user not found"); }
+            LoginResponseDto dto = new LoginResponseDto {
+                FirstName = user.FirstName!,
+                LastName = user.LastName!,
+                ImageUrl = user.ImageUrl!,
+                Description = user.Experience
+			};
+            return dto;
         }
     }
 }

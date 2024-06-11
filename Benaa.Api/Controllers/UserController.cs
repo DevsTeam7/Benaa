@@ -119,5 +119,21 @@ namespace Benaa.Api.Controllers
 
 		}
 
+		[HttpGet("GetUserInfo")]
+		public async Task<IActionResult> GetUserInfo()
+		{
+			try
+			{
+				var userId = _userManager.GetUserId(HttpContext.User);
+				var result = await _userService.GetUserInfo(userId!);
+				if (result.IsError) { return BadRequest(result.ErrorsOrEmptyList); }
+				return Ok(result.Value);
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+			};
+		}
+
 	}
 }

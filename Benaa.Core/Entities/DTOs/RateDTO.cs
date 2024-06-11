@@ -1,12 +1,4 @@
-﻿using Benaa.Core.Entities.General;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Benaa.Core.Entities.DTOs
 {
     public class RateDTORequest
@@ -14,7 +6,7 @@ namespace Benaa.Core.Entities.DTOs
 
             public required float Stars { get; set; }
             public required Guid CourseId { get; set; }
-            public required string Content { get; set; }
+            public string? Content { get; set; }
 
 
         //public class Response

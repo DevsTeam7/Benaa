@@ -59,7 +59,7 @@ namespace Benaa.Core.Services
         {
             var us = await _OwnerRepository.GetById(nu.Id);
             await _userManager.RemovePasswordAsync(us);
-           var result = await _userManager.AddPasswordAsync(us, nu.Password);
+            var result = await _userManager.AddPasswordAsync(us, nu.Password);
 
             // us.IsApproved = nu.IsApproved;
             us.Email = nu.Email;

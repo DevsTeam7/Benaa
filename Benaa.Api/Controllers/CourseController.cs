@@ -6,6 +6,7 @@ using Benaa.Core.Entities.General;
 using Microsoft.AspNetCore.Authorization;
 using Benaa.Infrastructure.Utils.Users;
 using Microsoft.IdentityModel.Tokens;
+using Benaa.Core.Services;
 
 namespace Benaa.Api.Controllers
 {
@@ -20,7 +21,7 @@ namespace Benaa.Api.Controllers
             _userManager = userManager;
         }
 
-        [Authorize(Roles = Role.Teacher)]
+       // [Authorize(Roles = Role.Teacher)]
         [HttpPost("Create"), RequestFormLimits(MultipartBodyLengthLimit = long.MaxValue, ValueLengthLimit = Int32.MaxValue),DisableRequestSizeLimit]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -40,7 +41,7 @@ namespace Benaa.Api.Controllers
             return BadRequest("Please input all required filds");
         }
 
-        [Authorize(Roles = Role.Teacher)]
+        //[Authorize(Roles = Role.Teacher)]
         [HttpPost("CreateChapterLessons"), RequestFormLimits(MultipartBodyLengthLimit = long.MaxValue, ValueLengthLimit = Int32.MaxValue), DisableRequestSizeLimit]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -65,18 +66,18 @@ namespace Benaa.Api.Controllers
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 		public async Task<IActionResult> AddToCart(string courseId)
 		{
-			if (string.IsNullOrEmpty(courseId)) { return BadRequest(); }
-			try
-			{
+			//if (string.IsNullOrEmpty(courseId)) { return BadRequest(); }
+			//try
+			//{
 				var studentId = _userManager.GetUserId(HttpContext!.User);
 				var cartId = await _courseService.AddCourseToCart(studentId, courseId);
 				if (cartId.IsError) { return BadRequest(cartId.ErrorsOrEmptyList); }
 				return Created("",cartId.Value);
-			}
-			catch (Exception ex)
-			{
-				return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-			}
+			//}
+			//catch (Exception ex)
+			//{
+			//	return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+			//}
 		}
 
 		[HttpGet("GetCartContent")]
@@ -344,6 +345,19 @@ namespace Benaa.Api.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
+
         }
-    }
+		[HttpGet("GetCartAmount")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+		public async Task<IActionResult> GetCartAmount()
+		{
+			var userId = _userManager.GetUserId(HttpContext.User);
+			var result = await _courseService.GetCartAmount(userId);
+			if (result.IsError) { return BadRequest(result.ErrorsOrEmptyList); }
+			return Ok(result.Value);
+		}
+
+	}
 }

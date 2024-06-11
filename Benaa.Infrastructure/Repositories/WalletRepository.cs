@@ -41,7 +41,7 @@ namespace Benaa.Infrastructure.Repositories
             //if (user.WalletId == null) { return 0; }
             //Guid w = user.WalletId;
             var wallet = await _dbContext.Wallets.FirstOrDefaultAsync(s => s.Id == user.WalletId);
-            decimal amount = wallet.Amount;
+			decimal amount = wallet.Amount;
             return amount;
         }
 

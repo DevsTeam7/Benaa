@@ -25,6 +25,7 @@ namespace Benaa.Core.Interfaces.IServices
         Task<ErrorOr<Success>> ReturnTheCourse(string courseId, string studentId);
         Task<ErrorOr<Success>> Delete(Guid courseId);
         Task<ErrorOr<List<Course>>> GetAll();
+        Task<ErrorOr<decimal>> GetCartAmount(string userId);
 
 	}
 }
