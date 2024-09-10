@@ -154,7 +154,7 @@ namespace Benaa.Core.Services
                 rate.StudentId = studentId;
                 var createdRated = await _rateRepository.Create(rate);
                 if (createdRated == null) { return Error.Failure(); }
-                //await _notificationService.Send(cart.StudentId, "تمت عملية شراء بنجاح");
+                await _notificationService.Send(cart.StudentId, "تمت عملية شراء بنجاح");
                 return createdRated.Id;
             }
             return Error.Failure();

@@ -134,6 +134,21 @@ namespace Benaa.Api.Controllers
 				return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
 			};
 		}
+		[HttpGet("GetTeacherStauts")]
+		public async Task<IActionResult> GetTeacherStauts()
+		{
+			//try
+			//{
+				var userId = _userManager.GetUserId(HttpContext.User);
+				var result = await _userService.GetTeacherStauts(userId!);
+				if (result.IsError) { return BadRequest(result.ErrorsOrEmptyList); }
+				return Ok(result.Value);
+			//}
+			//catch (Exception ex)
+			//{
+			//	return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+			//};
+		}
 
 	}
 }

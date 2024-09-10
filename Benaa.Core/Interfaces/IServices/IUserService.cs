@@ -15,5 +15,8 @@ namespace Benaa.Core.Interfaces.IServices
         Task<ErrorOr<Success>> Delete(string userId);
         Task<ErrorOr<List<User>>> GetTeachers();
         Task<ErrorOr<LoginResponseDto>> GetUserInfo(string userId);
-	}
+        Task<ErrorOr<Stauts>> GetTeacherStauts(string userId);
+        Task<User> Getuser(string id);
+
+    }
 }

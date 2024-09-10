@@ -11,6 +11,7 @@ using System.Text;
 using Benaa.Infrastructure.Extensions;
 using System.Text.Json.Serialization;
 
+
 var builder = WebApplication.CreateBuilder(args);
 //long maxFileSize = 1L * 1024L * 1024L * 1024L; // 1 GB
 //builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = maxFileSize) ;

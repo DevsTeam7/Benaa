@@ -130,8 +130,8 @@ namespace Benaa.Core.Services
                     var payment = await _walletService.SetPayment(schedualDetails.Id, type, schedualDetails.Price, userId);
                     await _chatHubService.CreateChat(userId, sceduale.TeacherId, sceduale.Id);
                     //TODO : send sceduale info with the notification
-                    //await _notificationService.Send(sceduale.StudentId, "تم حجز موعدك بنجاح");
-                    //await _notificationService.Send(sceduale.TeacherId, "تم حجز موعد جديد");
+                    await _notificationService.Send(sceduale.StudentId, "تم حجز موعدك بنجاح");
+                    await _notificationService.Send(sceduale.TeacherId, "تم حجز موعد جديد");
                     return payment;
                 }
                 return Error.Failure("no money in wallet");

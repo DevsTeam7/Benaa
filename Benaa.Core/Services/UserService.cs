@@ -21,12 +21,18 @@ namespace Benaa.Core.Services
         private readonly IBankInformationRepository _bankInformationRepository;
         private readonly ILogger<UserService> _logger;
         private readonly IUserRepository _userRepository;
+        private readonly ICourseRepository _courseRepository;
+        private readonly IUserCoursesRepository _userCoursesRepository;
+        private readonly IPaymentRepositoty _paymentRepositoty;
 
 
 
         public UserService(UserManager<User> userManager, IUserRepository userRepository,
             IFileUploadService fileUploadService, IMapper mapper,
-            IBankInformationRepository bankInformationRepository, ILogger<UserService> logger)
+            IBankInformationRepository bankInformationRepository,
+            ILogger<UserService> logger, ICourseRepository courseRepository
+            ,IUserCoursesRepository userCoursesRepository,
+            IPaymentRepositoty paymentRepositoty)
         {
             _userManager = userManager;
             _fileUploadService = fileUploadService;
@@ -34,6 +40,9 @@ namespace Benaa.Core.Services
             _bankInformationRepository = bankInformationRepository;
             _logger = logger;
             _userRepository = userRepository;
+            _courseRepository = courseRepository;
+            _userCoursesRepository = userCoursesRepository;
+            _paymentRepositoty = paymentRepositoty;
         }
 
         public async Task<ErrorOr<Success>> Upload(string userId, IFormFile? image = null, IFormFile? certification = null)
@@ -149,6 +158,46 @@ namespace Benaa.Core.Services
                 Description = user.Experience
 			};
             return dto;
+        }
+
+		public async Task<ErrorOr<Stauts>> GetTeacherStauts(string userId)
+		{
+			float ratings = 0;
+            int count = 0;
+            decimal dues = 0;
+			var user = await _userManager.Users.FirstOrDefaultAsync(user => user.Id == userId);
+            List<Course> courses = await _courseRepository.Select(course => course.TeacherId == user.Id);
+            foreach (var course in courses)
+            {
+                if(course.Rates.Count != 0)
+                {
+					foreach (var rate in course.Rates!)
+					{
+						ratings += rate.Stars;
+
+					}
+				}
+                var cart = await _userCoursesRepository.Select(cart => cart.CourseId == course.Id && cart.IsPurchased == true);
+                if (cart != null) { count ++; }
+            }
+
+            var paymentsDue = await _paymentRepositoty.Select(payment => payment.TeacherId == user.Id && payment.Status == 1);
+            foreach (var payment in paymentsDue)
+            {
+                dues += payment.Amount;
+            }
+			Stauts stauts = new Stauts
+            {
+                Ratings = ratings.ToString(),
+                Dues = dues.ToString(),
+                Sub = count.ToString(), 
+            };
+            return stauts;
+		}
+        public async Task<User> Getuser(string id)
+        {
+            var user = await _userRepository.GetById(id);
+            return user;
         }
     }
 }
